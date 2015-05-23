@@ -9,13 +9,13 @@ public class Test {
 	public static void main(String[] args){
 		Autonomous.Mode mode1 = new Autonomous().new Mode("Test");
 		Autonomous.Mode mode2 = new Autonomous().new Mode("Finney");
-//		Autonomous.Mode mode3 = new Autonomous().new Mode("Robotics");
+		Autonomous.Mode mode3 = new Autonomous().new Mode("Robotics");
 		
 		//////////////////////////////
 		
 		Modes.add(mode1);
 		Modes.add(mode2);
-//		Modes.add(mode3);
+		Modes.add(mode3);
 		
 		//////////////////////////////
 		
