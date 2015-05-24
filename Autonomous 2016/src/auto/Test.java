@@ -1,15 +1,15 @@
 package auto;
 
-import auto.Autonomous;
 import auto.Autonomous.Modes;
+import auto.Mode;
 
 public class Test {
-	public static Autonomous.Mode mode0;
+	public static Mode mode0;
 	
 	public static void main(String[] args){
-		Autonomous.Mode mode1 = new Autonomous().new Mode("Test");
-		Autonomous.Mode mode2 = new Autonomous().new Mode("Finney");
-		Autonomous.Mode mode3 = new Autonomous().new Mode("Robotics");
+		Mode mode1 = new Mode("Test");
+		Mode mode2 = new Mode("Finney");
+		Mode mode3 = new Mode("Robotics");
 		
 		//////////////////////////////
 		
