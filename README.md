@@ -1,7 +1,7 @@
 # FinneyRobotics
 Code for Finney Robotics Team
 
-# Steps for pulling the auto code down into a eclipse project:
+<h2>Steps for pulling the auto code down into a eclipse project:</h2>
 
 - Create a new "Robot Java" Project in eclipse
 - Give it a name and make it an iterative robot
