@@ -46,6 +46,7 @@ public class Robot extends IterativeRobot {
 	final static public String header="Team 1405 Robot Template ver. 4.6"; // This is required
 	
     public void robotInit() {
+    	
     	initialize();
     }
     void initialize(){
@@ -77,22 +78,22 @@ public class Robot extends IterativeRobot {
     	//cpiTalon=cpi.CANTalon.getInstance(3);
     	//cpiTalon2=cpi.CANTalon2.getinstance(3);
     	//eduTalon = new edu.wpi.first.wpilibj.CANTalon(3);
-    	Autonomous.robotInit();
-    	namedTalon=cpi.CANTalon.getInstance("/Drive1", "Left  Motor #1", 3);
+    	//Autonomous.robotInit();
+    	namedTalon=cpi.CANTalon.getInstance("/Drive1", "Left  Motor #1", 5);
     	//drive = new Drive("/Teleop Drive");
 //    	elevator=new Elevator("/Elevator");
     	
     }
     
     public void autonomousInit(){
-    	Autonomous.autonomousInit();
+    	//Autonomous.autonomousInit();
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	Autonomous.autonomousPeriodic();
+    	//Autonomous.autonomousPeriodic();
     }
 
     /**
@@ -119,7 +120,7 @@ public class Robot extends IterativeRobot {
     	cpi.CANTalon.testInit();
     }
     public void testPeriodic() {
-    	//pilot.teleopPeriodic();
+    	pilot.teleopPeriodic();
     	cpi.CANTalon.testPeriodic();
     }
     

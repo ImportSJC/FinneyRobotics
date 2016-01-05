@@ -16,12 +16,36 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Timer;
 import java.util.TimerTask;
+import edu.wpi.first.wpilibj.DriverStation;
 
 import edu.wpi.first.wpilibj.tables.*;
 
 import java.util.Enumeration;
 
 public class Preferences {
+
+    
+    static Preferences preferences;
+    static public String header="";
+    static boolean isFirstGlobalPrefixCall=true;
+    
+    static NetBoolean isHardCode=new NetBoolean("","Using HardCode",true);
+    static NetBoolean isAutoSave=new NetBoolean("/cpi.Preferences","Auto Save On",true);
+    static NetBoolean isHardCodeToPref=new NetBoolean("/cpi.Preferences","Copy Hard Code to Preferences",false);;
+    static NetBoolean isDirty=new NetBoolean("/cpi.Preferences","Are there any unsaved settings?",false);
+    static NetBoolean isSave=new NetBoolean("/cpi.Preferences","Save all Preferences",false);
+    static NetBoolean isClean=new NetBoolean("/cpi.Preferences","Clean and save Preferences",false);
+    static NetBoolean isRemoveAll=new NetBoolean("/cpi.Preferences","Delete all Preferences",false);
+    static NetBoolean isRefreshKeylist=new NetBoolean("/cpi.Preferences","Refresh Key List",false);
+    static NetBoolean isPrintKeys=new NetBoolean("/cpi.Preferences","Display all Preference keys on console",false);
+    static NetString keylist =new NetString(cpi.Tables.Constants.CPI_PREFERENCES,cpi.Tables.Constants.KEY_LIST,"");
+    static boolean firstInstance=true;
+    static boolean isTimerRunning=false;
+    static Hashtable<java.lang.String,java.lang.String> preferenceRefreshMap=new Hashtable<java.lang.String,java.lang.String>();
+    static Vector<String> activeKeyList=new Vector<String>();
+    
+    static Timer timer=new Timer();
+    
     Preferences(){
         
     }
@@ -401,29 +425,13 @@ public class Preferences {
     }
     
     static public String globalPrefix(){
-    	   // 	return "Robot - Team 1405 Robot Template ver. 4.0";
-    	    	return "Robot ("+org.usfirst.frc.team1405.robot.Robot.header+")";
+    	String tmp="Robot ("+org.usfirst.frc.team1405.robot.Robot.header+")";
+    	if(isFirstGlobalPrefixCall){
+    		DriverStation.reportError(tmp, false);
+    		isFirstGlobalPrefixCall=false;
+    	}
+    	    	return tmp;
     }
-    
-    static Preferences preferences;
-    static public String header="";
-    
-    static NetBoolean isHardCode=new NetBoolean("","Using HardCode",true);
-    static NetBoolean isAutoSave=new NetBoolean("/cpi.Preferences","Auto Save On",true);
-    static NetBoolean isHardCodeToPref=new NetBoolean("/cpi.Preferences","Copy Hard Code to Preferences",false);;
-    static NetBoolean isDirty=new NetBoolean("/cpi.Preferences","Are there any unsaved settings?",false);
-    static NetBoolean isSave=new NetBoolean("/cpi.Preferences","Save all Preferences",false);
-    static NetBoolean isClean=new NetBoolean("/cpi.Preferences","Clean and save Preferences",false);
-    static NetBoolean isRemoveAll=new NetBoolean("/cpi.Preferences","Delete all Preferences",false);
-    static NetBoolean isRefreshKeylist=new NetBoolean("/cpi.Preferences","Refresh Key List",false);
-    static NetBoolean isPrintKeys=new NetBoolean("/cpi.Preferences","Display all Preference keys on console",false);
-    static NetString keylist =new NetString(cpi.Tables.Constants.CPI_PREFERENCES,cpi.Tables.Constants.KEY_LIST,"");
-    static boolean firstInstance=true;
-    static boolean isTimerRunning=false;
-    static Hashtable<java.lang.String,java.lang.String> preferenceRefreshMap=new Hashtable<java.lang.String,java.lang.String>();
-    static Vector<String> activeKeyList=new Vector<String>();
-    
-    static Timer timer=new Timer();
 }
     
 

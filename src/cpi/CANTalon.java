@@ -39,6 +39,8 @@ static final String DISABLED="Disabled mode";
 static final int 	TALON_COUNT=32;
 static final String SET_VALUE_MULTIPLIER="Set Value Multiplier";
 
+static boolean 		isFirstTalonArray=true;
+
 
 
 int 				deviceNumber;
@@ -48,8 +50,7 @@ double 				direction=1.0;
 CANTalon 			talonInstance;
 Vector<String> 		aliasList;
 boolean				actionListenersAreSet=false;
-
-static boolean 		isFirstTalonArray=true;
+boolean				isCoreTalon=false;
 
 
 
@@ -495,7 +496,8 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 		boolean				thisIsCreateArray;
 		CANTalon			talonInstance;
 		NetDouble 			talonFirmwareVersion;
-		SetDouble			deviceNumber;
+		//SetDouble			deviceNumber;
+		NetDouble			deviceNumber;
 		int					oldDeviceNumber;
 		NetString 			talonDirection ;
 		ITableListener		tlTalonDirection;
@@ -539,7 +541,8 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 		NamedDisplay(CANTalon talon,String table){
 			thisDisplayDeviceNumber=talon.deviceNumber;
 			talonInstance=talon;
-			deviceNumber=new SetDouble(table,"Device #",thisDisplayDeviceNumber);
+			deviceNumber=new NetDouble(table,"Device #",thisDisplayDeviceNumber);
+			deviceNumber.lock();
 			oldDeviceNumber=(int)deviceNumber.Value();
 			String sTmp=OFFLINE;
 			if(talon.talonPresent!=null){
@@ -618,6 +621,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 				disabled.disableOnHardCode(true);
 			}
 // This display action listeners
+			/*
 			deviceNumber.addActionListner(new ITableListener(){
 				public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
 					double tmp=(double)pvalue;
@@ -684,7 +688,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 				talonInstance=CANTalon.talon[thisDisplayDeviceNumber];
 				
 				}});
-			
+			*/
 			
 					talonDirection.addActionListner(new ITableListener(){
 						public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
@@ -1024,6 +1028,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 		int i=0;
 		while(i<TALON_COUNT){
 			talon[i]=new CANTalon(i);
+			talon[i].isCoreTalon=true;
 				talon[i].setSafetyEnabled(false);	
 			if(talon[i].GetFirmwareVersion()!=0){	
 				talonDisplay[i]=CANTalon.talon[i].new CoreDisplay(CANTalon.talon[i], talonPrefix+"/Device # "+Integer.toString(i));			}
@@ -1035,10 +1040,15 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	
 	// CANTalon overrides
 	void changeControlMode(CANTalon.ControlMode controlMode,int i){
-		super.changeControlMode(controlMode);
+		talonInstance.changeControlMode(controlMode);
 	}
 		public void changeControlMode(CANTalon.ControlMode controlMode){
+			if(isCoreTalon){
+				super.changeControlMode(controlMode);
+			}else
+	{
 		System.out.println("changeControlMode method is disabled - use Tableviewer to set ControlMode");
+	}
 		/*
 		switch(controlMode){
 		
@@ -1066,10 +1076,15 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 		*/
 	}
 		public void enableBrakeMode(boolean brake,int i){
-			super.enableBrakeMode(brake);
+			talonInstance.enableBrakeMode(brake);
 		}
 			public void enableBrakeMode(boolean brake){
-		System.out.println("enableBrakeMode method is disabled - use Tableviewer to set BrakeMode");
+				if(isCoreTalon){
+					super.enableBrakeMode(brake);
+				}else
+		{
+					System.out.println("enableBrakeMode method is disabled - use Tableviewer to set BrakeMode");
+		}
 		/*
 		if(brake){
 			talonDisplay[deviceNumber].talonBreakEnable.Value(BRAKE_ON);
@@ -1081,10 +1096,15 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	}
 
 		void reverseOutput(boolean flip,int i){
-				super.reverseOutput(flip);
+			talonInstance.reverseOutput(flip);
 			}
 				public void reverseOutput(boolean flip){
+					if(isCoreTalon){
+						super.reverseOutput(flip);
+					}else
+			{
 		System.out.println("reverseOutput method is disabled - use Tableviewer to set reverseOutput");
+			}
 		/*
 		if(flip){
 			talonDisplay[deviceNumber].talonDirection.Value(DIRECTION_REVERSE);
@@ -1096,8 +1116,13 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	}
 	
 	public void set(double outputValue){
+		if(isCoreTalon){
 		super.set(outputValue*direction*setValueMultiplier);
 		System.out.println("Talon["+deviceNumber+"]");
+		}else
+		{
+			talonInstance.set(outputValue);
+		}
 	}
 	
 
