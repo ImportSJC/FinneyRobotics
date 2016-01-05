@@ -1118,7 +1118,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	public void set(double outputValue){
 		if(isCoreTalon){
 		super.set(outputValue*direction*setValueMultiplier);
-		System.out.println("Talon["+deviceNumber+"]");
+		//System.out.println("Talon["+deviceNumber+"]");
 		}else
 		{
 			talonInstance.set(outputValue);
