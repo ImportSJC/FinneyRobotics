@@ -38,6 +38,7 @@ public class Robot extends IterativeRobot {
     void initialize(){
     	
     	cpi.Preferences.initialize();
+    	Autonomous.robotInit();
     	drive= new Drive("Teleop Drive");
     	drive.robotInit();
     	pilot=new XBox360("Pilot");
