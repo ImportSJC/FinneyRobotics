@@ -2,10 +2,13 @@
 package org.usfirst.frc.team1405.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import auto.AutoOutputs;
-import auto.AutoInputs;
-import auto.Autonomous;
-import tele.Drive;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+//import edu.wpi.first.wpilibj.CANTalon;
+//import cpi.CANTalon;
+import cpi.Drive;
+import cpi.Elevator;
+import cpi.XBox360;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -15,68 +18,68 @@ import tele.Drive;
  * directory.
  */
 public class Robot extends IterativeRobot {
+    
+
+   Drive drive;
+   Elevator elevator;
+   XBox360 pilot;
+   
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+	
+	final static public String header="2016 Competition ver. 1.0"; // This is required
+	
     public void robotInit() {
-    	drive = new Drive();
+    	
+    	initialize();
+    }
+    void initialize(){
+    	
+    	cpi.Preferences.initialize();
+    	Autonomous.robotInit();
+    	drive= new Drive("Teleop Drive");
     	drive.robotInit();
-    	autoOutputs = new AutoOutputs();
-    	autoOutputs.robotInit();
+    	pilot=new XBox360("Pilot");
+    	pilot.robotInit();
     	
-    	autoInputs = new AutoInputs();
-    	autoInputs.RobotInit();
-    	
-    	auto = new Autonomous();
-    	auto.RobotInit();
-//    	auto.AutonomousInit();
     }
     
     public void autonomousInit(){
-    	System.out.println("Their Auto Init was called!!!!");
-    	auto.AutonomousInit();
-    	
-    	autoInputs.AutoInit();
-    	
-    	drive.autoInit();
+    	Autonomous.autonomousInit();
     }
 
     /**
      * This function is called periodically during autonomous
      */
-    public void autonomousPeriodic(){
-//    	auto = new Autonomous();
-    	auto.AutonomousPeriodic();
-    	autoOutputs.AutonomousPeriodic();
+    public void autonomousPeriodic() {
+    	Autonomous.autonomousPeriodic();
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	drive.teleopPeriodic();
+    	drive.TeleopPeriodic();
     }
     
     /**
      * This function is called periodically during test mode
      */
-    public void testPeriodic() {
-    
-    }
-    
     public void disabledInit(){
-    	
+    }
+    public void testInit(){
+    	LiveWindow.setEnabled(false);
+    	cpi.CANTalon.testInit();
+    }
+    public void testPeriodic() {
+    	pilot.teleopPeriodic();
+    	cpi.CANTalon.testPeriodic();
     }
     
     public void disabledPeriodic(){
-//    	System.out.println("Their DisabledPeriodic was called");
-//    	AutoOutputs.setBrake(false);
+    	pilot.teleopPeriodic();
+    	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
-    
-    Autonomous auto;
-    AutoOutputs autoOutputs;
-    AutoInputs autoInputs;
-    Drive drive;
-    
 }
