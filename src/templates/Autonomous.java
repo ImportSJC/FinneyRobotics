@@ -11,7 +11,7 @@ import cpi.auto.*;;
  * Copy/Paste this template to another package
  *
  */
-public class Autonomous extends AutonomousBase{
+public class Autonomous extends AutonomousBase{//TODO look into this class, should it be deleted
 	
 	/**
 	 * Create mode names here eg.static final String TOTE_NO_BUMP="tote_noBump";

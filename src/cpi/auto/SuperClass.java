@@ -8,10 +8,6 @@ public class SuperClass {
 		Set.addName(modeName);
 	}
 	
-	public void run(){
-		
-	}
-	
 	public void start(){
 		
 	}
