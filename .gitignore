@@ -1,5 +1,6 @@
 *.pydevproject
-.metadata
+.metadata/*
+.recommenders/*
 .gradle
 bin/
 tmp/
@@ -38,6 +39,3 @@ build/*
 
 # TeXlipse plugin
 .texlipse
-
-# Stephen Custom
-.recommenders/*
