@@ -4,7 +4,7 @@ import cpi.auto.tele.Drive;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
-import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;;
 
 public class AutoInputs {
 	//Encoders
@@ -12,7 +12,7 @@ public class AutoInputs {
 	public static CANTalon rightMotor1;
 	
 	//Gyros
-	public static Gyro myGyro;
+	public static AnalogGyro myGyro;
 	
 	public static void robotInit(){
 		leftMotor1 = Drive.leftMotor1;
@@ -21,7 +21,7 @@ public class AutoInputs {
 		leftMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		rightMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
-		myGyro = new Gyro(new AnalogInput(0));
+		myGyro = new AnalogGyro(new AnalogInput(0));
 	}
 	
 	public void AutoInit(){
