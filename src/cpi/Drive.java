@@ -19,8 +19,8 @@ public class Drive {
 	leftFrontMotor = new DoubleInput(name,"left Front Motor(s)");
 	rightRearMotor = new DoubleInput(name,"right Rear Motor(s)");
 	leftRearMotor = new DoubleInput(name,"left Rear Motor(s)");
-	rightMotor = new DoubleInput(name,"right Motor(s)");
-	leftMotor = new DoubleInput(name,"left Motor(s)");
+	rightMotor = new DoubleInput(name,"right Motor(s)","XBox360-Pilot: Right Stick Y Axis");
+	leftMotor = new DoubleInput(name,"left Motor(s)","XBox360-Pilot: Left Stick Y Axis");
 	centerMotor = new DoubleInput(name,"center Motor(s)");
 	
 	rightFrontTalon1 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #1",1);
@@ -105,9 +105,9 @@ public class Drive {
 	public void tankMotors(double right,double left){
 		  rightTalon1.set(right);
 		  if(enableSecondMotors.Value())rightTalon2.set(right);
-		  leftTalon1.set(left);
+		  leftTalon1.set(left);//TODO fix this so it says leftTalon2, i think
 		  if(enableSecondMotors.Value())leftTalon2.set(left);
-		
+		  System.out.println("TANK MODE right: " + right + " left: " + left);
 	}
 	
 	public void hdriveMotors(double right,double left,double center){
@@ -117,7 +117,7 @@ public class Drive {
 		  if(enableSecondMotors.Value())leftTalon2.set(left);
 		  centerHTalon1.set(center);
 		  if(enableSecondMotors.Value())centerHTalon2.set( center);
-		
+		  
 	}
 	
 	public void TeleopPeriodic(){
@@ -142,7 +142,7 @@ public class Drive {
 	NetBoolean HDrive;
 	
 	SetBoolean enableSecondMotors;
-  String name;
+	String name;
   
   CANTalon rightFrontTalon1;
   CANTalon rightFrontTalon2;

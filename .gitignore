@@ -4,8 +4,7 @@
 .gradle
 bin/
 tmp/
-*.tmp
-*.bak
+dist/
 *.swp
 *~.nib
 local.properties
