@@ -14,6 +14,7 @@ import java.util.Vector;
 import cpi.Interface.BooleanInput;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
+import edu.wpi.first.wpilibj.Timer;
 
 public class CANTalon extends edu.wpi.first.wpilibj.CANTalon {
 	
@@ -66,7 +67,7 @@ static String 		defaultTable=talonPrefix+"Unspecified Talons";
 static NetDouble 	talonTestSpeed=new NetDouble(talonPrefix+"/Test","Test Speed",0.5);
 static NetDouble 	talonTestTime=new NetDouble(talonPrefix+"/Test","Test Time",2.0);
 static NetBoolean 	talonTestRun=new NetBoolean(talonPrefix+"/Test","Run timed test",false);
-static BooleanInput talonRunInterface=new BooleanInput("/"+talonPrefix+"/Test","Run Test",false);
+static BooleanInput talonRunInterface=new BooleanInput("/"+talonPrefix+"/Test","Run Test","XBox360-Pilot:A Button",false);
 static double 		talonSetSpeed=0;
 static Vector<CANTalon>		testList=new Vector<CANTalon>();
 static Hashtable<java.lang.String,CANTalon> namedTalonMap=new Hashtable<java.lang.String,CANTalon>();
@@ -178,6 +179,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 			testEnable.addActionListner(new ITableListener(){
 						public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
 							if(oldTestEnable==(boolean)pvalue)return;
+							oldTestEnable=(boolean)pvalue;
 							if((boolean)pvalue){
 							if(CANTalon.testList.contains(thisInstance))return;
 								testList.addElement(thisInstance);
@@ -1027,6 +1029,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 		isFirstTalonArray=false;
 		int i=0;
 		while(i<TALON_COUNT){
+			System.out.println("******************************* Create Talon"+i);
 			talon[i]=new CANTalon(i);
 			talon[i].isCoreTalon=true;
 				talon[i].setSafetyEnabled(false);	
@@ -1118,7 +1121,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	public void set(double outputValue){
 		if(isCoreTalon){
 		super.set(outputValue*direction*setValueMultiplier);
-		//System.out.println("Talon["+deviceNumber+"]");
+		System.out.println("Talon["+deviceNumber+"],  Speed= "+outputValue*direction*setValueMultiplier);
 		}else
 		{
 			talonInstance.set(outputValue);
