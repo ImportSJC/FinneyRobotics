@@ -43,6 +43,7 @@ public class Preferences {
     static boolean isTimerRunning=false;
     static Hashtable<java.lang.String,java.lang.String> preferenceRefreshMap=new Hashtable<java.lang.String,java.lang.String>();
     static Vector<String> activeKeyList=new Vector<String>();
+    static Vector<String> preferenceKeyList=new Vector<String>();
     
     static Timer timer=new Timer();
     
@@ -50,18 +51,20 @@ public class Preferences {
         
     }
     public static Preferences getInstance(){
-    	initialize();
+    	//initialize();
         return preferences;
     }
     
     public static void initialize(){
     	if(firstInstance){
     	isSave.lock();
-	        Vector<String> vtemp=edu.wpi.first.wpilibj.Preferences.getInstance().getKeys();
+	        Vector<String> vtemp=edu.wpi.first.wpilibj.Preferences.getInstance().getKeys();// Does not work correctly
+	        //Vector<String> vtemp=preferenceKeyList;// Work around for edu.wpi.first.wpilibj.Preferences.getInstance().getKeys().
 	        int i=0;
 	        while(i<vtemp.size()){
 	        	String tmp=vtemp.elementAt(i);
 	        	String value=edu.wpi.first.wpilibj.Preferences.getInstance().getString(tmp,null);
+	        	System.out.println(value);
 	        	preferenceRefreshMap.put(tmp, value);
 	        	i++;
 	        }
@@ -364,12 +367,18 @@ public class Preferences {
     }
     private static String fixKey(String key){
     	String tmp=key.replace(" ", "_");
+    	tmp=key.replace("/", "&");
+    	
     	addToCleanList(key);
     	return tmp;
     }
     
     static void addToCleanList(String key){
     	if(!activeKeyList.contains(key))activeKeyList.addElement(key);
+    }
+    
+    static void addKey(String key){// Work around for edu.wpi.first.wpilibj.Preferences.getInstance().getKeys().
+    	if(!preferenceKeyList.contains(key))preferenceKeyList.addElement(key);
     }
     
     static void clean()

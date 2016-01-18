@@ -37,8 +37,9 @@ public class SetBoolean implements IMainTables  {
           	 table=NetworkTable.getTable(defCommPrefix+"/"+tableName);
            }
         Timer.delay(cpi.Tables.Constants.NETWORK_SET_DELAY);
-        cpi.Preferences.putDefault(defCommPrefix+"/"+tableName+"/"+booleanKey, Boolean.toString(pDefaultValue));
+        Preferences.addKey(defCommPrefix+"/"+tableName+"/"+pbooleanKey);// Work around for edu.wpi.first.wpilibj.Preferences.getInstance().getKeys().
         defaultValue=cpi.Preferences. getBoolean(defCommPrefix+"/"+tableName+"/"+"booleanKey", pDefaultValue);
+        edu.wpi.first.wpilibj.Preferences.getInstance().getString(defCommPrefix+"/"+tableName+"/"+pbooleanKey, "");
 		oldValue=defaultValue;
 		value=defaultValue;
           table.putBoolean(booleanKey, defaultValue);

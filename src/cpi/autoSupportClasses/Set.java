@@ -29,14 +29,14 @@ public class Set {
 		if(isFirst){
 			if(modeNames.size()==0){
 				currentAutoMode.Value(NONE);
-				DriverStation.getInstance().reportError("Current Autonomous Mode - <none>\n\n", false);
+				DriverStation.getInstance().reportError("\nCurrent Autonomous Mode - <none>", false);
 				isFirst=false;
 				return;
 			}else{
 				if(currentAutoMode.Value()==NONE)currentAutoMode.Value(modeNames.get(0));
 			}
 			isFirst=false;
-				DriverStation.getInstance().reportError("Current Autonomous Mode - "+currentAutoMode.Value()+"\n\n", false);
+				DriverStation.getInstance().reportError("\nCurrent Autonomous Mode - "+currentAutoMode.Value(), false);
 				modeNumber=modeNames.indexOf(currentAutoMode.Value());
 				  AutonomousBase.selectAutoMode(modeNames.get(modeNumber));
 		}
@@ -55,12 +55,12 @@ public class Set {
 		if(isFirstPress){
 			isFirstPress=false;
 			DriverStation.getInstance().reportError(cpi.Preferences.globalPrefix()+"\n\n", false);
-			DriverStation.getInstance().reportError("Current Autonomous Mode - "+modeNames.get(modeNumber)+"\n\n", false);
+			DriverStation.getInstance().reportError("\nCurrent Autonomous Mode - "+modeNames.get(modeNumber), false);
 			return;
 		}
 		modeNumber++;
 		if(modeNumber>=modeNames.size())modeNumber=0;
-		DriverStation.getInstance().reportError("Current Autonomous Mode (Default) - "+modeNames.get(modeNumber)+"\n\n", false);
+		DriverStation.getInstance().reportError("\nCurrent Autonomous Mode (Default) - "+modeNames.get(modeNumber), false);
 		currentAutoMode.Value(modeNames.get(modeNumber));
 	  AutonomousBase.selectAutoMode(modeNames.get(modeNumber));
 	}
