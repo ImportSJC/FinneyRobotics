@@ -11,6 +11,7 @@ local.properties
 .settings/
 .loadpath
 build/*
+sysProps.xml
 
 # Eclipse Core
 .project
