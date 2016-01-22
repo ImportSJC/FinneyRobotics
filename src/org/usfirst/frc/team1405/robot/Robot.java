@@ -3,6 +3,7 @@ package org.usfirst.frc.team1405.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import cpi.BallHandler;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
@@ -24,6 +25,7 @@ public class Robot extends IterativeRobot {
    Shooter shooter;
    Elevator elevator;
    XBox360 pilot;
+   BallHandler ball;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -45,6 +47,7 @@ public class Robot extends IterativeRobot {
     	shooter.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
+    	ball = new BallHandler();
     	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     	
     }
@@ -67,6 +70,7 @@ public class Robot extends IterativeRobot {
     	pilot.teleopPeriodic();
     	drive.TeleopPeriodic();
     	shooter.teleopPeriodic();
+    	ball.TeleopPeriodic();
     }
     
     /**
