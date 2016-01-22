@@ -38,7 +38,6 @@ public class Robot extends IterativeRobot {
     }
     void initialize(){
     	
-    	cpi.Preferences.initialize();
     	Autonomous.robotInit();
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
@@ -46,6 +45,7 @@ public class Robot extends IterativeRobot {
     	shooter.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
+    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     	
     }
     
