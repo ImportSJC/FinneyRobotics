@@ -1,5 +1,5 @@
 package cpi;
-import Interface.*;
+import cpi.Interface.*;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
 
