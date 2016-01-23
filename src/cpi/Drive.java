@@ -150,7 +150,7 @@ public class Drive {
 		gearButtonPressed = false;
 		gearBool = !gearBool;
 		solenoid1.set(gearBool);
-		solenoid2.set(gearBool);
+		solenoid2.set(!gearBool);
 		System.out.println("gear box toggled: " + gearBool);
 	}
 	
