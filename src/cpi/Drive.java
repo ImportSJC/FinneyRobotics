@@ -16,6 +16,10 @@ public class Drive {
 	static final String FRC_MECANUM="FRC Mecanum";
 	static final String FRC_HDRIVE="FRC H Drive";
 	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
+	
+	static boolean gearBool = false;
+	static boolean gearButtonPressed = false;
+	
 	public Drive(String name){
 	this.name=name;
 	
@@ -127,8 +131,8 @@ public class Drive {
 		
 		  rightTalon1.set(right);
 		  if(enableSecondMotors.Value())rightTalon2.set(right);
-		  leftTalon1.set(left);//TODO fix this so it says leftTalon2, i think
-		  if(enableSecondMotors.Value())leftTalon2.set(left);
+		  leftTalon1.set(-left);//TODO fix this so it says leftTalon2, i think
+		  if(enableSecondMotors.Value())leftTalon2.set(-left);
 		  System.out.println("TANK MODE right: " + right + " left: " + left);
 	}
 	
@@ -142,10 +146,12 @@ public class Drive {
 //		  
 //	}
 	
-	public void gearBoxSolenoids (boolean motorGear){
-		solenoid1.set(motorGear);
-		solenoid2.set(!motorGear);
-		System.out.println("s1: " + motorGear + " s2: " + !motorGear);
+	public void gearBoxToggle (){
+		gearButtonPressed = false;
+		gearBool = !gearBool;
+		solenoid1.set(gearBool);
+		solenoid2.set(gearBool);
+		System.out.println("gear box toggled: " + gearBool);
 	}
 	
 	public void TeleopPeriodic(){
@@ -163,7 +169,11 @@ public class Drive {
 	  break;
 		}
 		
-		gearBoxSolenoids(motorGear.Value());
+		System.out.println("motorgear: " + motorGear.Value() + " gear button pressed: " + gearButtonPressed);
+		if(!motorGear.Value() && gearButtonPressed){
+			gearBoxToggle();
+		}
+		gearButtonPressed = motorGear.Value();
 	}
 
 	SetString mode;
