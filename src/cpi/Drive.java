@@ -31,7 +31,7 @@ public class Drive {
 	leftMotor = new DoubleInput(name,"left Motor(s)","XBox360-Pilot: Left Stick Y Axis");
 	centerMotor = new DoubleInput(name,"center Motor(s)");
 	
-	motorGear = new BooleanInput(name,"extend Solenoid", "XBox360-Pilot:A Button");
+	motorGear = new BooleanInput(name,"change gear", "XBox360-Pilot:Left Bumper");
 	
 //	rightFrontTalon1 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #1",1);
 //	rightFrontTalon2 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #2",2);

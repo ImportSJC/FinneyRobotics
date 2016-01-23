@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.CANTalon;
  *
  */
 public class Shooter {
-	private BooleanInput shooting;
+	private DoubleInput shooting;
 	private DoubleInput intaking;
+	private BooleanInput allRollersIn;
+	private BooleanInput allRollersOut;
 	private String name;
 	
 	private CANTalon shooterTalon1;
@@ -20,14 +22,15 @@ public class Shooter {
 	
 	private final double SHOOTING_SPEED = 0.9;
 	private final double INTAKE_SPEED = 0.5;
-	
 	private final String SHOOTER_MOTOR = "Shooter Motor";
 	
 	public Shooter(String name){
 		this.name = name;
 		
-		shooting = new BooleanInput(this.name, "Shooting Motors", "XBox360-Pilot:Right Bumper");
-		intaking = new DoubleInput(this.name, "Reverse Shooting Motors", "XBox360-Pilot: Right Trigger");
+		shooting = new DoubleInput(this.name, "Shooting Motors", "XBox360-Pilot: Right Trigger");
+		intaking = new DoubleInput(this.name, "Reverse Shooting Motors", "XBox360-Pilot: Left Trigger");
+		allRollersIn = new BooleanInput(this.name, "All Roller Moters In", "XBox360-Pilot:A Button");
+		allRollersOut = new BooleanInput(this.name, "All Roller Motors Out", "XBox360-Pilot:Y Button");
 		
 //		shooterTalon1 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #1", 1);
 //		shooterTalon2 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #2", 2);
@@ -42,7 +45,7 @@ public class Shooter {
 	
 	public void teleopPeriodic(){
 		System.out.println("shooting: " + shooting.Value());
-		if(shooting.Value()){
+		if(shooting.Value()>0.5){
 			//turn motors
 			shooterTalon1.set(SHOOTING_SPEED);
 			shooterTalon2.set(-SHOOTING_SPEED);
@@ -51,6 +54,14 @@ public class Shooter {
 			//reverse motors
 			shooterTalon1.set(-INTAKE_SPEED);
 			shooterTalon2.set(INTAKE_SPEED);
+		}
+		else if(allRollersIn.Value()){
+			shooterTalon1.set(-INTAKE_SPEED);
+			shooterTalon2.set(INTAKE_SPEED);
+		}
+		else if(allRollersOut.Value()){
+			shooterTalon1.set(SHOOTING_SPEED);
+			shooterTalon2.set(-SHOOTING_SPEED);
 		}
 		else{
 			//stop motors
