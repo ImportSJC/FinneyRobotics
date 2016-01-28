@@ -28,12 +28,12 @@ Code for Finney Robotics Team
 - Open the GIT perspective (Window->Perspective->other,  Select Git)
 - Clone the desired project code from github.com (search Finney Robotics) (eg. Development Code)
 - Remove just created repository from view
+
+
 - Select Java EE perspective
-- Import File system from Test
+- Import File system from created project( eg. Test)
 - Click next
 - Select the repository name(eg. Development Code) for the from Directory
 - Select the entire directory by clicking in the box next to the repository name (will be checked)
 - Click Finish
-- Switch to Git perspective
-- Add a local repository browsing to your project folder (eg. Test) and finish.
-
+- Right click on project name ->Team->share Project-> Finish
