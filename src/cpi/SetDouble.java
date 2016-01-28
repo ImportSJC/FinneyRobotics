@@ -36,8 +36,9 @@ public class SetDouble implements IMainTables  {
           	 table=NetworkTable.getTable(defCommPrefix+"/"+tableName);
            }
         Timer.delay(cpi.Tables.Constants.NETWORK_SET_DELAY);
-        cpi.Preferences.putDefault(defCommPrefix+"/"+tableName+"/"+numberKey,Double.toString(pDefaultValue) );
+        Preferences.addKey(defCommPrefix+"/"+tableName+"/"+pbooleanKey);// Work around for edu.wpi.first.wpilibj.Preferences.getInstance().getKeys().
         defaultValue=Preferences.getInstance().getDouble (defCommPrefix+"/"+tableName+"/"+pbooleanKey, pDefaultValue);
+        edu.wpi.first.wpilibj.Preferences.getInstance().getString(defCommPrefix+"/"+tableName+"/"+pbooleanKey, "");
 		oldValue=defaultValue;
 		value=defaultValue;
           table.putNumber(numberKey, defaultValue);

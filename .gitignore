@@ -4,14 +4,14 @@
 .gradle
 bin/
 tmp/
-*.tmp
-*.bak
+dist/
 *.swp
 *~.nib
 local.properties
 .settings/
 .loadpath
 build/*
+sysProps.xml
 
 # Eclipse Core
 .project

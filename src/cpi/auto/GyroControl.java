@@ -1,9 +1,9 @@
 package cpi.auto;
 
-import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class GyroControl {
-	private Gyro myGyro;
+	private AnalogGyro myGyro;
 	public GyroControl(int myChannel)
 	{	
 		if (myChannel == 0){ myGyro = AutoInputs.myGyro; }

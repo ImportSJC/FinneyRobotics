@@ -35,9 +35,9 @@ public class SetString  implements IMainTables {
           	 table=NetworkTable.getTable(defCommPrefix+"/"+tableName);
            }
         Timer.delay(cpi.Tables.Constants.NETWORK_SET_DELAY);
+       Preferences.addKey(defCommPrefix+"/"+tableName+"/"+stringKey);// Work around for edu.wpi.first.wpilibj.Preferences.getInstance().getKeys().
          defaultValue=Preferences.getString (defCommPrefix+"/"+tableName+"/"+stringKey, pDefaultValue);
         cpi.Preferences.putDefault(defCommPrefix+"/"+tableName+"/"+stringKey, pDefaultValue);
-        // defaultValue=Preferences.getInstance().getString (defCommPrefix+"/"+tableName+"/"+stringKey, pDefaultValue);
 		oldValue=defaultValue;
 		value=defaultValue;
           table.putString(stringKey, defaultValue);

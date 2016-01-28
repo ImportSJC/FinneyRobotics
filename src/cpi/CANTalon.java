@@ -14,6 +14,7 @@ import java.util.Vector;
 import cpi.Interface.BooleanInput;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
+import edu.wpi.first.wpilibj.Timer;
 
 public class CANTalon extends edu.wpi.first.wpilibj.CANTalon {
 	
@@ -66,7 +67,7 @@ static String 		defaultTable=talonPrefix+"Unspecified Talons";
 static NetDouble 	talonTestSpeed=new NetDouble(talonPrefix+"/Test","Test Speed",0.5);
 static NetDouble 	talonTestTime=new NetDouble(talonPrefix+"/Test","Test Time",2.0);
 static NetBoolean 	talonTestRun=new NetBoolean(talonPrefix+"/Test","Run timed test",false);
-static BooleanInput talonRunInterface=new BooleanInput("/"+talonPrefix+"/Test","Run Test",false);
+static BooleanInput talonRunInterface=new BooleanInput("/"+talonPrefix+"/Test","Run Test","XBox360-Pilot:A Button",false);
 static double 		talonSetSpeed=0;
 static Vector<CANTalon>		testList=new Vector<CANTalon>();
 static Hashtable<java.lang.String,CANTalon> namedTalonMap=new Hashtable<java.lang.String,CANTalon>();
@@ -178,6 +179,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 			testEnable.addActionListner(new ITableListener(){
 						public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
 							if(oldTestEnable==(boolean)pvalue)return;
+							oldTestEnable=(boolean)pvalue;
 							if((boolean)pvalue){
 							if(CANTalon.testList.contains(thisInstance))return;
 								testList.addElement(thisInstance);
@@ -315,7 +317,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 						if((String)pvalue==talonOldControlMode)return;
 						switch((String)pvalue){
 						case PERCENTVBUS:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.PercentVbus,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.PercentVbus,0);
 							talonOldControlMode=PERCENTVBUS;
 							talonControlMode.Value(talonOldControlMode);
 							setValueMultiplier.unlock();
@@ -323,12 +325,12 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 							setValueMultiplier.lock();
 							break;
 						case FOLLOWER:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Follower,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Follower,0);
 							talonOldControlMode=FOLLOWER;
 							talonControlMode.Value(talonOldControlMode);
 							break;
 						case VOLTAGE:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Voltage,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Voltage,0);
 							talonOldControlMode=VOLTAGE;
 							talonControlMode.Value(talonOldControlMode);
 							setValueMultiplier.unlock();
@@ -336,7 +338,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 							setValueMultiplier.lock();
 							break;
 						case POSITION:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Position,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Position,0);
 							talonOldControlMode=POSITION;
 							talonControlMode.Value(talonOldControlMode);
 							setValueMultiplier.unlock();
@@ -344,7 +346,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 							setValueMultiplier.lock();
 							break;
 						case SPEED:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Speed,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Speed,0);
 							talonOldControlMode=SPEED;
 							talonControlMode.Value(talonOldControlMode);
 							setValueMultiplier.unlock();
@@ -352,7 +354,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 							setValueMultiplier.lock();
 							break;
 						case CURRENT:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Current,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Current,0);
 							talonOldControlMode=CURRENT;
 							talonControlMode.Value(talonOldControlMode);
 							setValueMultiplier.unlock();
@@ -360,7 +362,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 							setValueMultiplier.lock();
 							break;
 						case DISABLED:
-							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Disabled,0);
+							if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Disabled,0);
 							talonOldControlMode=DISABLED;
 							talonControlMode.Value(talonOldControlMode);
 							break;
@@ -784,7 +786,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 							if((String)pvalue==talonOldControlMode)return;
 							switch((String)pvalue){
 							case PERCENTVBUS:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.PercentVbus,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.PercentVbus,0);
 								talonOldControlMode=PERCENTVBUS;
 								talonControlMode.Value(talonOldControlMode);
 								setValueMultiplier.unlock();
@@ -793,13 +795,13 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(PERCENTVBUS);
 								break;
 							case FOLLOWER:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Follower,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Follower,0);
 								talonOldControlMode=FOLLOWER;
 								talonControlMode.Value(talonOldControlMode);
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(FOLLOWER);
 								break;
 							case VOLTAGE:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Voltage,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Voltage,0);
 								talonOldControlMode=VOLTAGE;
 								talonControlMode.Value(talonOldControlMode);
 								setValueMultiplier.unlock();
@@ -808,7 +810,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(VOLTAGE);
 								break;
 							case POSITION:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Position,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Position,0);
 								talonOldControlMode=POSITION;
 								talonControlMode.Value(talonOldControlMode);
 								setValueMultiplier.unlock();
@@ -817,7 +819,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(POSITION);
 								break;
 							case SPEED:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Speed,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Speed,0);
 								talonOldControlMode=SPEED;
 								talonControlMode.Value(talonOldControlMode);
 								setValueMultiplier.unlock();
@@ -826,7 +828,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(SPEED);
 								break;
 							case CURRENT:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Current,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Current,0);
 								talonOldControlMode=CURRENT;
 								talonControlMode.Value(talonOldControlMode);
 								setValueMultiplier.unlock();
@@ -835,7 +837,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(CURRENT);
 								break;
 							case DISABLED:
-								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.ControlMode.Disabled,0);
+								if(talon.talonPresent.Value()==ONLINE)changeControlMode(edu.wpi.first.wpilibj.CANTalon.TalonControlMode.Disabled,0);
 								talonOldControlMode=DISABLED;
 								talonControlMode.Value(talonOldControlMode);
 								CANTalon.talonDisplay[thisDisplayDeviceNumber].talonControlMode.Value(DISABLED);
@@ -1027,6 +1029,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 		isFirstTalonArray=false;
 		int i=0;
 		while(i<TALON_COUNT){
+			System.out.println("******************************* Create Talon"+i);
 			talon[i]=new CANTalon(i);
 			talon[i].isCoreTalon=true;
 				talon[i].setSafetyEnabled(false);	
@@ -1039,10 +1042,10 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	
 	
 	// CANTalon overrides
-	void changeControlMode(CANTalon.ControlMode controlMode,int i){
+	void changeControlMode(CANTalon.TalonControlMode controlMode,int i){
 		talonInstance.changeControlMode(controlMode);
 	}
-		public void changeControlMode(CANTalon.ControlMode controlMode){
+		public void changeControlMode(CANTalon.TalonControlMode controlMode){
 			if(isCoreTalon){
 				super.changeControlMode(controlMode);
 			}else
@@ -1118,7 +1121,7 @@ static Hashtable<java.lang.String,NamedDisplay> namedDisplay=new Hashtable<java.
 	public void set(double outputValue){
 		if(isCoreTalon){
 		super.set(outputValue*direction*setValueMultiplier);
-		//System.out.println("Talon["+deviceNumber+"]");
+		System.out.println("Talon["+deviceNumber+"],  Speed= "+outputValue*direction*setValueMultiplier);
 		}else
 		{
 			talonInstance.set(outputValue);

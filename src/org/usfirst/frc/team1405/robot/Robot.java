@@ -2,12 +2,13 @@
 package org.usfirst.frc.team1405.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import cpi.BallHandler;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
 import cpi.Elevator;
+import cpi.Shooter;
 import cpi.XBox360;
 
 /**
@@ -21,8 +22,10 @@ public class Robot extends IterativeRobot {
     
 
    Drive drive;
+   Shooter shooter;
    Elevator elevator;
    XBox360 pilot;
+   BallHandler ball;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -37,12 +40,15 @@ public class Robot extends IterativeRobot {
     }
     void initialize(){
     	
-    	cpi.Preferences.initialize();
     	Autonomous.robotInit();
-    	drive= new Drive("Teleop Drive");
+    	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
+    	shooter= new Shooter("/Teleop Shooter");
+    	shooter.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
+    	ball = new BallHandler();
+    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     	
     }
     
@@ -61,7 +67,10 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	pilot.teleopPeriodic();
     	drive.TeleopPeriodic();
+    	shooter.teleopPeriodic();
+    	ball.TeleopPeriodic();
     }
     
     /**
