@@ -50,7 +50,7 @@ public class Drive {
 	rightTalon1 = new CANTalon(1);
 	rightTalon2 = new CANTalon(2);
 	leftTalon1 = new CANTalon(3);
-	leftTalon2 = new CANTalon(5);
+	leftTalon2 = new CANTalon(4);
 	
 //	rightHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #1",1);
 //	rightHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #2",2);
@@ -133,7 +133,13 @@ public class Drive {
 		  if(enableSecondMotors.Value())rightTalon2.set(right);
 		  leftTalon1.set(-left);//TODO fix this so it says leftTalon2, i think
 		  if(enableSecondMotors.Value())leftTalon2.set(-left);
-		  System.out.println("TANK MODE right: " + right + " left: " + left);
+		  //output motor current
+//		  System.out.println("RightTalon1: " + rightTalon1.getOutputCurrent());
+//		  System.out.println("RightTalon2: " + rightTalon2.getOutputCurrent());
+//		  System.out.println("LeftTalon1: " + leftTalon1.getOutputCurrent());
+//		  System.out.println("LeftTalon2: " + leftTalon2.getOutputCurrent());
+		  
+//		  System.out.println("TANK MODE right: " + right + " left: " + left);
 	}
 	
 //	public void hdriveMotors(double right,double left,double center){
@@ -169,7 +175,7 @@ public class Drive {
 	  break;
 		}
 		
-		System.out.println("motorgear: " + motorGear.Value() + " gear button pressed: " + gearButtonPressed);
+//		System.out.println("motorgear: " + motorGear.Value() + " gear button pressed: " + gearButtonPressed);
 		if(!motorGear.Value() && gearButtonPressed){
 			gearBoxToggle();
 		}

@@ -8,6 +8,7 @@ import cpi.BallHandler;
 //import cpi.CANTalon;
 import cpi.Drive;
 import cpi.Elevator;
+import cpi.Encoder;
 import cpi.Shooter;
 import cpi.XBox360;
 
@@ -20,7 +21,8 @@ import cpi.XBox360;
  */
 public class Robot extends IterativeRobot {
     
-
+	Encoder enc1;
+	Encoder enc3;
    Drive drive;
    Shooter shooter;
    Elevator elevator;
@@ -41,14 +43,19 @@ public class Robot extends IterativeRobot {
     void initialize(){
     	
     	Autonomous.robotInit();
+    	enc1 = new Encoder(1, true);
+    	enc1.robotInit();
+    	enc3 = new Encoder(3, false);
+    	enc3.robotInit();
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
     	shooter= new Shooter("/Teleop Shooter");
     	shooter.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
-    	ball = new BallHandler();
-    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
+    	ball = new BallHandler("/Ball Handler");
+    	ball.robotInit();
+//    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     	
     }
     
@@ -62,6 +69,11 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
     }
+    
+    public void teleopInit(){
+    	enc1.TeleopInit();
+    	enc3.TeleopInit();
+    }
 
     /**
      * This function is called periodically during operator control
@@ -71,6 +83,8 @@ public class Robot extends IterativeRobot {
     	drive.TeleopPeriodic();
     	shooter.teleopPeriodic();
     	ball.TeleopPeriodic();
+    	enc1.TeleopPeriodic();
+    	enc3.TeleopPeriodic();
     }
     
     /**

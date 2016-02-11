@@ -14,7 +14,6 @@ import java.util.Vector;
 import cpi.Interface.BooleanInput;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
-import edu.wpi.first.wpilibj.Timer;
 
 public class CANTalon extends edu.wpi.first.wpilibj.CANTalon {
 	
