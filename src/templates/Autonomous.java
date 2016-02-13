@@ -21,7 +21,6 @@ public class Autonomous extends AutonomousBase{//TODO look into this class, shou
 	 * Add a set name for all mode names eg. Set.addName(TOTE_NO_BUMP);
 	 */
 	public void RobotInit(){
-		AutoInputs.robotInit(); // Do not remove
 		AutoOutputs.robotInit();// Do not remove
 	}
 	

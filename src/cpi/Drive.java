@@ -1,6 +1,8 @@
 package cpi;
 
 
+import org.usfirst.frc.team1405.robot.Robot;
+
 import cpi.Interface.*;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
@@ -16,8 +18,12 @@ public class Drive {
 	static final String FRC_MECANUM="FRC Mecanum";
 	static final String FRC_HDRIVE="FRC H Drive";
 	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
+	static final double lowToHighGearThreshold = 200;
+	static final double highToLowGearThreshold = 100;
 	
-	static boolean gearBool = false;
+	private static final boolean HIGH_GEAR = true;
+	private static final boolean LOW_GEAR = false;
+	static boolean gearBool = LOW_GEAR;
 	static boolean gearButtonPressed = false;
 	
 	public Drive(String name){
@@ -47,6 +53,11 @@ public class Drive {
 //	leftTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_TANK,"Left Motor #1",3);
 //	leftTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_TANK,"Left Motor #2",5);
 	
+//	rightTalon1 = Shared_CANTalons.talonList.get(1);
+//	rightTalon2 = Shared_CANTalons.talonList.get(2);
+//	leftTalon1 = Shared_CANTalons.talonList.get(3);
+//	leftTalon2 = Shared_CANTalons.talonList.get(4);
+	
 	rightTalon1 = new CANTalon(1);
 	rightTalon2 = new CANTalon(2);
 	leftTalon1 = new CANTalon(3);
@@ -59,7 +70,7 @@ public class Drive {
 //	centerHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Center H Motor #1",5);;
 //	centerHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Center H Motor #2",6);;
 	/*
-	 * TODO Get rid of double semicolens.
+	 * TODO Get rid of double semicolons.
 	 */
 	solenoid1 = new Solenoid(0);
 	solenoid2 = new Solenoid(1);
@@ -128,10 +139,9 @@ public class Drive {
 //	}
 	
 	public void tankMotors(double right,double left){
-		
 		  rightTalon1.set(right);
 		  if(enableSecondMotors.Value())rightTalon2.set(right);
-		  leftTalon1.set(-left);//TODO fix this so it says leftTalon2, i think
+		  leftTalon1.set(-left);
 		  if(enableSecondMotors.Value())leftTalon2.set(-left);
 		  //output motor current
 //		  System.out.println("RightTalon1: " + rightTalon1.getOutputCurrent());
@@ -161,6 +171,18 @@ public class Drive {
 	}
 	
 	public void TeleopPeriodic(){
+//		System.out.println("right talon 1 output current: " +  rightTalon1.getOutputCurrent());
+		System.out.println("Average RPMs: " + Robot.enc1.getAverageRPMs(Robot.enc3));
+		if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
+				(Robot.enc1.getDirection()+Robot.enc3.getDirection()) != 0){
+			gearBoxToggle();
+		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
+				(Robot.enc1.getDirection()+Robot.enc3.getDirection()) != 0){
+			gearBoxToggle();
+		}
+		
+		System.out.println("Drive gear: " + gearBool);
+		
 		switch(mode.Value()){
 		case DIRECT_MECANUM:
 //			mecanumMotors( rightFrontMotor.Value(), rightRearMotor.Value(),leftFrontMotor.Value(),leftRearMotor.Value());
@@ -198,10 +220,10 @@ public class Drive {
 //  CANTalon rightRearTalon2;
 //  CANTalon leftRearTalon1;
 //  CANTalon leftRearTalon2;
-  CANTalon rightTalon1;
-  CANTalon rightTalon2;
-  CANTalon leftTalon1;
-  CANTalon leftTalon2;
+  public static CANTalon rightTalon1;
+  public static CANTalon rightTalon2;
+  public static CANTalon leftTalon1;
+  public static CANTalon leftTalon2;
 //  CANTalon rightHTalon1;
 //  CANTalon rightHTalon2;
 //  CANTalon leftHTalon1;

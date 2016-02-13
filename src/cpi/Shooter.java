@@ -22,7 +22,7 @@ public class Shooter {
 	
 	private final double SHOOTING_SPEED = 1.0;
 	private final double INTAKE_SPEED = 0.5;
-	private final String SHOOTER_MOTOR = "Shooter Motor";
+//	private final String SHOOTER_MOTOR = "Shooter Motor";
 	
 	public Shooter(String name){
 		this.name = name;

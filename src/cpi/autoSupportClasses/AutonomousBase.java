@@ -1,16 +1,16 @@
 package cpi.autoSupportClasses;
 
-import cpi.auto.AutoInputs;
+import org.usfirst.frc.team1405.robot.Robot;
 import cpi.auto.AutoOutputs;
 import cpi.auto.SuperClass;
 
-public class AutonomousBase {
+public class AutonomousBase {//TODO look into columnIndex vs rowIndex. should they be refactored to the other (it seems like it should go matrix[row][col] but we have matrix[col][row])
 	public static int columnIndex = 0;
 	public static int rowIndex = 0;
 	public static boolean columnInit = false; //has all the modes in the column been started yet?
 //	public static boolean[] checks; //an array storing the boolean values of all mode checks in the current row
 	public static SuperClass[][] autoStates = null;
-	public static String autoMode = "";//this should be set to "" or "default"
+	public static String autoMode = "simple_test";//this should be set to "" or "default"
 	
 	
 	
@@ -31,16 +31,17 @@ public class AutonomousBase {
 		columnIndex = 0;
 		rowIndex = 0;
 		columnInit = false;
+		AutoOutputs.robotInit();
 		AutoOutputs.setDriveBrake(true);
-		AutoInputs.myGyro.reset();
 	}
 	public static final void autonomousPeriodic() {
 		if(autoStates==null)return;
-		System.out.println("AutonomousPeriodic");
+		System.out.println("AutonomousPeriodic: " + autoMode);
 		if (columnIndex<autoStates.length){
 			if (!columnInit){
-				AutoInputs.myGyro.reset();
-				AutoInputs.resetEncoders();
+				//AutoInputs.myGyro.reset();
+				Robot.enc1.reset();
+				Robot.enc3.reset();
 				for (int i=0; i<autoStates[columnIndex].length; i++){
 					autoStates[columnIndex][i].start();
 				}
@@ -48,6 +49,9 @@ public class AutonomousBase {
 			}
 			else if(allChecksPassed()){
 				System.out.println("All checks passed - NEXT STATE");
+//				for(int i=0; i<autoStates[columnIndex].length; i++){
+//					autoStates[columnIndex][i].stop();
+//				}
 //				AutoInputs.myGyro.reset();
 				columnIndex++;
 				columnInit = false;

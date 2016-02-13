@@ -4,14 +4,13 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class GyroControl {
 	private AnalogGyro myGyro;
-	public GyroControl(int myChannel)
-	{	
-		if (myChannel == 0){ myGyro = AutoInputs.myGyro; }
+	public GyroControl(int myChannel){
+		myGyro = new AnalogGyro(myChannel);
 	}
 	
     public void Init(){
     	System.out.println("Gyro Init");
-        myGyro.reset();
+        
     }
     
     public void resetAll(){
@@ -25,9 +24,5 @@ public class GyroControl {
     
     public double getRate(){
     	return myGyro.getRate();
-    }
-    
-    public void free(){
-    	myGyro.free();
     }
 }

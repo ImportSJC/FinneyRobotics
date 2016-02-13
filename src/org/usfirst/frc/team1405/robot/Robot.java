@@ -11,6 +11,8 @@ import cpi.Elevator;
 import cpi.Encoder;
 import cpi.Shooter;
 import cpi.XBox360;
+import cpi.auto.Autonomous;
+import cpi.auto.GyroControl;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -21,20 +23,22 @@ import cpi.XBox360;
  */
 public class Robot extends IterativeRobot {
     
-	Encoder enc1;
-	Encoder enc3;
-   Drive drive;
-   Shooter shooter;
-   Elevator elevator;
-   XBox360 pilot;
-   BallHandler ball;
+	public static Encoder enc1;
+	public static Encoder enc3;
+	public static GyroControl gyroControl;
+	public static Drive drive;
+	Shooter shooter;
+	Elevator elevator;
+	XBox360 pilot;
+	BallHandler ball;
    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
 	
-	final static public String header="2016 Competition ver. 1.0"; // This is required
+	final static public String header="2016 Competition ver. 1.0"; // This is required	
+	public static double targetAngleDistance;
 	
     public void robotInit() {
     	
@@ -43,10 +47,11 @@ public class Robot extends IterativeRobot {
     void initialize(){
     	
     	Autonomous.robotInit();
-    	enc1 = new Encoder(1, true);
+    	enc1 = new Encoder(1, false);
     	enc1.robotInit();
-    	enc3 = new Encoder(3, false);
+    	enc3 = new Encoder(3, true);
     	enc3.robotInit();
+    	gyroControl = new GyroControl(0);
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
     	shooter= new Shooter("/Teleop Shooter");
@@ -61,6 +66,8 @@ public class Robot extends IterativeRobot {
     
     public void autonomousInit(){
     	Autonomous.autonomousInit();
+    	enc1.autoInit();
+    	enc3.autoInit();
     }
 
     /**
@@ -68,6 +75,8 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
+    	enc1.autoPeriodic();
+    	enc3.autoPeriodic();
     }
     
     public void teleopInit(){
@@ -103,6 +112,6 @@ public class Robot extends IterativeRobot {
     
     public void disabledPeriodic(){
     	pilot.teleopPeriodic();
-    	cpi.autoSupportClasses.Set.disabledPeriodic();
+//    	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
 }

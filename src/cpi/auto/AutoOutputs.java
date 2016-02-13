@@ -1,6 +1,6 @@
 package cpi.auto;
 
-import cpi.auto.tele.Drive;
+import org.usfirst.frc.team1405.robot.Robot;
 import cpi.auto.tele.Elevator;
 import edu.wpi.first.wpilibj.CANTalon;
 
@@ -21,11 +21,13 @@ public class AutoOutputs {
 	private static double driveSpeed = 0.0;
 	private static double turnSpeed = 0.0;
 	
+	private final static int SLOW_DOWN_ANGLE = 20;
+	
 	public static void robotInit(){
-		leftMotor1 = Drive.leftMotor1;
-		leftMotor2 = Drive.leftMotor2;
-		rightMotor1 = Drive.rightMotor1;
-		rightMotor2 = Drive.rightMotor2;
+		leftMotor1 = Robot.drive.leftTalon1;
+		leftMotor2 = Robot.drive.leftTalon2;
+		rightMotor1 = Robot.drive.rightTalon1;
+		rightMotor2 = Robot.drive.rightTalon2;
 		elevatorMotor1 = Elevator.elevatorMotor1;
 		elevatorMotor2 = Elevator.elevatorMotor2;
 	}
@@ -39,9 +41,9 @@ public class AutoOutputs {
 //				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
 				
 				//Drastic gyro assist (a faster correction)
-				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
-						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
-				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+//				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
+//						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
+//				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
 			}
 			else{
 				//Moderate gyro assist (not as fast of correction)
@@ -49,9 +51,9 @@ public class AutoOutputs {
 //				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
 				
 				//Drastic gyro assist (a faster correction)
-				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
-						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
-				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+//				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
+//						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
+//				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
 			}
 		}
 	}
@@ -85,6 +87,15 @@ public class AutoOutputs {
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
 		System.out.println("Drive Motors are assigned the drivespeed: " + drivingSpeed + " turnSpeed: " + turningSpeed);
+		
+		//TODO if drive speed is 0 and turnspeed != 0, slow the rotation as gyro nears target angle
+		//slow the turning of the robot down as it approaches the target angle
+//		if(drivingSpeed == 0 && turningSpeed != 0){
+//			if(Math.abs(Robot.targetAngleDistance)<SLOW_DOWN_ANGLE){
+//				
+//			}
+//		}
+		
 		leftMotor1.set(drivingSpeed+turningSpeed);
 		leftMotor2.set(drivingSpeed+turningSpeed);
 		rightMotor1.set(-drivingSpeed+turningSpeed);
@@ -121,25 +132,25 @@ public class AutoOutputs {
 		elevatorMotor2.set(speed);
 	}
 	
-	public static void rampTurn(double remainingAngle, double targetAngle){
-		//intelligently turn the robot smoothly into the target angle 
-		
-		//turn the robot slower until it reaches the target angle (remaining angle == 0)
-		System.out.println("Gyro Rate: " + AutoInputs.myGyro.getRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + turnSpeed);
-		if(Math.abs(AutoInputs.myGyro.getRate())<=20){
-			setDrive(driveSpeed, turnSpeed * 1.25);
-		}
-		
-		if(Math.abs(AutoInputs.myGyro.getRate())>=Math.abs(remainingAngle)){
-			setDrive(driveSpeed, turnSpeed * 0.75);
-		}
-		
-		//make sure the turnspeed never drops below a certain value
-		if(turnSpeed<=0 && turnSpeed>-0.085){setDrive(driveSpeed, -0.085);}
-		else if(turnSpeed>0 && turnSpeed<0.085){setDrive(driveSpeed, 0.085);}
-		
-		//make sure the robot doesnt over shoot the targetAngle
-		if( (targetAngle>0 && remainingAngle<0) ||
-			 targetAngle<0 && remainingAngle>0){setDrive(driveSpeed,-turnSpeed);}
-	}
+//	public static void rampTurn(double remainingAngle, double targetAngle){
+//		//intelligently turn the robot smoothly into the target angle 
+//		
+//		//turn the robot slower until it reaches the target angle (remaining angle == 0)
+//		System.out.println("Gyro Rate: " + AutoInputs.myGyro.getRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + turnSpeed);
+//		if(Math.abs(AutoInputs.myGyro.getRate())<=20){
+//			setDrive(driveSpeed, turnSpeed * 1.25);
+//		}
+//		
+//		if(Math.abs(AutoInputs.myGyro.getRate())>=Math.abs(remainingAngle)){
+//			setDrive(driveSpeed, turnSpeed * 0.75);
+//		}
+//		
+//		//make sure the turnspeed never drops below a certain value
+//		if(turnSpeed<=0 && turnSpeed>-0.085){setDrive(driveSpeed, -0.085);}
+//		else if(turnSpeed>0 && turnSpeed<0.085){setDrive(driveSpeed, 0.085);}
+//		
+//		//make sure the robot doesnt over shoot the targetAngle
+//		if( (targetAngle>0 && remainingAngle<0) ||
+//			 targetAngle<0 && remainingAngle>0){setDrive(driveSpeed,-turnSpeed);}
+//	}
 }
