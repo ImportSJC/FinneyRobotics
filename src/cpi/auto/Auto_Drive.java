@@ -1,6 +1,5 @@
 package cpi.auto;
 
-
 public class Auto_Drive extends SuperClass{
 	private double driveSpeed = 0;
 	private double turnSpeed = 0;
@@ -26,6 +25,12 @@ public class Auto_Drive extends SuperClass{
 			System.out.println("Starting Auto Drive");
 			startMotors(driveSpeed, turnSpeed);
 		}
+	}
+	
+	@Override
+	public boolean check(){
+		AutoOutputs.AutonomousPeriodic();
+		return true;
 	}
 	
 	@Override

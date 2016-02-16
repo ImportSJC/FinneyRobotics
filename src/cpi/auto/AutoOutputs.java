@@ -1,6 +1,8 @@
 package cpi.auto;
 
 import org.usfirst.frc.team1405.robot.Robot;
+
+import cpi.Drive;
 import cpi.auto.tele.Elevator;
 import edu.wpi.first.wpilibj.CANTalon;
 
@@ -22,40 +24,54 @@ public class AutoOutputs {
 	private static double turnSpeed = 0.0;
 	
 	private final static int SLOW_DOWN_ANGLE = 20;
+	private final static double SLOW_DOWN_SPEED = 0.5;
 	
 	public static void robotInit(){
-		leftMotor1 = Robot.drive.leftTalon1;
-		leftMotor2 = Robot.drive.leftTalon2;
-		rightMotor1 = Robot.drive.rightTalon1;
-		rightMotor2 = Robot.drive.rightTalon2;
+		leftMotor1 = Drive.leftTalon1;
+		leftMotor2 = Drive.leftTalon2;
+		rightMotor1 = Drive.rightTalon1;
+		rightMotor2 = Drive.rightTalon2;
 		elevatorMotor1 = Elevator.elevatorMotor1;
 		elevatorMotor2 = Elevator.elevatorMotor2;
 	}
 	
-	public void AutonomousPeriodic(){
+	public static void AutonomousPeriodic(){
 		
-		if(gyroAssist){
-			if (driveSpeed>=0){
-				//Moderate gyro assist (not as fast of correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
-//				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
-				
-				//Drastic gyro assist (a faster correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
-//						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
-//				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
-			}
-			else{
-				//Moderate gyro assist (not as fast of correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
-//				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
-				
-				//Drastic gyro assist (a faster correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
-//						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
-//				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+		//TODO if drive speed is 0 and turnspeed != 0, slow the rotation as gyro nears target angle
+//		slow the turning of the robot down as it approaches the target angle
+		System.out.println("Target Angle Distance: " + Robot.targetAngleDistance);
+		if(driveSpeed == 0 && turnSpeed != 0){
+			if(Math.abs(Robot.targetAngleDistance)<SLOW_DOWN_ANGLE){
+				System.out.println("Slowing down robot: " + turnSpeed*SLOW_DOWN_SPEED);
+				leftMotor1.set(turnSpeed*SLOW_DOWN_SPEED);
+				leftMotor2.set(turnSpeed*SLOW_DOWN_SPEED);
+				rightMotor1.set(turnSpeed*SLOW_DOWN_SPEED);
+				rightMotor2.set(turnSpeed*SLOW_DOWN_SPEED);
 			}
 		}
+		
+//		if(gyroAssist){
+//			if (driveSpeed>=0){
+//				//Moderate gyro assist (not as fast of correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
+////				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
+//				
+//				//Drastic gyro assist (a faster correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
+////						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
+////				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+//			}
+//			else{
+//				//Moderate gyro assist (not as fast of correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
+////				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
+//				
+//				//Drastic gyro assist (a faster correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
+////						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
+////				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+//			}
+//		}
 	}
 	
 	public static void setDriveBrake(boolean value){
@@ -87,14 +103,6 @@ public class AutoOutputs {
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
 		System.out.println("Drive Motors are assigned the drivespeed: " + drivingSpeed + " turnSpeed: " + turningSpeed);
-		
-		//TODO if drive speed is 0 and turnspeed != 0, slow the rotation as gyro nears target angle
-		//slow the turning of the robot down as it approaches the target angle
-//		if(drivingSpeed == 0 && turningSpeed != 0){
-//			if(Math.abs(Robot.targetAngleDistance)<SLOW_DOWN_ANGLE){
-//				
-//			}
-//		}
 		
 		leftMotor1.set(drivingSpeed+turningSpeed);
 		leftMotor2.set(drivingSpeed+turningSpeed);
