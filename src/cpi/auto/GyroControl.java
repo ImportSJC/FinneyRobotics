@@ -4,8 +4,16 @@ import edu.wpi.first.wpilibj.AnalogGyro;
 
 public class GyroControl {
 	private AnalogGyro myGyro;
+	
+	private boolean gyroLoaded = true;
 	public GyroControl(int myChannel){
-		myGyro = new AnalogGyro(myChannel);
+		try{
+			System.out.println("GYRO CONTROL CONSTRUCTOR");
+			myGyro = new AnalogGyro(myChannel);
+		}catch(Exception e){
+			System.out.println("Gyro " + myChannel + " failed to load!");
+			gyroLoaded = false;
+		}
 	}
 	
     public void Init(){
@@ -14,15 +22,22 @@ public class GyroControl {
     }
     
     public void resetAll(){
-		myGyro.reset();
+    	if(gyroLoaded){
+    		myGyro.reset();
+    	}
     }
     
-    public double getAngle()
-    {
-    	return myGyro.getAngle();
+    public double getAngle(){
+    	if(gyroLoaded){
+    		return myGyro.getAngle();
+    	}
+    	return 0;
     }
     
     public double getRate(){
-    	return myGyro.getRate();
+    	if(gyroLoaded){
+    		return myGyro.getRate();
+    	}
+    	return 0;
     }
 }

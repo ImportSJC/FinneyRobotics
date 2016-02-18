@@ -61,6 +61,6 @@ public class Autonomous extends AutonomousBase{
 	public static void simpleTest(){
 		autoStates = new SuperClass[][]{
 //				{new And( new Auto_Drive(0.1), new Encoder(10) )}
-			{new And( new Auto_Drive(0,0.3), new Gyroscope(90, 0) )} };
+			{new And( new Auto_Drive(0,0.5), new Gyroscope(90, 0) )} };
 	}
 }

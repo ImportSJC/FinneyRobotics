@@ -29,29 +29,29 @@ public class Robot extends IterativeRobot {
 	public static Drive drive;
 	Shooter shooter;
 	Elevator elevator;
-	XBox360 pilot;
+	public static XBox360 pilot;
 	BallHandler ball;
    
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-	
 	final static public String header="2016 Competition ver. 1.0"; // This is required	
 	public static double targetAngleDistance;
 	
     public void robotInit() {
-    	
     	initialize();
     }
+    
     void initialize(){
-    	
     	Autonomous.robotInit();
     	enc1 = new Encoder(1, false);
+//    	enc1 = new Encoder();
     	enc1.robotInit();
     	enc3 = new Encoder(3, true);
+//    	enc3 = new Encoder ();
     	enc3.robotInit();
-    	gyroControl = new GyroControl(0);
+    	gyroControl = new GyroControl(1);
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
     	shooter= new Shooter("/Teleop Shooter");
@@ -75,11 +75,13 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
+//    	System.out.println("Encoder turn: " + Math.abs(enc1.getRotation()-enc3.getRotation()));
     	enc1.autoPeriodic();
     	enc3.autoPeriodic();
     }
     
     public void teleopInit(){
+    	drive.TeleopInit();
     	enc1.TeleopInit();
     	enc3.TeleopInit();
     }

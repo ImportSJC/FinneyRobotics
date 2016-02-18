@@ -21,7 +21,7 @@ public class Shooter {
 	private CANTalon shooterTalon2;
 	
 	private final double SHOOTING_SPEED = 1.0;
-	private final double INTAKE_SPEED = 0.5;
+	private final double INTAKE_SPEED = 1.0;
 //	private final String SHOOTER_MOTOR = "Shooter Motor";
 	
 	public Shooter(String name){

@@ -15,20 +15,35 @@ public class Encoder {
 	private int cycleCounter = 0;//i timed the robot for 15 seconds and found that there are 50 cycles to a second use that to convert to rpms
 	private double currentRotation = 0; //rotation of the wheel used for measuring rpms
 	private double rpms = 0;
-	private int direction = 0;
+	
+	private boolean encoderLoaded = true;//make false when the encoder cant be loaded, ensures the robot stays functioning
+	
+	public Encoder(){
+		encoderLoaded = false;
+	}
 	
 	public Encoder(int CanID, boolean invert){
-		cant = new CANTalon(CanID);
-		this.invert = invert;
+		try{
+			cant = new CANTalon(CanID);
+			this.invert = invert;
+			cant.getPosition();
+		}catch(Exception e){
+			System.out.println("Encoder " + CanID + " failed to load!");
+			encoderLoaded = false;
+		}
 	}
 	
 	public void robotInit(){
-		cant.setPosition(0);
+		if(encoderLoaded){
+			cant.setPosition(0);
+		}
 	}
 	
 	public void autoInit(){
-		cycleCounter = 0;
-		cant.setPosition(0);
+		if(encoderLoaded){
+			cycleCounter = 0;
+			cant.setPosition(0);
+		}
 	}
 	
 	public void autoPeriodic(){
@@ -43,35 +58,41 @@ public class Encoder {
 	}
 	
 	public void TeleopInit(){
-		cycleCounter = 0;
-		cant.setPosition(0);
+		if(encoderLoaded){
+			cycleCounter = 0;
+			cant.setPosition(0);
+		}
 	}
 	
 	public void TeleopPeriodic(){
-//		System.out.println("encoder(" + canID + ") rotation: " + getRotation());
-		
-		//calculate rpms
-		if(cycleCounter<10){
-			cycleCounter++;
-		}else{
-			cycleCounter = 0;
-			rpms = (Math.max(Math.abs(currentRotation), Math.abs(getRotation()))-Math.min(Math.abs(currentRotation), Math.abs(getRotation())))*60*5;
-			currentRotation = getRotation();
+		if(encoderLoaded){
+			//calculate rpms
+			if(cycleCounter<10){
+				cycleCounter++;
+			}else{
+				cycleCounter = 0;
+				rpms = (Math.max(Math.abs(currentRotation), Math.abs(getRotation()))-Math.min(Math.abs(currentRotation), Math.abs(getRotation())))*60*5;
+				currentRotation = getRotation();
+			}
+	//		System.out.println("RPMs: " + rpms);
 		}
-		direction = (int)(getRotation()-currentRotation);
-//		System.out.println("RPMs: " + rpms);
 	}
 	
 	public void reset(){
-		cant.setPosition(0);
+		if(encoderLoaded){
+			cant.setPosition(0);
+		}
 	}
 	
 	public double getRotation(){
-		if(invert){
-			return(-cant.getPosition()/1024)*0.54;
-		}else{
-			return(cant.getPosition()/1024)*0.54;
+		if(encoderLoaded){
+			if(invert){
+				return(-cant.getPosition()/1024)*0.54;
+			}else{
+				return(cant.getPosition()/1024)*0.54;
+			}
 		}
+		return 0;
 	}
 	
 	/**
@@ -79,7 +100,10 @@ public class Encoder {
 	 * @return
 	 */
 	public double getDistance(){
-		return(getRotation()*WHEEL_CIRCUMFERENCE);
+		if(!encoderLoaded){
+			return(getRotation()*WHEEL_CIRCUMFERENCE);
+		}
+		return 0;
 	}
 	
 	public double getAverageRotation(Encoder enc2){
@@ -105,22 +129,5 @@ public class Encoder {
 	
 	public double getAverageRPMs(Encoder enc2){
 		return(getRPMs()+enc2.getRPMs())/2;
-	}
-	
-	/**
-	 * Return the direction the encoder is turning. Used to not shift while turning
-	 * @return 1 when rotating forward, -1 when rotating backwards (invert is applied)
-	 */
-	public int getDirection(){
-		if(direction>0 && !invert){
-			return 1;
-		}else if(direction>0 && invert){
-			return -1;
-		}else if(direction<0 && !invert){
-			return -1;
-		}else if(direction<0 && invert){
-			return 1;
-		}
-		return 0;
 	}
 }

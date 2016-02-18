@@ -13,6 +13,12 @@ public class Gyroscope extends SuperClass{
 	
 	GyroControl myGyro;
 	
+	private boolean gyroLoaded = true;
+	
+	public Gyroscope(){
+		gyroLoaded = false;
+	}
+	
 	public Gyroscope(double targetAngle, int channel){
 		this.targetAngle = targetAngle;
 		this.channel = channel;
@@ -29,24 +35,30 @@ public class Gyroscope extends SuperClass{
 	
 	@Override
 	public void start(){
-		System.out.println("GYRO INSTANTIATED");
-		myGyro = new GyroControl(channel);
-		myGyro.Init();
-		myGyro.resetAll();
+		if(gyroLoaded){
+			try{
+				System.out.println("GYRO INSTANTIATED");
+				myGyro = Robot.gyroControl;
+//				myGyro = new GyroControl(channel);
+				myGyro.Init();
+				myGyro.resetAll();
+			}catch(Exception e){
+				System.out.println("Gyro " + channel + " failed to load!");
+				gyroLoaded = false;
+			}
+		}
 	}
 	
-	@Override 
+	@Override
 	public boolean check(){
-		Robot.targetAngleDistance = Math.abs(targetAngle - myGyro.getAngle());
-		System.out.println("Gyro Angle: " + myGyro.getAngle());
-		
-//		if (targetAngle/2<=myGyro.getAngle()){
-//		AutoOutputs.rampTurn(targetAngle-myGyro.getAngle(), targetAngle);
-//		}
-		
-		//stop once it hits the target angle and its not moving fast
-		if(targetAngle>0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}
-		else if(targetAngle<0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}
+		if(gyroLoaded){
+			Robot.targetAngleDistance = Math.abs(targetAngle - myGyro.getAngle());
+			System.out.println("Gyro Angle: " + myGyro.getAngle());
+			
+			//stop once it hits the target angle and its not moving fast
+			if(targetAngle>0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}
+			else if(targetAngle<0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}
+		}
 		return false;
 	}
 }
