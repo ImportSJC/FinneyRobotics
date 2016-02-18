@@ -18,11 +18,11 @@ public class Drive {
 	static final String FRC_MECANUM="FRC Mecanum";
 	static final String FRC_HDRIVE="FRC H Drive";
 	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
-	static final double lowToHighGearThreshold = 200;
-	static final double highToLowGearThreshold = 100;
+	static final double lowToHighGearThreshold = 110;
+	static final double highToLowGearThreshold = 80;
 	
-	private static final boolean HIGH_GEAR = true;
-	private static final boolean LOW_GEAR = false;
+	private static final boolean HIGH_GEAR = false;
+	private static final boolean LOW_GEAR = true;
 	static boolean gearBool = LOW_GEAR;
 	static boolean gearButtonPressed = false;
 	
@@ -58,10 +58,10 @@ public class Drive {
 //	leftTalon1 = Shared_CANTalons.talonList.get(3);
 //	leftTalon2 = Shared_CANTalons.talonList.get(4);
 	
-	rightTalon1 = new CANTalon(1);
-	rightTalon2 = new CANTalon(2);
-	leftTalon1 = new CANTalon(3);
-	leftTalon2 = new CANTalon(4);
+	rightTalon1 = new CANTalon(3);
+	rightTalon2 = new CANTalon(4);
+	leftTalon1 = new CANTalon(1);
+	leftTalon2 = new CANTalon(2);
 	
 //	rightHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #1",1);
 //	rightHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #2",2);
@@ -170,14 +170,20 @@ public class Drive {
 		System.out.println("gear box toggled: " + gearBool);
 	}
 	
+	public void TeleopInit(){
+		if(gearBool == HIGH_GEAR){
+			gearBoxToggle();
+		}
+	}
+	
 	public void TeleopPeriodic(){
 //		System.out.println("right talon 1 output current: " +  rightTalon1.getOutputCurrent());
 		System.out.println("Average RPMs: " + Robot.enc1.getAverageRPMs(Robot.enc3));
 		if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
-				(Robot.enc1.getDirection()+Robot.enc3.getDirection()) != 0){
+				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
 			gearBoxToggle();
 		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
-				(Robot.enc1.getDirection()+Robot.enc3.getDirection()) != 0){
+				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
 			gearBoxToggle();
 		}
 		

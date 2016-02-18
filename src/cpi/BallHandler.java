@@ -10,10 +10,10 @@ public class BallHandler {
 	CANTalon motor;
 	Solenoid pneumatic1;
 	Solenoid pneumatic2;
-	static final int MOTOR_DEVICE_NUMBER = 7;
+	static final int MOTOR_DEVICE_NUMBER = 11;
 	static final int PNEUMATICS_DEVICE_NUMBER1 = 2;
 	static final int PNEUMATICS_DEVICE_NUMBER2 = 3;
-	static final double MOTOR_SPEED = 0.5;
+	static final double MOTOR_SPEED = 1.0;
 	
 	static final double SHOOTING_TIMER = 3; //not in seconds
 	double currentTimer = 0;
