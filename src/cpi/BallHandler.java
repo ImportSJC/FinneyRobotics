@@ -15,8 +15,11 @@ public class BallHandler {
 	static final int PNEUMATICS_DEVICE_NUMBER2 = 3;
 	static final double MOTOR_SPEED = 1.0;
 	
-	static final double SHOOTING_TIMER = 3; //not in seconds
-	double currentTimer = 0;
+	static final double SHOOTING_TIMER = 0.2*50; //format (x*50) where x = number of seconds
+	double currentTimer = -100;//the -100 is a magic number indicating that none of the shoot/intake buttons are being pushed
+	
+//	static final double SHOOTING_TIMER_2 = 1*50; //format (x*50) where x = number of seconds
+//	double currentTimer2 = 0;
 	
 	static final String BALL_GRABBER_INTERFACE = "XBox360-Pilot: Left Trigger";
 	static final String BALL_SHOOTER_INTERFACE = "XBox360-Pilot: Right Trigger";
@@ -55,37 +58,65 @@ public class BallHandler {
 	{
 		intakeButtonPressed = intake.Value() > 0.5;
 		shootButtonPressed = shoot.Value() > 0.5;
-		if(intakeButtonPressed){
+		
+		if(allRollersIn.Value()){
+			currentTimer = -100;
+			motor.set(MOTOR_SPEED);
+			debug = MOTOR_SPEED;
+		}else if(allRollersOut.Value()){
+			currentTimer = -100;
+			motor.set(-MOTOR_SPEED);
+			debug = -MOTOR_SPEED;
+		}else if(intakeButtonPressed){
+			currentTimer = -100;
 			motor.set(MOTOR_SPEED);
 			debug = MOTOR_SPEED;
 			pneumatic1.set(EXTEND);
 			pneumatic2.set(RETRACT);
 		}else if(shootButtonPressed){
-			motor.set(-MOTOR_SPEED);
-			debug = -MOTOR_SPEED;
+//			motor.set(-MOTOR_SPEED);
+//			debug = -MOTOR_SPEED;
+			if(currentTimer == -100){
+				currentTimer = SHOOTING_TIMER;
+			}
 			pneumatic1.set(RETRACT);
 			pneumatic2.set(EXTEND);
-			currentTimer = SHOOTING_TIMER;
-		}else if(currentTimer > 0){
-			//dont stop the motors
-			motor.set(-MOTOR_SPEED);
-			debug = -MOTOR_SPEED;
 		}else{
+			currentTimer = -100;
 			motor.set(0);
 			debug = 0;
+			
 			pneumatic1.set(RETRACT);
 			pneumatic2.set(EXTEND);
+		}
+		
+		if(currentTimer <= 0 && currentTimer > -100){
+//			currentTimer2 = SHOOTING_TIMER_2;
+			motor.set(-MOTOR_SPEED);
+			debug = -MOTOR_SPEED;
 		}
 		
 		if(currentTimer>0){
-			currentTimer-=0.1;
-		}else if(currentTimer < 0){
-			currentTimer = 0;
+			currentTimer-=1;
 		}
 		
-//		System.out.println("debug: " + debug);
+//		if(currentTimer2 > 0){
+//			motor.set(-MOTOR_SPEED);
+//			debug = -MOTOR_SPEED;
+//		}else{
+//			motor.set(0);
+//			debug = 0;
+//		}
+		
+//		if(currentTimer2>0){
+//			currentTimer2-=1;
+//		}else if(currentTimer2 < 0){
+//			currentTimer2 = 0;
+//		}
+		
+		System.out.println("debug: " + debug);
 //		System.out.println("pneumatic: " + pneumatic1.get());
-//		System.out.println("current timer: " + currentTimer);
+		System.out.println("current timer: " + currentTimer);
 	}
 	
 	public void Autonomous()

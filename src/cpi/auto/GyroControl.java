@@ -1,17 +1,17 @@
 package cpi.auto;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class GyroControl {
-	private AnalogGyro myGyro;
+	private ADXRS450_Gyro myGyro;
 	
 	private boolean gyroLoaded = true;
-	public GyroControl(int myChannel){
+	public GyroControl(){
 		try{
+			myGyro = new ADXRS450_Gyro();
 			System.out.println("GYRO CONTROL CONSTRUCTOR");
-			myGyro = new AnalogGyro(myChannel);
 		}catch(Exception e){
-			System.out.println("Gyro " + myChannel + " failed to load!");
+			System.out.println("Onboard Gyro failed to load!");
 			gyroLoaded = false;
 		}
 	}
@@ -21,7 +21,7 @@ public class GyroControl {
         
     }
     
-    public void resetAll(){
+    public void reset(){
     	if(gyroLoaded){
     		myGyro.reset();
     	}
@@ -39,5 +39,9 @@ public class GyroControl {
     		return myGyro.getRate();
     	}
     	return 0;
+    }
+    
+    public void free(){
+    	myGyro.free();
     }
 }

@@ -21,8 +21,8 @@ public class Drive {
 	static final double lowToHighGearThreshold = 110;
 	static final double highToLowGearThreshold = 80;
 	
-	private static final boolean HIGH_GEAR = false;
-	private static final boolean LOW_GEAR = true;
+	private static final boolean HIGH_GEAR = true;
+	private static final boolean LOW_GEAR = false;
 	static boolean gearBool = LOW_GEAR;
 	static boolean gearButtonPressed = false;
 	
@@ -179,13 +179,14 @@ public class Drive {
 	public void TeleopPeriodic(){
 //		System.out.println("right talon 1 output current: " +  rightTalon1.getOutputCurrent());
 		System.out.println("Average RPMs: " + Robot.enc1.getAverageRPMs(Robot.enc3));
-		if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
-				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
-			gearBoxToggle();
-		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
-				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
-			gearBoxToggle();
-		}
+		//TODO add a boolean to remove/enable auto shifting
+//		if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
+//				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
+//			gearBoxToggle();
+//		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
+//				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
+//			gearBoxToggle();
+//		}
 		
 		System.out.println("Drive gear: " + gearBool);
 		

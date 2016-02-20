@@ -38,10 +38,10 @@ public class Gyroscope extends SuperClass{
 		if(gyroLoaded){
 			try{
 				System.out.println("GYRO INSTANTIATED");
-				myGyro = Robot.gyroControl;
+				myGyro = Robot.gyro;
 //				myGyro = new GyroControl(channel);
 				myGyro.Init();
-				myGyro.resetAll();
+				myGyro.reset();
 			}catch(Exception e){
 				System.out.println("Gyro " + channel + " failed to load!");
 				gyroLoaded = false;

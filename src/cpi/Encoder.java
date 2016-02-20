@@ -27,7 +27,7 @@ public class Encoder {
 			cant = new CANTalon(CanID);
 			this.invert = invert;
 			cant.getPosition();
-		}catch(Exception e){
+		}catch(Exception e){//TODO fix this catch statement, it doens't catch the can talon transmit error since its not being thrown
 			System.out.println("Encoder " + CanID + " failed to load!");
 			encoderLoaded = false;
 		}
@@ -100,7 +100,7 @@ public class Encoder {
 	 * @return
 	 */
 	public double getDistance(){
-		if(!encoderLoaded){
+		if(encoderLoaded){
 			return(getRotation()*WHEEL_CIRCUMFERENCE);
 		}
 		return 0;

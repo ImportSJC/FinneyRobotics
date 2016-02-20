@@ -25,7 +25,7 @@ public class Robot extends IterativeRobot {
     
 	public static Encoder enc1;
 	public static Encoder enc3;
-	public static GyroControl gyroControl;
+	public static GyroControl gyro;
 	public static Drive drive;
 	Shooter shooter;
 	Elevator elevator;
@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
     	enc3 = new Encoder(3, true);
 //    	enc3 = new Encoder ();
     	enc3.robotInit();
-    	gyroControl = new GyroControl(1);
+    	gyro = new GyroControl();
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
     	shooter= new Shooter("/Teleop Shooter");
@@ -84,6 +84,7 @@ public class Robot extends IterativeRobot {
     	drive.TeleopInit();
     	enc1.TeleopInit();
     	enc3.TeleopInit();
+    	gyro.reset();
     }
 
     /**
@@ -96,13 +97,16 @@ public class Robot extends IterativeRobot {
     	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
+    	System.out.println("Gyro Angle: " + gyro.getAngle());
     }
     
     /**
      * This function is called periodically during test mode
      */
     public void disabledInit(){
+    	gyro.free();
     }
+    
     public void testInit(){
     	LiveWindow.setEnabled(false);
     	cpi.CANTalon.testInit();
