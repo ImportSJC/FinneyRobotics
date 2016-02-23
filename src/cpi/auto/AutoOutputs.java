@@ -3,7 +3,6 @@ package cpi.auto;
 import org.usfirst.frc.team1405.robot.Robot;
 
 import cpi.Drive;
-import cpi.auto.tele.Elevator;
 import edu.wpi.first.wpilibj.CANTalon;
 
 public class AutoOutputs {
@@ -31,8 +30,6 @@ public class AutoOutputs {
 		leftMotor2 = Drive.leftTalon2;
 		rightMotor1 = Drive.rightTalon1;
 		rightMotor2 = Drive.rightTalon2;
-		elevatorMotor1 = Elevator.elevatorMotor1;
-		elevatorMotor2 = Elevator.elevatorMotor2;
 	}
 	
 	public static void AutonomousPeriodic(){

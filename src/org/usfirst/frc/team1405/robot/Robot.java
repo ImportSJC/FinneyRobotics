@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team1405.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import cpi.BallHandler;
@@ -26,6 +27,7 @@ public class Robot extends IterativeRobot {
 	public static Encoder enc1;
 	public static Encoder enc3;
 	public static GyroControl gyro;
+//	public static ADXRS450_Gyro gyro;
 	public static Drive drive;
 	Shooter shooter;
 	Elevator elevator;
@@ -45,13 +47,14 @@ public class Robot extends IterativeRobot {
     
     void initialize(){
     	Autonomous.robotInit();
-    	enc1 = new Encoder(1, false);
-//    	enc1 = new Encoder();
+//    	enc1 = new Encoder(1, false);
+    	enc1 = new Encoder();
     	enc1.robotInit();
-    	enc3 = new Encoder(3, true);
-//    	enc3 = new Encoder ();
+//    	enc3 = new Encoder(3, true);
+    	enc3 = new Encoder ();
     	enc3.robotInit();
-    	gyro = new GyroControl();
+    	gyro = new GyroControl(1);
+//    	gyro = new ADXRS450_Gyro();
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
     	shooter= new Shooter("/Teleop Shooter");
@@ -61,11 +64,11 @@ public class Robot extends IterativeRobot {
     	ball = new BallHandler("/Ball Handler");
     	ball.robotInit();
 //    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
-    	
     }
     
     public void autonomousInit(){
     	Autonomous.autonomousInit();
+    	gyro.reset();
     	enc1.autoInit();
     	enc3.autoInit();
     }
@@ -76,8 +79,6 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
 //    	System.out.println("Encoder turn: " + Math.abs(enc1.getRotation()-enc3.getRotation()));
-    	enc1.autoPeriodic();
-    	enc3.autoPeriodic();
     }
     
     public void teleopInit(){
@@ -97,6 +98,7 @@ public class Robot extends IterativeRobot {
     	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
+    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
     	System.out.println("Gyro Angle: " + gyro.getAngle());
     }
     
@@ -104,7 +106,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void disabledInit(){
-    	gyro.free();
+//    	gyro.free();
     }
     
     public void testInit(){

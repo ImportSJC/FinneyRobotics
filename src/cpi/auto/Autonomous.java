@@ -55,12 +55,18 @@ public class Autonomous extends AutonomousBase{
 	/** Drive forward over the basic defense in front of the robot (lowbar, rough terrain etc) */
 	public static void crossBasicDefense(){
 		autoStates = new SuperClass[][]{
-				{new And( new Auto_Drive(AutoValues.speed_drive), new Time(10) )} };
+			{new And( new Auto_Drive(AutoValues.speed_drive), new Auto_Encoder(AutoValues.distance_toAlignmentLine) )} };
+	}
+	
+	/** Drive forward over the basic defense in front of the robot (lowbar, rough terrain etc) */
+	public static void shootLowBar(){
+		autoStates = new SuperClass[][]{
+			{new And( new Auto_Drive(AutoValues.speed_drive), new Auto_Encoder(AutoValues.distance_toAlignmentLine) )},
+			{new And( new Auto_Drive(AutoValues.speed_drive), new Auto_Encoder(AutoValues.distance_toAlignmentLine) )} };
 	}
 	
 	public static void simpleTest(){
 		autoStates = new SuperClass[][]{
-//				{new And( new Auto_Drive(0.1), new Encoder(10) )}
-			{new And( new Auto_Drive(0,0.5), new Gyroscope(90, 0) )} };
+			{new And( new Auto_Drive(0,0.7), new Gyroscope(90, 1) )} };
 	}
 }

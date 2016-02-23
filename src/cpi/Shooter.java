@@ -35,8 +35,8 @@ public class Shooter {
 //		shooterTalon1 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #1", 1);
 //		shooterTalon2 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #2", 2);
 		
-		shooterTalon1 = new CANTalon(9);
-		shooterTalon2 = new CANTalon(10);
+		shooterTalon1 = new CANTalon(10);
+		shooterTalon2 = new CANTalon(9);
 	}
 	
 	public void robotInit(){

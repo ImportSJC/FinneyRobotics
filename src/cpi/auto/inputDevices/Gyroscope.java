@@ -3,6 +3,7 @@ package cpi.auto.inputDevices;
 import org.usfirst.frc.team1405.robot.Robot;
 import cpi.auto.GyroControl;
 import cpi.auto.SuperClass;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
 public class Gyroscope extends SuperClass{
 	private double targetAngle;
@@ -12,6 +13,7 @@ public class Gyroscope extends SuperClass{
 	private double marginOfError;//the degrees of acceptable error
 	
 	GyroControl myGyro;
+//	ADXRS450_Gyro myGyro;
 	
 	private boolean gyroLoaded = true;
 	
@@ -22,7 +24,7 @@ public class Gyroscope extends SuperClass{
 	public Gyroscope(double targetAngle, int channel){
 		this.targetAngle = targetAngle;
 		this.channel = channel;
-		this.targetRate = 10;
+		this.targetRate = 70;
 		this.marginOfError = 5;
 	}
 	
@@ -35,13 +37,11 @@ public class Gyroscope extends SuperClass{
 	
 	@Override
 	public void start(){
+		gyroLoaded = GyroControl.gyroLoaded;
 		if(gyroLoaded){
 			try{
 				System.out.println("GYRO INSTANTIATED");
 				myGyro = Robot.gyro;
-//				myGyro = new GyroControl(channel);
-				myGyro.Init();
-				myGyro.reset();
 			}catch(Exception e){
 				System.out.println("Gyro " + channel + " failed to load!");
 				gyroLoaded = false;
@@ -54,6 +54,7 @@ public class Gyroscope extends SuperClass{
 		if(gyroLoaded){
 			Robot.targetAngleDistance = Math.abs(targetAngle - myGyro.getAngle());
 			System.out.println("Gyro Angle: " + myGyro.getAngle());
+			System.out.println("Gyro Angle: " + myGyro.getRate());
 			
 			//stop once it hits the target angle and its not moving fast
 			if(targetAngle>0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}

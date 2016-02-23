@@ -34,12 +34,14 @@ public class AutonomousBase {//TODO look into columnIndex vs rowIndex. should th
 		AutoOutputs.robotInit();
 		AutoOutputs.setDriveBrake(true);
 	}
+	
 	public static final void autonomousPeriodic() {
 		if(autoStates==null)return;
 		System.out.println("AutonomousPeriodic: " + autoMode);
 		if (columnIndex<autoStates.length){
 			if (!columnInit){
 				//AutoInputs.myGyro.reset();
+				System.out.println("RESETTING ENCODERS");
 				Robot.enc1.reset();
 				Robot.enc3.reset();
 				for (int i=0; i<autoStates[columnIndex].length; i++){
