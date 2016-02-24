@@ -43,7 +43,7 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-	final static public String header="2016 Competition ver. 1.0"; // This is required	
+	final static public String header="2016 Competition ver. 2.0"; // This is required	
 	public static double targetAngleDistance;
 	
     public void robotInit() {
