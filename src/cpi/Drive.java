@@ -1,13 +1,11 @@
 package cpi;
 
-
 import org.usfirst.frc.team1405.robot.Robot;
 
 import cpi.Interface.*;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.CANTalon;
 
 
 public class Drive {
@@ -18,13 +16,17 @@ public class Drive {
 	static final String FRC_MECANUM="FRC Mecanum";
 	static final String FRC_HDRIVE="FRC H Drive";
 	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
-	static final double lowToHighGearThreshold = 110;
-	static final double highToLowGearThreshold = 80;
+	static final double lowToHighGearThreshold = 200;
+	static final double highToLowGearThreshold = 150;
 	
 	private static final boolean HIGH_GEAR = true;
 	private static final boolean LOW_GEAR = false;
 	static boolean gearBool = LOW_GEAR;
 	static boolean gearButtonPressed = false;
+	
+	private double shiftingTimer = 0;//timer to turn down the motor power to 40% a quarter second before shifting gears
+	private static final double SHIFTING_TIME = 0.25*50;//time to turn down the motor power before shifting: [secs]*50
+	
 	
 	public Drive(String name){
 	this.name=name;
@@ -58,10 +60,10 @@ public class Drive {
 //	leftTalon1 = Shared_CANTalons.talonList.get(3);
 //	leftTalon2 = Shared_CANTalons.talonList.get(4);
 	
-	rightTalon1 = new CANTalon(3);
-	rightTalon2 = new CANTalon(4);
-	leftTalon1 = new CANTalon(1);
-	leftTalon2 = new CANTalon(2);
+	rightTalon1 = new CANTalonControl(3);
+	rightTalon2 = new CANTalonControl(4);
+	leftTalon1 = new CANTalonControl(1);
+	leftTalon2 = new CANTalonControl(2);
 	
 //	rightHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #1",1);
 //	rightHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #2",2);
@@ -162,6 +164,22 @@ public class Drive {
 //		  
 //	}
 	
+	public void initGearBoxToggle(){
+		if(shiftingTimer <= 0){
+			shiftingTimer = SHIFTING_TIME;
+		}
+	}
+	
+	public void updateGearBoxToggle(){
+		if(shiftingTimer > 0){
+			 shiftingTimer--;
+			 if(shiftingTimer <= 0){
+				 gearBoxToggle();
+				 shiftingTimer = 0;
+			 }
+		 }
+	}
+	
 	public void gearBoxToggle (){
 		gearButtonPressed = false;
 		gearBool = !gearBool;
@@ -177,16 +195,31 @@ public class Drive {
 	}
 	
 	public void TeleopPeriodic(){
+		updateGearBoxToggle();
 //		System.out.println("right talon 1 output current: " +  rightTalon1.getOutputCurrent());
 		System.out.println("Average RPMs: " + Robot.enc1.getAverageRPMs(Robot.enc3));
+		System.out.println("joysticks left: " + leftMotor.Value() + " right: " + rightMotor.Value());
 		//TODO add a boolean to remove/enable auto shifting
-//		if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
-//				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
-//			gearBoxToggle();
-//		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
-//				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
-//			gearBoxToggle();
-//		}
+		if((leftMotor.Value()>0 && rightMotor.Value()<0) || (leftMotor.Value()<0 && rightMotor.Value()>0)){
+			System.out.println("if statement 1");
+			if(gearBool == HIGH_GEAR){
+				initGearBoxToggle();
+			}
+		}else if((Robot.enc1.getDirection()>0 && Robot.enc3.getDirection()>0 && leftMotor.Value()>0 && rightMotor.Value()>0) ||
+				(Robot.enc1.getDirection()<0 && Robot.enc3.getDirection()<0 && leftMotor.Value()<0 && rightMotor.Value()<0)){
+			System.out.println("if statement 2");
+			if(gearBool == HIGH_GEAR){
+				initGearBoxToggle();
+			}
+		}else if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
+				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
+			System.out.println("if statement 3");
+			initGearBoxToggle();
+		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
+				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
+			System.out.println("if statement 4");
+			initGearBoxToggle();
+		}
 		
 		System.out.println("Drive gear: " + gearBool);
 		
@@ -206,7 +239,7 @@ public class Drive {
 		
 //		System.out.println("motorgear: " + motorGear.Value() + " gear button pressed: " + gearButtonPressed);
 		if(!motorGear.Value() && gearButtonPressed){
-			gearBoxToggle();
+			initGearBoxToggle();
 		}
 		gearButtonPressed = motorGear.Value();
 	}
@@ -227,10 +260,10 @@ public class Drive {
 //  CANTalon rightRearTalon2;
 //  CANTalon leftRearTalon1;
 //  CANTalon leftRearTalon2;
-  public static CANTalon rightTalon1;
-  public static CANTalon rightTalon2;
-  public static CANTalon leftTalon1;
-  public static CANTalon leftTalon2;
+  public static CANTalonControl rightTalon1;
+  public static CANTalonControl rightTalon2;
+  public static CANTalonControl leftTalon1;
+  public static CANTalonControl leftTalon2;
 //  CANTalon rightHTalon1;
 //  CANTalon rightHTalon2;
 //  CANTalon leftHTalon1;

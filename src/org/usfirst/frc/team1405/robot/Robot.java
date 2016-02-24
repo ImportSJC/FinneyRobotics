@@ -2,9 +2,11 @@
 package org.usfirst.frc.team1405.robot;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import cpi.BallHandler;
+import cpi.BallRetain;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
@@ -28,11 +30,14 @@ public class Robot extends IterativeRobot {
 	public static Encoder enc3;
 	public static GyroControl gyro;
 //	public static ADXRS450_Gyro gyro;
+//	public static AnalogInput ultra; 
 	public static Drive drive;
 	Shooter shooter;
 	Elevator elevator;
 	public static XBox360 pilot;
 	BallHandler ball;
+	
+	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
    
     /**
      * This function is run when the robot is first started up and should be
@@ -47,14 +52,15 @@ public class Robot extends IterativeRobot {
     
     void initialize(){
     	Autonomous.robotInit();
-//    	enc1 = new Encoder(1, false);
-    	enc1 = new Encoder();
+    	enc1 = new Encoder(1, false);
+//    	enc1 = new Encoder();
     	enc1.robotInit();
-//    	enc3 = new Encoder(3, true);
-    	enc3 = new Encoder ();
+    	enc3 = new Encoder(3, true);
+//    	enc3 = new Encoder ();
     	enc3.robotInit();
-    	gyro = new GyroControl(1);
+    	gyro = new GyroControl(1);//TODO change back to 1
 //    	gyro = new ADXRS450_Gyro();
+//    	ultra = new AnalogInput(1);
     	drive= new Drive("/Teleop Drive");
     	drive.robotInit();
     	shooter= new Shooter("/Teleop Shooter");
@@ -63,12 +69,14 @@ public class Robot extends IterativeRobot {
     	pilot.robotInit();
     	ball = new BallHandler("/Ball Handler");
     	ball.robotInit();
+    	BallRetain.robotInit();
 //    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     }
     
     public void autonomousInit(){
     	Autonomous.autonomousInit();
     	gyro.reset();
+//    	ultra.resetAccumulator();
     	enc1.autoInit();
     	enc3.autoInit();
     }
@@ -86,6 +94,8 @@ public class Robot extends IterativeRobot {
     	enc1.TeleopInit();
     	enc3.TeleopInit();
     	gyro.reset();
+    	BallRetain.telopInit();
+//    	ultra.resetAccumulator();
     }
 
     /**
@@ -94,12 +104,14 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	pilot.teleopPeriodic();
     	drive.TeleopPeriodic();
+    	BallRetain.telopPeriodic();
     	shooter.teleopPeriodic();
     	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
-    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
-    	System.out.println("Gyro Angle: " + gyro.getAngle());
+//    	System.out.println("Ultrasonic: " + ultra.getAccumulatorCount());
+//    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
+//    	System.out.println("Gyro Angle: " + gyro.getAngle());
     }
     
     /**
@@ -107,6 +119,7 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
 //    	gyro.free();
+//    	ultra.free();
     }
     
     public void testInit(){

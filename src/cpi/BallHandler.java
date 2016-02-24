@@ -1,13 +1,12 @@
 package cpi;
 import cpi.Interface.*;
-import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class BallHandler {
 	DoubleInput intake;
 	DoubleInput shoot;
 	BooleanInput intakeSolenoid;
-	CANTalon motor;
+	CANTalonControl motor;
 	Solenoid pneumatic1;
 	Solenoid pneumatic2;
 	static final int MOTOR_DEVICE_NUMBER = 11;
@@ -42,7 +41,7 @@ public class BallHandler {
 		shoot = new DoubleInput(name, "Shoot", BALL_SHOOTER_INTERFACE);
 		intakeSolenoid = new BooleanInput(name, "Intake Solenoid", "XBox360-Pilot:Right Bumper");
 		
-		motor = new CANTalon(MOTOR_DEVICE_NUMBER);
+		motor = new CANTalonControl(MOTOR_DEVICE_NUMBER);
 		pneumatic1 = new Solenoid(PNEUMATICS_DEVICE_NUMBER1);
 		pneumatic2 = new Solenoid(PNEUMATICS_DEVICE_NUMBER2);
 		allRollersIn = new BooleanInput(name, "All Rollers In", "XBox360-Pilot:A Button");
@@ -81,6 +80,12 @@ public class BallHandler {
 			}
 			pneumatic1.set(RETRACT);
 			pneumatic2.set(EXTEND);
+		}else if(BallRetain.getBallRetentionStage() != 0){
+			motor.set(BallRetain.motorValues);
+			if(BallRetain.getBallRetentionStage() == 1){
+				pneumatic1.set(RETRACT);
+				pneumatic2.set(EXTEND);
+			}
 		}else{
 			currentTimer = -100;
 			motor.set(0);
@@ -114,9 +119,9 @@ public class BallHandler {
 //			currentTimer2 = 0;
 //		}
 		
-		System.out.println("debug: " + debug);
+//		System.out.println("debug: " + debug);
 //		System.out.println("pneumatic: " + pneumatic1.get());
-		System.out.println("current timer: " + currentTimer);
+//		System.out.println("current timer: " + currentTimer);
 	}
 	
 	public void Autonomous()

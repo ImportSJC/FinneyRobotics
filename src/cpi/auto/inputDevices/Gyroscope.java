@@ -53,12 +53,20 @@ public class Gyroscope extends SuperClass{
 	public boolean check(){
 		if(gyroLoaded){
 			Robot.targetAngleDistance = Math.abs(targetAngle - myGyro.getAngle());
+			if(targetAngle > 0 && (targetAngle-myGyro.getAngle()) < 0){
+				Robot.targetAngleDistance = -Math.abs(targetAngle - myGyro.getAngle());//gyro passed its mark
+			}else if(targetAngle < 0 && (targetAngle-myGyro.getAngle()) > 0){
+				Robot.targetAngleDistance = -Math.abs(targetAngle - myGyro.getAngle());//gyro passed its mark
+			}else{
+				Robot.targetAngleDistance = Math.abs(targetAngle - myGyro.getAngle());//gyro not passed its mark
+			}
+			
 			System.out.println("Gyro Angle: " + myGyro.getAngle());
 			System.out.println("Gyro Angle: " + myGyro.getRate());
 			
 			//stop once it hits the target angle and its not moving fast
-			if(targetAngle>0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}
-			else if(targetAngle<0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError) && Math.abs(myGyro.getRate()) < targetRate){return true;}
+			if(targetAngle>0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError)/* && Math.abs(myGyro.getRate()) < targetRate*/){return true;}
+			else if(targetAngle<0 && (myGyro.getAngle()>targetAngle-marginOfError && myGyro.getAngle()<targetAngle+marginOfError)/* && Math.abs(myGyro.getRate()) < targetRate*/){return true;}
 		}
 		return false;
 	}

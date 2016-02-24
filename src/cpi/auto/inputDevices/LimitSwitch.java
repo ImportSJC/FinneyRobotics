@@ -11,13 +11,13 @@ public class LimitSwitch extends SuperClass{
 	
 	public LimitSwitch(String limitSwitchLocation){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
-			myTalon = AutoOutputs.elevatorMotor1;
+//			myTalon = AutoOutputs.elevatorMotor1;
 		}
 	}
 	
 	public LimitSwitch(String limitSwitchLocation, boolean targetPosition){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
-			myTalon = AutoOutputs.elevatorMotor1;
+//			myTalon = AutoOutputs.elevatorMotor1;
 		}
 		
 		this.targetPosition = targetPosition;

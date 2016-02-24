@@ -8,6 +8,11 @@ public class GyroControl {
 	private static Gyro myGyro;
 	
 	public static boolean gyroLoaded = true;
+	
+	public GyroControl(){
+		gyroLoaded = false;
+	}
+	
 	public GyroControl(int myChannel){
 		try{
 //			myGyro = new ADXRS450_Gyro();

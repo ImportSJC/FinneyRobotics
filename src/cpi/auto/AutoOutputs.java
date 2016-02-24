@@ -2,8 +2,8 @@ package cpi.auto;
 
 import org.usfirst.frc.team1405.robot.Robot;
 
+import cpi.CANTalonControl;
 import cpi.Drive;
-import edu.wpi.first.wpilibj.CANTalon;
 
 public class AutoOutputs {
 //	public static double leftMotor1 = 0.0;
@@ -11,12 +11,10 @@ public class AutoOutputs {
 //	public static double leftMotor2 = 0.0;
 //	public static double rightMotor2 = 0.0;
 	
-	public static CANTalon leftMotor1;
-	public static CANTalon leftMotor2;
-	public static CANTalon rightMotor1;
-	public static CANTalon rightMotor2;
-	public static CANTalon elevatorMotor1;
-	public static CANTalon elevatorMotor2;
+	public static CANTalonControl leftMotor1;
+	public static CANTalonControl leftMotor2;
+	public static CANTalonControl rightMotor1;
+	public static CANTalonControl rightMotor2;
 	
 	private static boolean gyroAssist = false;
 	private static double driveSpeed = 0.0;
@@ -37,15 +35,21 @@ public class AutoOutputs {
 		//TODO if drive speed is 0 and turnspeed != 0, slow the rotation as gyro nears target angle
 //		slow the turning of the robot down as it approaches the target angle
 		System.out.println("Target Angle Distance: " + Robot.targetAngleDistance);
-		if(driveSpeed == 0 && turnSpeed != 0){
-			if(Math.abs(Robot.targetAngleDistance)<SLOW_DOWN_ANGLE){
-				System.out.println("Slowing down robot: " + turnSpeed*SLOW_DOWN_SPEED);
-				leftMotor1.set(turnSpeed*SLOW_DOWN_SPEED);
-				leftMotor2.set(turnSpeed*SLOW_DOWN_SPEED);
-				rightMotor1.set(turnSpeed*SLOW_DOWN_SPEED);
-				rightMotor2.set(turnSpeed*SLOW_DOWN_SPEED);
-			}
-		}
+		
+//		if(driveSpeed == 0 && turnSpeed != 0){
+//			if(Robot.targetAngleDistance > 0){
+//				setDrive(driveSpeed, turnSpeed);
+//			}else{
+//				setDrive(driveSpeed, -turnSpeed);
+//			}
+//			if(Math.abs(Robot.targetAngleDistance)<SLOW_DOWN_ANGLE){
+//				System.out.println("Slowing down robot: " + turnSpeed*SLOW_DOWN_SPEED);
+//				leftMotor1.set(turnSpeed*SLOW_DOWN_SPEED);
+//				leftMotor2.set(turnSpeed*SLOW_DOWN_SPEED);
+//				rightMotor1.set(turnSpeed*SLOW_DOWN_SPEED);
+//				rightMotor2.set(turnSpeed*SLOW_DOWN_SPEED);
+//			}
+//		}
 		
 //		if(gyroAssist){
 //			if (driveSpeed>=0){
@@ -78,11 +82,6 @@ public class AutoOutputs {
 		rightMotor2.enableBrakeMode(value);
 	}
 	
-	public static void setElevatorBrake(boolean value){
-		elevatorMotor1.enableBrakeMode(value);
-		elevatorMotor2.enableBrakeMode(value);
-	}
-	
 	public static void reset_Drive(){
 		leftMotor1.set(0);
 		leftMotor2.set(0);
@@ -91,11 +90,6 @@ public class AutoOutputs {
 		gyroAssist = false;
 		driveSpeed = 0.0;
 		turnSpeed = 0.0;
-	}
-	
-	public static void reset_Elevator(){
-		elevatorMotor1.set(0);
-		elevatorMotor2.set(0);
 	}
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
@@ -129,12 +123,6 @@ public class AutoOutputs {
 		leftMotor2.set(speed);
 		rightMotor1.set(speed);
 		rightMotor2.set(speed);
-	}
-	
-	public static void setElevator(double speed){
-		System.out.println("Elevator motors are assigned the speed: " + speed);
-		elevatorMotor1.set(-speed);
-		elevatorMotor2.set(speed);
 	}
 	
 //	public static void rampTurn(double remainingAngle, double targetAngle){

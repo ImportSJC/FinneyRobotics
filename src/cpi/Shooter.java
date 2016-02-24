@@ -2,7 +2,6 @@ package cpi;
 
 import cpi.Interface.BooleanInput;
 import cpi.Interface.DoubleInput;
-import edu.wpi.first.wpilibj.CANTalon;
 
 /**
  * The subsystem that contains two motors to operate the ball shooting functionality
@@ -17,11 +16,12 @@ public class Shooter {
 	private BooleanInput allRollersOut;
 	private String name;
 	
-	private CANTalon shooterTalon1;
-	private CANTalon shooterTalon2;
+	private CANTalonControl shooterTalon1;
+	private CANTalonControl shooterTalon2;
 	
 	private final double SHOOTING_SPEED = 1.0;
-	private final double INTAKE_SPEED = 1.0;
+	public static final double INTAKE_SPEED = 1.0;
+
 //	private final String SHOOTER_MOTOR = "Shooter Motor";
 	
 	public Shooter(String name){
@@ -35,8 +35,8 @@ public class Shooter {
 //		shooterTalon1 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #1", 1);
 //		shooterTalon2 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #2", 2);
 		
-		shooterTalon1 = new CANTalon(10);
-		shooterTalon2 = new CANTalon(9);
+		shooterTalon1 = new CANTalonControl(10);
+		shooterTalon2 = new CANTalonControl(9);
 	}
 	
 	public void robotInit(){
@@ -47,21 +47,28 @@ public class Shooter {
 //		System.out.println("shooting: " + shooting.Value());
 		if(shooting.Value()>0.5){
 			//turn motors
+			BallRetain.setBallRetentionStage(0);
 			shooterTalon1.set(SHOOTING_SPEED);
 			shooterTalon2.set(-SHOOTING_SPEED);
 		}
 		else if(intaking.Value()>0.5){
 			//reverse motors
+			BallRetain.setBallRetentionStage(1);
 			shooterTalon1.set(-INTAKE_SPEED);
 			shooterTalon2.set(INTAKE_SPEED);
 		}
 		else if(allRollersIn.Value()){
+			BallRetain.setBallRetentionStage(1);
 			shooterTalon1.set(-INTAKE_SPEED);
 			shooterTalon2.set(INTAKE_SPEED);
 		}
 		else if(allRollersOut.Value()){
+			BallRetain.setBallRetentionStage(0);
 			shooterTalon1.set(SHOOTING_SPEED);
 			shooterTalon2.set(-SHOOTING_SPEED);
+		}else if(BallRetain.getBallRetentionStage() != 0){
+			shooterTalon1.set(-BallRetain.motorValues);
+			shooterTalon2.set(BallRetain.motorValues);
 		}
 		else{
 			//stop motors
