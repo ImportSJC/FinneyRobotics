@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import cpi.BallHandler;
 import cpi.BallRetain;
-import cpi.Climber;
+import cpi.Climber_Scissors;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
@@ -37,7 +37,7 @@ public class Robot extends IterativeRobot {
 	Elevator elevator;
 	public static XBox360 pilot;
 	BallHandler ball;
-	Climber climber;
+	Climber_Scissors climber;
 	
 	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
    
@@ -72,7 +72,7 @@ public class Robot extends IterativeRobot {
     	ball = new BallHandler("/Ball Handler");
     	ball.robotInit();
     	BallRetain.robotInit();
-    	climber = new Climber("/Climber");
+    	climber = new Climber_Scissors("/Climber_Scissors");
     	climber.robotInit();
 //    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     }
