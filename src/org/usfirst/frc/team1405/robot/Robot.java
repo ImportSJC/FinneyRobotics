@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.CameraServer;
 import cpi.BallHandler;
 import cpi.BallRetain;
 import cpi.Climber_Scissors;
@@ -38,7 +39,7 @@ public class Robot extends IterativeRobot {
 	BallHandler ball;
 	//TODO
 //	Climber_Scissors climber;
-	cpi.CameraServer server;
+	CameraServer server;
 	
 	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
    
@@ -54,7 +55,8 @@ public class Robot extends IterativeRobot {
     }
     
     void initialize(){
-    	server.runServer("cam0");
+    	server=CameraServer.getInstance();
+    	server.startAutomaticCapture("cam0");;
     	Autonomous.robotInit();
     	enc1 = new Encoder(1, false);
 //    	enc1 = new Encoder();
