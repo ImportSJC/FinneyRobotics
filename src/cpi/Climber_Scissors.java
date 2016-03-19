@@ -20,9 +20,10 @@ public class Climber_Scissors {
 	private static final double CLIMBING_SPEED = -1.0;
 	
 	public Climber_Scissors(String name){
-		climberInput = new BooleanInput(name,"climber input", "XBox360-Pilot:Left Bumper");
-		angleInput = new BooleanInput(name,"climber input", "XBox360-Pilot:Left Bumper");
-		extenderInput = new BooleanInput(name,"climber input", "XBox360-Pilot:Left Bumper");
+		climberInput = new BooleanInput(name,"climber input", "<none>");
+		angleInput = new BooleanInput(name,"climber input", "<none>");
+		extenderInput = new BooleanInput(name,"climber input", "<none>");
+//		extenderInput = new BooleanInput(name,"climber input", "XBox360-Pilot:Left Bumper");
 		climberMotor = new CANTalonControl(MOTOR_DEVICE_NUMBER);
 		angle = new Solenoid(PNEUMATICS_ANGLE);
 		extender = new Solenoid(PNEUMATICS_EXTEND);

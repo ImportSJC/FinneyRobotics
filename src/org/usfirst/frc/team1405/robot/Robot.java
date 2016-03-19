@@ -17,8 +17,6 @@ import cpi.Shooter;
 import cpi.XBox360;
 import cpi.auto.Autonomous;
 import cpi.auto.GyroControl;
-import edu.wpi.first.wpilibj.CameraServer;
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -39,7 +37,7 @@ public class Robot extends IterativeRobot {
 	public static XBox360 pilot;
 	BallHandler ball;
 	Climber_Scissors climber;
-	CameraServer server;
+	cpi.CameraServer server;
 	
 	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
    
@@ -55,9 +53,7 @@ public class Robot extends IterativeRobot {
     }
     
     void initialize(){
-		server= CameraServer.getInstance();
-		server.setQuality(50);
-		server.startAutomaticCapture("cam0");
+    	server.runServer("cam0");
     	Autonomous.robotInit();
     	enc1 = new Encoder(1, false);
 //    	enc1 = new Encoder();
