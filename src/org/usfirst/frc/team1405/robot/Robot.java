@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.CameraServer;
 import cpi.BallHandler;
 import cpi.BallRetain;
+import cpi.Climber_Scissors;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
@@ -16,7 +18,6 @@ import cpi.Shooter;
 import cpi.XBox360;
 import cpi.auto.Autonomous;
 import cpi.auto.GyroControl;
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -36,6 +37,9 @@ public class Robot extends IterativeRobot {
 	Elevator elevator;
 	public static XBox360 pilot;
 	BallHandler ball;
+	//TODO
+//	Climber_Scissors climber;
+	CameraServer server;
 	
 	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
    
@@ -51,6 +55,8 @@ public class Robot extends IterativeRobot {
     }
     
     void initialize(){
+    	server=CameraServer.getInstance();
+    	server.startAutomaticCapture("cam0");;
     	Autonomous.robotInit();
     	enc1 = new Encoder(1, false);
 //    	enc1 = new Encoder();
@@ -70,7 +76,10 @@ public class Robot extends IterativeRobot {
     	ball = new BallHandler("/Ball Handler");
     	ball.robotInit();
     	BallRetain.robotInit();
-//    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
+    	//TODO
+    	//climber = new Climber_Scissors("/Climber_Scissors");
+    	//climber.robotInit();
+    	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     }
     
     public void autonomousInit(){
@@ -109,6 +118,8 @@ public class Robot extends IterativeRobot {
     	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
+    	//TODO
+    	//climber.teleopPeriodic();
 //    	System.out.println("Ultrasonic: " + ultra.getAccumulatorCount());
 //    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
 //    	System.out.println("Gyro Angle: " + gyro.getAngle());
