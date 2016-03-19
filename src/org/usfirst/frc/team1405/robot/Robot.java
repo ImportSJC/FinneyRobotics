@@ -36,7 +36,8 @@ public class Robot extends IterativeRobot {
 	Elevator elevator;
 	public static XBox360 pilot;
 	BallHandler ball;
-	Climber_Scissors climber;
+	//TODO
+//	Climber_Scissors climber;
 	cpi.CameraServer server;
 	
 	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
@@ -73,8 +74,9 @@ public class Robot extends IterativeRobot {
     	ball = new BallHandler("/Ball Handler");
     	ball.robotInit();
     	BallRetain.robotInit();
-    	climber = new Climber_Scissors("/Climber_Scissors");
-    	climber.robotInit();
+    	//TODO
+    	//climber = new Climber_Scissors("/Climber_Scissors");
+    	//climber.robotInit();
     	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     }
     
@@ -114,7 +116,8 @@ public class Robot extends IterativeRobot {
     	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
-    	climber.teleopPeriodic();
+    	//TODO
+    	//climber.teleopPeriodic();
 //    	System.out.println("Ultrasonic: " + ultra.getAccumulatorCount());
 //    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
 //    	System.out.println("Gyro Angle: " + gyro.getAngle());
