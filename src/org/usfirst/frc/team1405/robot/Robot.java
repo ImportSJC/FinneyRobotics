@@ -12,7 +12,6 @@ import cpi.Climber_Scissors;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
-import cpi.Elevator;
 import cpi.Encoder;
 import cpi.Shooter;
 import cpi.XBox360;
@@ -32,13 +31,13 @@ public class Robot extends IterativeRobot {
 	public static GyroControl gyro;
 //	public static ADXRS450_Gyro gyro;
 //	public static AnalogInput ultra; 
-	public static Drive drive;
-	Shooter shooter;
-	Elevator elevator;
+//	public static Drive drive;
+//	Shooter shooter;
 	public static XBox360 pilot;
-	BallHandler ball;
+	public static XBox360 operator;
+//	BallHandler ball;
 	//TODO
-//	Climber_Scissors climber;
+	Climber_Scissors climber;
 	CameraServer server;
 	
 	public static boolean disableCANTalons = false; //make this true when you need to run the code without can talons connected
@@ -67,18 +66,20 @@ public class Robot extends IterativeRobot {
     	gyro = new GyroControl(1);//TODO change back to 1
 //    	gyro = new ADXRS450_Gyro();
 //    	ultra = new AnalogInput(1);
-    	drive= new Drive("/Teleop Drive");
-    	drive.robotInit();
-    	shooter= new Shooter("/Teleop Shooter");
-    	shooter.robotInit();
+//    	drive= new Drive("/Teleop Drive");
+//    	drive.robotInit();
+//    	shooter= new Shooter("/Teleop Shooter");
+//    	shooter.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
-    	ball = new BallHandler("/Ball Handler");
-    	ball.robotInit();
+    	operator = new XBox360("Operator");
+    	operator.robotInit();
+//    	ball = new BallHandler("/Ball Handler");
+//    	ball.robotInit();
     	BallRetain.robotInit();
     	//TODO
-    	//climber = new Climber_Scissors("/Climber_Scissors");
-    	//climber.robotInit();
+    	climber = new Climber_Scissors("/Climber_Scissors");
+    	climber.robotInit();
     	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     }
     
@@ -99,11 +100,12 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit(){
-    	drive.TeleopInit();
+//    	drive.TeleopInit();
     	enc1.TeleopInit();
     	enc3.TeleopInit();
     	gyro.reset();
     	BallRetain.telopInit();
+    	climber.teleopInit();
 //    	ultra.resetAccumulator();
     }
 
@@ -112,14 +114,15 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	pilot.teleopPeriodic();
-    	drive.TeleopPeriodic();
+    	operator.teleopPeriodic();
+//    	drive.TeleopPeriodic();
     	BallRetain.telopPeriodic();
-    	shooter.teleopPeriodic();
-    	ball.TeleopPeriodic();
+//    	shooter.teleopPeriodic();
+//    	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
     	//TODO
-    	//climber.teleopPeriodic();
+    	climber.teleopPeriodic();
 //    	System.out.println("Ultrasonic: " + ultra.getAccumulatorCount());
 //    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
 //    	System.out.println("Gyro Angle: " + gyro.getAngle());
@@ -139,11 +142,13 @@ public class Robot extends IterativeRobot {
     }
     public void testPeriodic() {
     	pilot.teleopPeriodic();
+    	operator.teleopPeriodic();
     	cpi.CANTalon.testPeriodic();
     }
     
     public void disabledPeriodic(){
     	pilot.teleopPeriodic();
+    	operator.teleopPeriodic();
 //    	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
 }

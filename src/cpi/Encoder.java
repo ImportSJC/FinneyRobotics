@@ -78,7 +78,7 @@ public class Encoder {
 				oldPosition = cant.getPosition();
 			}
 //			System.out.println("RPMs: " + rpms);
-			System.out.println("Current direction: " + getDirection());
+//			System.out.println("Current direction: " + getDirection());
 		}
 	}
 	
