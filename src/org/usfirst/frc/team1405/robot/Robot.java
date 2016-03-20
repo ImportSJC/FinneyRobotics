@@ -31,8 +31,8 @@ public class Robot extends IterativeRobot {
 	public static GyroControl gyro;
 //	public static ADXRS450_Gyro gyro;
 //	public static AnalogInput ultra; 
-//	public static Drive drive;
-//	Shooter shooter;
+	public static Drive drive;
+	Shooter shooter;
 	public static XBox360 pilot;
 	public static XBox360 operator;
 //	BallHandler ball;
@@ -66,10 +66,10 @@ public class Robot extends IterativeRobot {
     	gyro = new GyroControl(1);//TODO change back to 1
 //    	gyro = new ADXRS450_Gyro();
 //    	ultra = new AnalogInput(1);
-//    	drive= new Drive("/Teleop Drive");
-//    	drive.robotInit();
-//    	shooter= new Shooter("/Teleop Shooter");
-//    	shooter.robotInit();
+    	drive= new Drive("/Teleop Drive");
+    	drive.robotInit();
+    	shooter= new Shooter("/Teleop Shooter");
+    	shooter.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
     	operator = new XBox360("Operator");
@@ -100,7 +100,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void teleopInit(){
-//    	drive.TeleopInit();
+    	drive.TeleopInit();
     	enc1.TeleopInit();
     	enc3.TeleopInit();
     	gyro.reset();
@@ -115,9 +115,9 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic() {
     	pilot.teleopPeriodic();
     	operator.teleopPeriodic();
-//    	drive.TeleopPeriodic();
+    	drive.TeleopPeriodic();
     	BallRetain.telopPeriodic();
-//    	shooter.teleopPeriodic();
+    	shooter.teleopPeriodic();
 //    	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
