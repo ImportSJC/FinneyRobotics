@@ -51,7 +51,7 @@ public class BallRetain {
 	}
 	
 	public static void telopPeriodic(){
-//		System.out.println("Ball Button: " + ballButton.get());
+		System.out.println("Ball Button: " + ballButton.get());
 //		System.out.println("Ball Retention stage: " + ballRetentionStage);
 //		System.out.println("Motor Values: " + motorValues);
 //		System.out.println("intaking timer: " + intakingTimer + " ballout timer: " + ballOutTimer);

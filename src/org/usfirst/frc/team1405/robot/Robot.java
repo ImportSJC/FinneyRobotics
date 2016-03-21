@@ -35,7 +35,7 @@ public class Robot extends IterativeRobot {
 	Shooter shooter;
 	public static XBox360 pilot;
 	public static XBox360 operator;
-//	BallHandler ball;
+	BallHandler ball;
 	//TODO
 	Climber_Scissors climber;
 	CameraServer server;
@@ -74,8 +74,8 @@ public class Robot extends IterativeRobot {
     	pilot.robotInit();
     	operator = new XBox360("Operator");
     	operator.robotInit();
-//    	ball = new BallHandler("/Ball Handler");
-//    	ball.robotInit();
+    	ball = new BallHandler("/Ball Handler");
+    	ball.robotInit();
     	BallRetain.robotInit();
     	//TODO
     	climber = new Climber_Scissors("/Climber_Scissors");
@@ -118,7 +118,7 @@ public class Robot extends IterativeRobot {
     	drive.TeleopPeriodic();
     	BallRetain.telopPeriodic();
     	shooter.teleopPeriodic();
-//    	ball.TeleopPeriodic();
+    	ball.TeleopPeriodic();
     	enc1.TeleopPeriodic();
     	enc3.TeleopPeriodic();
     	//TODO

@@ -17,10 +17,10 @@ public class Climber_Scissors {
 	BooleanInput extenderInput;
 	static final int LEFT_MOTOR_DEVICE_NUMBER = 5;
 	static final int RIGHT_MOTOR_DEVICE_NUMBER = 6;
-	static final int PNEUMATICS_DEPLOY_SCISSORS = 3;// double action 3,4
-	static final int PNEUMATICS_STOW_SCISSORS = 2;// double action 3,4
-	static final int PNEUMATICS_EXTEND_ANGLE = 4;// double action 5,6
-	static final int PNEUMATICS_RETRACT_ANGLE = 5;// double action 5,6
+	static final int PNEUMATICS_DEPLOY_SCISSORS = 5;// double action 3,4
+	static final int PNEUMATICS_STOW_SCISSORS = 4;// double action 3,4
+	static final int PNEUMATICS_EXTEND_ANGLE = 6;// double action 5,6
+	static final int PNEUMATICS_RETRACT_ANGLE = 7;// double action 5,6
 	static final boolean POSITION_SCISSORS=true;
 	boolean positionScissors;
 	boolean extendedScissors;

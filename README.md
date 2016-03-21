@@ -37,3 +37,18 @@ Code for Finney Robotics Team
 - Select the entire directory by clicking in the box next to the repository name (will be checked)
 - Click Finish
 - Right click on project name ->Team->share Project-> Finish
+
+<h2>Joystick Controls:</h2>
+<br>
+<b>Pilot</b>
+- Left Bumper: Shift Gears (when not auto shifting)
+- Left Trigger: ?
+- Right Bumper: ?
+- Right Trigger: ?
+- A: all rollers in
+- Y: all rollers out
+<b>Operator</b>
+- A: flop climber into the robot
+- Y: flop the climber out of the robot
+- Right Bumper: Shoot climber scissors up to the tower
+- Left Bumper: Winch the winch in the single direction
