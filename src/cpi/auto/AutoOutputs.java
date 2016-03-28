@@ -2,8 +2,10 @@ package cpi.auto;
 
 import org.usfirst.frc.team1405.robot.Robot;
 
+import cpi.BallHandler;
 import cpi.CANTalonControl;
 import cpi.Drive;
+import cpi.Shooter;
 
 public class AutoOutputs {
 //	public static double leftMotor1 = 0.0;
@@ -16,6 +18,11 @@ public class AutoOutputs {
 	public static CANTalonControl rightMotor1;
 	public static CANTalonControl rightMotor2;
 	
+	public static CANTalonControl shooterMotor1;
+	public static CANTalonControl shooterMotor2;
+	public static CANTalonControl ballHandlerMotor;
+	
+	
 	private static boolean gyroAssist = false;
 	private static double driveSpeed = 0.0;
 	private static double turnSpeed = 0.0;
@@ -23,18 +30,24 @@ public class AutoOutputs {
 	private final static int SLOW_DOWN_ANGLE = 20;
 	private final static double SLOW_DOWN_SPEED = 0.5;
 	
+	private static int timer = 0;
+	
 	public static void robotInit(){
 		leftMotor1 = Drive.leftTalon1;
 		leftMotor2 = Drive.leftTalon2;
 		rightMotor1 = Drive.rightTalon1;
 		rightMotor2 = Drive.rightTalon2;
+		
+		shooterMotor1 = Shooter.shooterTalon1;
+		shooterMotor2 = Shooter.shooterTalon2;
+		ballHandlerMotor = BallHandler.motor;
 	}
 	
 	public static void AutonomousPeriodic(){
 		
 		//TODO if drive speed is 0 and turnspeed != 0, slow the rotation as gyro nears target angle
 //		slow the turning of the robot down as it approaches the target angle
-		System.out.println("Target Angle Distance: " + Robot.targetAngleDistance);
+//		System.out.println("Target Angle Distance: " + Robot.targetAngleDistance);
 		
 //		if(driveSpeed == 0 && turnSpeed != 0){
 //			if(Robot.targetAngleDistance > 0){
@@ -123,6 +136,29 @@ public class AutoOutputs {
 		leftMotor2.set(speed);
 		rightMotor1.set(speed);
 		rightMotor2.set(speed);
+	}
+	
+	public static void startShooting(){
+		shooterMotor1.set(Shooter.SHOOTING_SPEED);
+		shooterMotor2.set(-Shooter.SHOOTING_SPEED);
+		timer = 0;
+	}
+	
+	public static void shooting(){
+		if(timer>BallHandler.SHOOTING_TIMER){
+			ballHandlerMotor.set(-BallHandler.MOTOR_SPEED);
+		}else{
+			ballHandlerMotor.set(0);
+		}
+		
+		timer++;
+	}
+	
+	public static void stopShooting(){
+		shooterMotor1.set(0);
+		shooterMotor2.set(0);
+		
+		ballHandlerMotor.set(0);
 	}
 	
 //	public static void rampTurn(double remainingAngle, double targetAngle){

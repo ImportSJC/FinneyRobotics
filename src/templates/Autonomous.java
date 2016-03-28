@@ -20,7 +20,7 @@ public class Autonomous extends AutonomousBase{//TODO look into this class, shou
 	 * Add resets for AutoInputs eg. AutoInputs.myGyro.reset();	
 	 * Add a set name for all mode names eg. Set.addName(TOTE_NO_BUMP);
 	 */
-	public void RobotInit(){
+	public static void RobotInit(){
 		AutoOutputs.robotInit();// Do not remove
 	}
 	

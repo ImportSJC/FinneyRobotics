@@ -14,12 +14,16 @@ public class Shooter {
 	private DoubleInput intaking;
 	private BooleanInput allRollersIn;
 	private BooleanInput allRollersOut;
+	private BooleanInput allRollersIn2;
+	private BooleanInput allRollersOut2;
+	
 	private String name;
 	
-	private CANTalonControl shooterTalon1;
-	private CANTalonControl shooterTalon2;
+	public static CANTalonControl shooterTalon1;
+	public static CANTalonControl shooterTalon2;
 	
-	private final double SHOOTING_SPEED = 1.0;
+	
+	public static final double SHOOTING_SPEED = 1.0;
 	public static final double INTAKE_SPEED = 1.0;
 
 //	private final String SHOOTER_MOTOR = "Shooter Motor";
@@ -31,6 +35,9 @@ public class Shooter {
 		intaking = new DoubleInput(this.name, "Reverse Shooting Motors", "XBox360-Pilot: Left Trigger");
 		allRollersIn = new BooleanInput(this.name, "All Roller Motors In", "XBox360-Pilot:A Button");
 		allRollersOut = new BooleanInput(this.name, "All Roller Motors Out", "XBox360-Pilot:Y Button");
+		
+		allRollersIn2 = new BooleanInput(this.name, "All Roller Motors In 2", "XBox360-Pilot:Left Bumper");
+		allRollersOut2 = new BooleanInput(this.name, "All Roller Motors Out 2", "XBox360-Pilot:Right Bumper");
 		
 //		shooterTalon1 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #1", 1);
 //		shooterTalon2 = CANTalon.getInstance(name + "/" + SHOOTER_MOTOR, "Shooter Motor #2", 2);
@@ -57,12 +64,12 @@ public class Shooter {
 			shooterTalon1.set(-INTAKE_SPEED);
 			shooterTalon2.set(INTAKE_SPEED);
 		}
-		else if(allRollersIn.Value()){
+		else if(allRollersIn.Value() || allRollersIn2.Value()){
 			BallRetain.setBallRetentionStage(1);
 			shooterTalon1.set(-INTAKE_SPEED);
 			shooterTalon2.set(INTAKE_SPEED);
 		}
-		else if(allRollersOut.Value()){
+		else if(allRollersOut.Value() || allRollersOut2.Value()){
 			BallRetain.setBallRetentionStage(0);
 			shooterTalon1.set(SHOOTING_SPEED);
 			shooterTalon2.set(-SHOOTING_SPEED);

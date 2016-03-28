@@ -41,7 +41,9 @@ public class Encoder {
 	}
 	
 	public void autoInit(){
+		System.out.println("Attempting to reset encoder, encoderLoaded: " + encoderLoaded);
 		if(encoderLoaded){
+			System.out.println("RESET ENCODER");
 			cycleCounter = 0;
 			cant.setPosition(0);
 		}

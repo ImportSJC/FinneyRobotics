@@ -17,6 +17,7 @@ import cpi.Shooter;
 import cpi.XBox360;
 import cpi.auto.Autonomous;
 import cpi.auto.GyroControl;
+import cpi.autoSupportClasses.AutonomousBase;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -80,6 +81,7 @@ public class Robot extends IterativeRobot {
     	//TODO
     	climber = new Climber_Scissors("/Climber_Scissors");
     	climber.robotInit();
+    	AutonomousBase.RobotInit();
     	cpi.Preferences.initialize();// !!Must be last statement in initialize!!
     }
     
@@ -96,6 +98,8 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
+//    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
+//    	System.out.println("Gyro Angle: " + gyro.getAngle());
 //    	System.out.println("Encoder turn: " + Math.abs(enc1.getRotation()-enc3.getRotation()));
     }
     
@@ -124,8 +128,8 @@ public class Robot extends IterativeRobot {
     	//TODO
     	climber.teleopPeriodic();
 //    	System.out.println("Ultrasonic: " + ultra.getAccumulatorCount());
-//    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
-//    	System.out.println("Gyro Angle: " + gyro.getAngle());
+    	System.out.println("Encoder avg rotaion: " + enc1.getAverageRotation(enc3));
+    	System.out.println("Gyro Angle: " + gyro.getAngle());
     }
     
     /**
@@ -149,6 +153,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic(){
     	pilot.teleopPeriodic();
     	operator.teleopPeriodic();
+    	AutonomousBase.DisabledPeriodic();
 //    	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
 }

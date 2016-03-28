@@ -6,15 +6,15 @@ public class BallHandler {
 	DoubleInput intake;
 	DoubleInput shoot;
 	BooleanInput intakeSolenoid;
-	CANTalonControl motor;
+	public static CANTalonControl motor;
 	Solenoid pneumatic1;
 	Solenoid pneumatic2;
 	static final int MOTOR_DEVICE_NUMBER = 11;
 	static final int PNEUMATICS_DEVICE_NUMBER1 = 2;
 	static final int PNEUMATICS_DEVICE_NUMBER2 = 3;
-	static final double MOTOR_SPEED = 1.0;
+	public static final double MOTOR_SPEED = 1.0;
 	
-	static final double SHOOTING_TIMER = 0.2*50; //format (x*50) where x = number of seconds
+	public static final double SHOOTING_TIMER = 0.2*50; //format (x*50) where x = number of seconds
 	double currentTimer = -100;//the -100 is a magic number indicating that none of the shoot/intake buttons are being pushed
 	
 //	static final double SHOOTING_TIMER_2 = 1*50; //format (x*50) where x = number of seconds
@@ -26,6 +26,8 @@ public class BallHandler {
 	static final boolean RETRACT = true;
 	BooleanInput allRollersIn;
 	BooleanInput allRollersOut;
+	BooleanInput allRollersIn2;
+	BooleanInput allRollersOut2;
 	
 	boolean solenoidExtended = false;
 	boolean motorShooting = false;
@@ -46,6 +48,9 @@ public class BallHandler {
 		pneumatic2 = new Solenoid(PNEUMATICS_DEVICE_NUMBER2);
 		allRollersIn = new BooleanInput(name, "All Rollers In", "XBox360-Pilot:A Button");
 		allRollersOut = new BooleanInput(name, "All Rollers Out", "XBox360-Pilot:Y Button");
+		
+		allRollersIn2 = new BooleanInput(name, "All Rollers In 2", "XBox360-Pilot:Left Bumper");
+		allRollersOut2 = new BooleanInput(name, "All Rollers Out 2", "XBox360-Pilot:Right Bumper");
 	}
 	
 	public void robotInit()
@@ -58,11 +63,11 @@ public class BallHandler {
 		intakeButtonPressed = intake.Value() > 0.5;
 		shootButtonPressed = shoot.Value() > 0.5;
 		
-		if(allRollersIn.Value()){
+		if(allRollersIn.Value() || allRollersIn2.Value()){
 			currentTimer = -100;
 			motor.set(MOTOR_SPEED);
 			debug = MOTOR_SPEED;
-		}else if(allRollersOut.Value()){
+		}else if(allRollersOut.Value() || allRollersOut2.Value()){
 			currentTimer = -100;
 			motor.set(-MOTOR_SPEED);
 			debug = -MOTOR_SPEED;

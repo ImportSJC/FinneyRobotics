@@ -39,7 +39,7 @@ public class Drive {
 	leftMotor = new DoubleInput(name,"left Motor(s)","XBox360-Pilot: Left Stick Y Axis");
 	centerMotor = new DoubleInput(name,"center Motor(s)");
 	
-	motorGear = new BooleanInput(name,"change gear", "XBox360-Pilot:Left Bumper");
+//	motorGear = new BooleanInput(name,"change gear", "XBox360-Pilot:Left Bumper");
 	
 //	rightFrontTalon1 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #1",1);
 //	rightFrontTalon2 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #2",2);
@@ -200,26 +200,27 @@ public class Drive {
 		System.out.println("Average RPMs: " + Robot.enc1.getAverageRPMs(Robot.enc3));
 		System.out.println("joysticks left: " + leftMotor.Value() + " right: " + rightMotor.Value());
 		//TODO add a boolean to remove/enable auto shifting
-		if((leftMotor.Value()>0 && rightMotor.Value()<0) || (leftMotor.Value()<0 && rightMotor.Value()>0)){
-			System.out.println("if statement 1");
-			if(gearBool == HIGH_GEAR){
-				initGearBoxToggle();
-			}
-		}else if((Robot.enc1.getDirection()>0 && Robot.enc3.getDirection()>0 && leftMotor.Value()>0 && rightMotor.Value()>0) ||
-				(Robot.enc1.getDirection()<0 && Robot.enc3.getDirection()<0 && leftMotor.Value()<0 && rightMotor.Value()<0)){
-			System.out.println("if statement 2");
-			if(gearBool == HIGH_GEAR){
-				initGearBoxToggle();
-			}
-		}else if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
-				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
-			System.out.println("if statement 3");
-			initGearBoxToggle();
-		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
-				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
-			System.out.println("if statement 4");
-			initGearBoxToggle();
-		}
+		
+//		if((leftMotor.Value()>0 && rightMotor.Value()<0) || (leftMotor.Value()<0 && rightMotor.Value()>0)){
+//			System.out.println("if statement 1");
+//			if(gearBool == HIGH_GEAR){
+//				initGearBoxToggle();
+//			}
+//		}else if((Robot.enc1.getDirection()>0 && Robot.enc3.getDirection()>0 && leftMotor.Value()>0 && rightMotor.Value()>0) ||
+//				(Robot.enc1.getDirection()<0 && Robot.enc3.getDirection()<0 && leftMotor.Value()<0 && rightMotor.Value()<0)){
+//			System.out.println("if statement 2");
+//			if(gearBool == HIGH_GEAR){
+//				initGearBoxToggle();
+//			}
+//		}else if(gearBool == LOW_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) > lowToHighGearThreshold &&
+//				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
+//			System.out.println("if statement 3");
+//			initGearBoxToggle();
+//		}else if(gearBool == HIGH_GEAR && Robot.enc1.getAverageRPMs(Robot.enc3) < highToLowGearThreshold &&
+//				((leftMotor.Value()>0 && rightMotor.Value()>0) || (leftMotor.Value()<0 && rightMotor.Value()<0))){
+//			System.out.println("if statement 4");
+//			initGearBoxToggle();
+//		}
 		
 		System.out.println("Drive gear: " + gearBool);
 		
@@ -238,10 +239,12 @@ public class Drive {
 		}
 		
 //		System.out.println("motorgear: " + motorGear.Value() + " gear button pressed: " + gearButtonPressed);
-		if(!motorGear.Value() && gearButtonPressed){
-			initGearBoxToggle();
-		}
-		gearButtonPressed = motorGear.Value();
+		
+		//TODO add this back in to change gears
+//		if(!motorGear.Value() && gearButtonPressed){
+//			initGearBoxToggle();
+//		}
+//		gearButtonPressed = motorGear.Value();
 	}
 
 	SetString mode;
@@ -281,5 +284,5 @@ public class Drive {
   DoubleInput  leftMotor;
   DoubleInput  centerMotor;
   
-  BooleanInput motorGear;
+//  BooleanInput motorGear;
 }
