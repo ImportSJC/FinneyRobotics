@@ -15,9 +15,9 @@ public class GyroControl {
 	
 	public GyroControl(int myChannel){
 		try{
-//			myGyro = new ADXRS450_Gyro();
+			myGyro = new ADXRS450_Gyro();
 			System.out.println("Initing gyro " + myChannel);
-			myGyro = new AnalogGyro(myChannel);
+			// myGyro = new AnalogGyro(myChannel);
 			myGyro.reset();
 			System.out.println("GYRO CONTROL CONSTRUCTOR");
 		}catch(Exception e){
@@ -39,6 +39,7 @@ public class GyroControl {
     }
     
     public double getAngle(){
+    	System.out.println("Gyro Angle: " + myGyro.getAngle());
     	if(gyroLoaded){
     		return myGyro.getAngle();
     	}
