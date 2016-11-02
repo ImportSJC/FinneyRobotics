@@ -11,7 +11,7 @@ import cpi.auto.*;;
  * Copy/Paste this template to another package
  *
  */
-public class Autonomous extends AutonomousBase{//TODO look into this class, should it be deleted
+public class Autonomous extends AutonomousBase{
 	
 	/**
 	 * Create mode names here eg.static final String TOTE_NO_BUMP="tote_noBump";
@@ -50,7 +50,7 @@ public class Autonomous extends AutonomousBase{//TODO look into this class, shou
 
 
 	
-	/////////////////*			FULL AUTONOMOUS MODES			*//////////////////// TODO: add elevator down to limit switch at the end of all modes that lift the elevator
+	/////////////////*			FULL AUTONOMOUS MODES			*////////////////////
 	/**
 	 * Example of a user generated mode
 	 //Drive forward over the bump to the center of the field

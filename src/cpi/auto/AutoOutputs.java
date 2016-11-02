@@ -1,7 +1,6 @@
 package cpi.auto;
 
-import cpi.auto.tele.Drive;
-import cpi.auto.tele.Elevator;
+import cpi.Drive;
 import edu.wpi.first.wpilibj.CANTalon;
 
 public class AutoOutputs {
@@ -14,20 +13,16 @@ public class AutoOutputs {
 	public static CANTalon leftMotor2;
 	public static CANTalon rightMotor1;
 	public static CANTalon rightMotor2;
-	public static CANTalon elevatorMotor1;
-	public static CANTalon elevatorMotor2;
 	
 	private static boolean gyroAssist = false;
 	private static double driveSpeed = 0.0;
 	private static double turnSpeed = 0.0;
 	
 	public static void robotInit(){
-		leftMotor1 = Drive.leftMotor1;
-		leftMotor2 = Drive.leftMotor2;
-		rightMotor1 = Drive.rightMotor1;
-		rightMotor2 = Drive.rightMotor2;
-		elevatorMotor1 = Elevator.elevatorMotor1;
-		elevatorMotor2 = Elevator.elevatorMotor2;
+		leftMotor1 = Drive.leftTalon1;
+		leftMotor2 = Drive.leftTalon2;
+		rightMotor1 = Drive.rightTalon1;
+		rightMotor2 = Drive.rightTalon2;
 	}
 	
 	public void AutonomousPeriodic(){
@@ -63,11 +58,6 @@ public class AutoOutputs {
 		rightMotor2.enableBrakeMode(value);
 	}
 	
-	public static void setElevatorBrake(boolean value){
-		elevatorMotor1.enableBrakeMode(value);
-		elevatorMotor2.enableBrakeMode(value);
-	}
-	
 	public static void reset_Drive(){
 		leftMotor1.set(0);
 		leftMotor2.set(0);
@@ -76,11 +66,6 @@ public class AutoOutputs {
 		gyroAssist = false;
 		driveSpeed = 0.0;
 		turnSpeed = 0.0;
-	}
-	
-	public static void reset_Elevator(){
-		elevatorMotor1.set(0);
-		elevatorMotor2.set(0);
 	}
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
@@ -113,12 +98,6 @@ public class AutoOutputs {
 		leftMotor2.set(speed);
 		rightMotor1.set(speed);
 		rightMotor2.set(speed);
-	}
-	
-	public static void setElevator(double speed){
-		System.out.println("Elevator motors are assigned the speed: " + speed);
-		elevatorMotor1.set(-speed);
-		elevatorMotor2.set(speed);
 	}
 	
 	public static void rampTurn(double remainingAngle, double targetAngle){

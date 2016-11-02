@@ -1,6 +1,5 @@
 package cpi.auto.inputDevices;
 
-import cpi.auto.AutoOutputs;
 import cpi.auto.SuperClass;
 import edu.wpi.first.wpilibj.CANTalon;
 
@@ -9,18 +8,8 @@ public class LimitSwitch extends SuperClass{
 	
 	CANTalon myTalon;
 	
-	public LimitSwitch(String limitSwitchLocation){
-		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
-			myTalon = AutoOutputs.elevatorMotor1;
-		}
-	}
-	
-	public LimitSwitch(String limitSwitchLocation, boolean targetPosition){
-		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
-			myTalon = AutoOutputs.elevatorMotor1;
-		}
-		
-		this.targetPosition = targetPosition;
+	public LimitSwitch(){
+		//Assign your Talon to the myTalon variable
 	}
 	
 	@Override 

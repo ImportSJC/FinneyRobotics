@@ -1,14 +1,14 @@
 
 package org.usfirst.frc.team1405.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 //import edu.wpi.first.wpilibj.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
-import cpi.Elevator;
 import cpi.XBox360;
+import cpi.auto.AutoInputs;
+import cpi.auto.AutoOutputs;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -21,8 +21,7 @@ public class Robot extends IterativeRobot {
     
 
    Drive drive;
-   Elevator elevator;
-   XBox360 pilot;
+   static public XBox360 pilot;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -37,13 +36,13 @@ public class Robot extends IterativeRobot {
     }
     void initialize(){
     	
-    	cpi.Preferences.initialize();
     	Autonomous.robotInit();
     	drive= new Drive("Teleop Drive");
     	drive.robotInit();
     	pilot=new XBox360("Pilot");
     	pilot.robotInit();
-    	
+    	AutoOutputs.robotInit();
+    	AutoInputs.robotInit();
     }
     
     public void autonomousInit(){
@@ -61,6 +60,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	pilot.teleopPeriodic();
     	drive.TeleopPeriodic();
     }
     
@@ -71,11 +71,9 @@ public class Robot extends IterativeRobot {
     }
     public void testInit(){
     	LiveWindow.setEnabled(false);
-    	cpi.CANTalon.testInit();
     }
     public void testPeriodic() {
     	pilot.teleopPeriodic();
-    	cpi.CANTalon.testPeriodic();
     }
     
     public void disabledPeriodic(){

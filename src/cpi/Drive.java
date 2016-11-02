@@ -1,9 +1,11 @@
 package cpi;
 
+import java.awt.Robot;
 
-import cpi.Interface.*;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.tables.ITable;
 import edu.wpi.first.wpilibj.tables.ITableListener;
+
 public class Drive {
 	static final String DIRECT_MECANUM="Direct Mecanum";
 	static final String DIRECT_TANK="Direct Tank";
@@ -15,160 +17,108 @@ public class Drive {
 	public Drive(String name){
 	this.name=name;
 	
-	rightFrontMotor = new DoubleInput(name,"right Front Motor(s)");
-	leftFrontMotor = new DoubleInput(name,"left Front Motor(s)");
-	rightRearMotor = new DoubleInput(name,"right Rear Motor(s)");
-	leftRearMotor = new DoubleInput(name,"left Rear Motor(s)");
-	rightMotor = new DoubleInput(name,"right Motor(s)");
-	leftMotor = new DoubleInput(name,"left Motor(s)");
-	centerMotor = new DoubleInput(name,"center Motor(s)");
+//	rightFrontTalon1 = new CANTalon(1);
+//	rightFrontTalon2 = new CANTalon(2);
+//	leftFrontTalon1 = new CANTalon(3);
+//	leftFrontTalon2 = new CANTalon(4);
+//	rightRearTalon1 = new CANTalon(5);
+//	rightRearTalon2 = new CANTalon(6);
+//	leftRearTalon1 =  new CANTalon(7);
+//	leftRearTalon2 =  new CANTalon(8);
 	
-	rightFrontTalon1 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #1",1);
-	rightFrontTalon2 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Front Motor #2",2);
-	leftFrontTalon1 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Left Front Motor #1",3);
-	leftFrontTalon2 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Left Front Motor #2",4);
-	rightRearTalon1 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Rear Motor #1",5);
-	rightRearTalon2 = CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Right Rear Motor #2",6);
-	leftRearTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Left Rear Motor #1",7);
-	leftRearTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_MECANUM,"Left Rear Motor #2",8);
-	rightTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_TANK,"Right Motor #1",1);
-	rightTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_TANK,"Right Motor #2",2);
-	leftTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_TANK,"Left Motor #1",3);;
-	leftTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_TANK,"Left Motor #2",4);;
-	rightHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #1",1);
-	rightHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Right H Motor #2",2);
-	leftHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Left H Motor #1",3);;
-	leftHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Left H Motor #2",4);;
-	centerHTalon1 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Center H Motor #1",5);;
-	centerHTalon2 =  CANTalon.getInstance(name+"/"+DIRECT_HDRIVE,"Center H Motor #2",6);;
+	rightTalon1 =  new CANTalon(3);
+	rightTalon2 =  new CANTalon(4);
+	leftTalon1 =  new CANTalon(1);
+	leftTalon2 =  new CANTalon(2);
 	
-	mode=new SetString(name,"Mode",DIRECT_TANK);
-	tank=new NetBoolean(name+"/Select Mode",DIRECT_TANK,false);
-	tank.lock();
-	mecanun=new NetBoolean(name+"/Select Mode",DIRECT_MECANUM,false);
-	mecanun.lock();
-	HDrive=new NetBoolean(name+"/Select Mode",DIRECT_HDRIVE,false);
-	HDrive.lock();
-	tank.addActionListner(new ITableListener(){
-		public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
-			if(!(boolean)pvalue)return;
-			mode.Value(DIRECT_TANK);
-			tank.Value(false);
-		}
-	});
-	mecanun.addActionListner(new ITableListener(){
-		public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
-			if(!(boolean)pvalue)return;
-			mode.Value(DIRECT_MECANUM);
-			mecanun.Value(false);
-		}
-	});
-	HDrive.addActionListner(new ITableListener(){
-		public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
-			if(!(boolean)pvalue)return;
-			mode.Value(DIRECT_HDRIVE);
-			HDrive.Value(false);
-		}
-	});
-	enableSecondMotors= new SetBoolean(name,"#2 motors are enabled",true);
+//	centerHTalon1 =  new CANTalon(5);
+//	centerHTalon2 =  new CANTalon(6);
 	
-	
-	cpi.Preferences.addHardCodeListener(new ITableListener(){
-		public void valueChanged(ITable source, String key, Object pvalue, boolean isNew){
-			if((boolean)pvalue){
-				tank.lock();
-				mecanun.lock();
-				HDrive.lock();
-			}else{
-				tank.unlock();	
-				mecanun.unlock();	
-				mecanun.unlock();	
-			}
-		}
-	});
+	mode=DIRECT_TANK;
 	}
 	
 	public void robotInit(){}
 	
-	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
-		  rightFrontTalon1.set(rightFront);
-		  if(enableSecondMotors.Value())rightFrontTalon2.set(rightFront);
-		  leftFrontTalon1.set(leftFront);
-		  if(enableSecondMotors.Value())leftFrontTalon2.set(leftFront);
-		  rightRearTalon1.set(rightRear);
-		  if(enableSecondMotors.Value())rightRearTalon2.set(rightRear);
-		  leftRearTalon1.set(leftRear);
-		  if(enableSecondMotors.Value())leftRearTalon2.set(leftRear);
-		
-	}
+//	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
+//		  rightFrontTalon1.set(rightFront);
+//		  rightFrontTalon2.set(rightFront);
+//		  leftFrontTalon1.set(leftFront);
+//		  leftFrontTalon2.set(leftFront);
+//		  rightRearTalon1.set(rightRear);
+//		  rightRearTalon2.set(rightRear);
+//		  leftRearTalon1.set(leftRear);
+//		  leftRearTalon2.set(leftRear);
+//		
+//	}
 	
 	public void tankMotors(double right,double left){
 		  rightTalon1.set(right);
-		  if(enableSecondMotors.Value())rightTalon2.set(right);
+		  rightTalon2.set(right);
 		  leftTalon1.set(left);
-		  if(enableSecondMotors.Value())leftTalon2.set(left);
+		  leftTalon2.set(left);
 		
 	}
 	
-	public void hdriveMotors(double right,double left,double center){
-		  rightTalon1.set(right);
-		  if(enableSecondMotors.Value())rightTalon2.set(right);
-		  leftTalon1.set(left);
-		  if(enableSecondMotors.Value())leftTalon2.set(left);
-		  centerHTalon1.set(center);
-		  if(enableSecondMotors.Value())centerHTalon2.set( center);
-		
-	}
+//	public void hdriveMotors(double right,double left,double center){
+//		  rightTalon1.set(right);
+//		  rightTalon2.set(right);
+//		  leftTalon1.set(left);
+//		  leftTalon2.set(left);
+//		  centerHTalon1.set(center);
+//		  centerHTalon2.set( center);
+//		
+//	}
 	
-	public void TeleopPeriodic(){
-		switch(mode.Value()){
+	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
+		rightMotor = org.usfirst.frc.team1405.robot.Robot.pilot.rightStickYaxis;
+		leftMotor = -org.usfirst.frc.team1405.robot.Robot.pilot.leftStickYaxis;
+		System.out.println("RightMotor: " + rightMotor);
+		System.out.println("LeftMotor: " + leftMotor);
+		switch(mode){
 		case DIRECT_MECANUM:
-			mecanumMotors( rightFrontMotor.Value(), rightRearMotor.Value(),leftFrontMotor.Value(),leftRearMotor.Value());
+//			mecanumMotors( rightFrontMotor, rightRearMotor,leftFrontMotor,leftRearMotor);
 	  break;
 	  
 		case DIRECT_TANK:
-			tankMotors(rightMotor.Value(),leftMotor.Value());
+			tankMotors(rightMotor,leftMotor);
 	  break;
 	  
 		case DIRECT_HDRIVE: 
-			hdriveMotors(rightMotor.Value(),leftMotor.Value(),centerMotor.Value());
+//			hdriveMotors(rightMotor,leftMotor,centerMotor);
 	  break;
 		}
 	}
 
-	SetString mode;
-	NetBoolean tank;
-	NetBoolean mecanun;
-	NetBoolean HDrive;
+	String mode;
+	boolean tank;
+	boolean mecanun;
+	boolean HDrive;
 	
-	SetBoolean enableSecondMotors;
   String name;
   
-  CANTalon rightFrontTalon1;
-  CANTalon rightFrontTalon2;
-  CANTalon leftFrontTalon1;
-  CANTalon leftFrontTalon2;
-  CANTalon rightRearTalon1;
-  CANTalon rightRearTalon2;
-  CANTalon leftRearTalon1;
-  CANTalon leftRearTalon2;
-  CANTalon rightTalon1;
-  CANTalon rightTalon2;
-  CANTalon leftTalon1;
-  CANTalon leftTalon2;
-  CANTalon rightHTalon1;
-  CANTalon rightHTalon2;
-  CANTalon leftHTalon1;
-  CANTalon leftHTalon2;
-  CANTalon centerHTalon1;
-  CANTalon centerHTalon2;
+//  CANTalon rightFrontTalon1;
+//  CANTalon rightFrontTalon2;
+//  CANTalon leftFrontTalon1;
+//  CANTalon leftFrontTalon2;
+//  CANTalon rightRearTalon1;
+//  CANTalon rightRearTalon2;
+//  CANTalon leftRearTalon1;
+//  CANTalon leftRearTalon2;
+  
+  static public CANTalon rightTalon1;
+  static public CANTalon rightTalon2;
+  static public CANTalon leftTalon1;
+  static public CANTalon leftTalon2;
+  
+//  CANTalon centerHTalon1;
+//  CANTalon centerHTalon2;
   
   
-  DoubleInput rightFrontMotor;
-  DoubleInput leftFrontMotor;
-  DoubleInput  rightRearMotor;
-  DoubleInput  leftRearMotor;
-  DoubleInput  rightMotor;
-  DoubleInput  leftMotor;
-  DoubleInput  centerMotor;
+  double rightFrontMotor;
+  double leftFrontMotor;
+  double rightRearMotor;
+  double leftRearMotor;
+  double rightMotor;
+  double leftMotor;
+  double centerMotor;
 }

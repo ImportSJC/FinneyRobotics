@@ -5,33 +5,26 @@ public class DeadBand {
     private static final double DEFAULT_VALUE=0.1;
     
 	public DeadBand(String table,String pname){
-		band=new SetDouble(table+DEADBAND_TABLE_NAME,pname , DEFAULT_VALUE);
-		name=pname;
+		band= DEFAULT_VALUE;
 	}
-	/*public DeadBand(java.lang.String pname,double pdeadBand){
-		band=new SetDouble(DEADBAND_TABLE_NAME, pname, pdeadBand);
-		band.Value(pdeadBand) ;
-		name=pname;
-	}*/
+	
     public double Value(double InValue){
         double OutValue=0.0;
-        if(InValue > band.Value())
+        if(InValue > band)
         {
-            OutValue= (InValue-band.Value())/(1-band.Value());
+            OutValue= (InValue-band)/(1-band);
         }
-        else if(InValue <-band.Value()){
+        else if(InValue <-band){
             
-            OutValue= (InValue+band.Value())/(1-band.Value());
+            OutValue= (InValue+band)/(1-band);
         }
         else{
             OutValue=0.0;
         }
         return OutValue;
 }
-    private String name;
-    SetDouble band;
+    double band;
 
-public static final String DEADBAND_TABLE_NAME ="/DeadBand Swettings";
 }
 
 

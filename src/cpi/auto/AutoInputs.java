@@ -1,10 +1,10 @@
 package cpi.auto;
 
-import cpi.auto.tele.Drive;
-import edu.wpi.first.wpilibj.AnalogInput;
+import cpi.Drive;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
-import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.GyroBase;
 
 public class AutoInputs {
 	//Encoders
@@ -12,16 +12,15 @@ public class AutoInputs {
 	public static CANTalon rightMotor1;
 	
 	//Gyros
-	public static Gyro myGyro;
+	public static GyroBase myGyro = new ADXRS450_Gyro();
 	
 	public static void robotInit(){
-		leftMotor1 = Drive.leftMotor1;
-		rightMotor1 = Drive.rightMotor1;
+		leftMotor1 = Drive.leftTalon1;
+		rightMotor1 = Drive.rightTalon1;
+//		leftMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+//		rightMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
-		leftMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		rightMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		
-		myGyro = new Gyro(new AnalogInput(0));
+//		myGyro = new GyroBase(new AnalogInput(0));
 	}
 	
 	public void AutoInit(){

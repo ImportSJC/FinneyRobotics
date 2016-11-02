@@ -13,8 +13,6 @@ public class AutoValues {
 	public static final double time_toteOnTote = 0.8;
 	
 	/*		Speeds		*/
-	public static final double speed_elevatorUp = 0.7;
-	public static final double speed_elevatorDown = -0.3;
 	public static final double speed_drive = 0.3;
 	public static final double speed_turn = 0.3;
 	public static final double speed_turnSlow = 0.2;

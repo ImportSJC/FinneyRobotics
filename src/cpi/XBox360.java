@@ -7,9 +7,6 @@
 package cpi;
 
 import edu.wpi.first.wpilibj.Joystick;
-import cpi.Interface.BooleanOutput;
-import cpi.Interface.DoubleOutput;
-import cpi.Interface.DoubleInput;
 
 /**
  *
@@ -20,33 +17,10 @@ public class XBox360 {
         name=pname;
         instance++;
  
-        leftStickXaxis=new DoubleOutput("XBox360/" +name,"Left Stick X Axis");
-        leftStickYaxis=new DoubleOutput("XBox360/" +name,"Left Stick Y Axis");
-        rightStickXaxis=new DoubleOutput("XBox360/" +name,"Right Stick X Axis");
-        rightStickYaxis=new DoubleOutput("XBox360/" +name,"Right Stick Y Axis");
-        directionalPad=new DoubleOutput("XBox360/" +name,"Directional Pad");
-        triggers=new DoubleOutput("XBox360/" +name,"Triggers");
-        leftTrigger=new DoubleOutput("XBox360/" +name,"Left Trigger");
-        rightTrigger=new DoubleOutput("XBox360/" +name,"Right Trigger");
-
-        rightRumble=new DoubleInput("/XBox360/" +name,"Right Rumble");
-        leftRumble=new DoubleInput("/XBox360/" +name,"Left Rumble");
-        
-          aButton  =new BooleanOutput("XBox360/" +name,"A Button");
-          bButton=new BooleanOutput("XBox360/" + name,"B Button");  
-          xButton=new BooleanOutput("XBox360/" + name,"X Button");  
-          yButton=new BooleanOutput("XBox360/" + name,"Y Button");
-          leftBumper=new BooleanOutput("XBox360/" +name,"Left Bumper");  
-          rightBumper=new BooleanOutput("XBox360/" +name,"Right Bumper");  
-          stopBackButton=new BooleanOutput("XBox360/" +name,"Stop-Back Button");
-          startButton=new BooleanOutput("XBox360/" +name,"Start Button");  
-          leftThumbstickButton=new BooleanOutput("XBox360/" +name,"Left Thumbstick Button");
-          rightThumbstickButton=new BooleanOutput("XBox360/" +name,"Right Thumbstick Button");
-
           dbLeftStickX=new DeadBand("XBox360/" +name,"Left Stick X Deadband value");
           dbLeftStickY=new DeadBand("XBox360/" +name,"Left Stick Y Deadband value");
           dbRightStickX=new DeadBand("XBox360/" +name,"Right Stick X Deadband value");
-          dbRightStickX=new DeadBand("XBox360/" +name,"Right Stick Y Deadband value");
+          dbRightStickY=new DeadBand("XBox360/" +name,"Right Stick Y Deadband value");
     }
     
     public void robotInit(){
@@ -67,27 +41,30 @@ public class XBox360 {
     
     public void teleopPeriodic() {
      // Get values from joystick     
-     leftStickXaxis.Value(dbLeftStickX.Value(joystick.getRawAxis(0)) );
-     leftStickYaxis.Value(dbLeftStickY.Value( joystick.getRawAxis(1)));
-     leftTrigger.Value(joystick.getRawAxis(2));
-     rightTrigger.Value(joystick.getRawAxis(3));
-     rightStickXaxis.Value(dbRightStickX.Value(joystick.getRawAxis(4)));
-     rightStickYaxis.Value(dbRightStickX.Value(joystick.getRawAxis(5)));
-     directionalPad.Value(joystick.getPOV());
-     joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kRightRumble, (float)rightRumble.Value());
-     joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kLeftRumble, (float)leftRumble.Value());
+     leftStickXaxis=dbLeftStickX.Value(joystick.getRawAxis(0));
+     leftStickYaxis=dbLeftStickY.Value(joystick.getRawAxis(1));
+     
+     leftTrigger=joystick.getRawAxis(2);
+     rightTrigger=joystick.getRawAxis(3);
+     
+     rightStickXaxis=dbRightStickX.Value(joystick.getRawAxis(4));
+     rightStickYaxis=dbRightStickY.Value(joystick.getRawAxis(5));
+     
+     directionalPad=joystick.getPOV();
+     joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kRightRumble, (float)rightRumble);
+     joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kLeftRumble, (float)leftRumble);
      
      
-     aButton.Value(joystick.getRawButton(1)); 
-     bButton.Value(joystick.getRawButton(2));
-     xButton.Value(joystick.getRawButton(3));    
-     yButton.Value(joystick.getRawButton(4)); 
-     leftBumper.Value(joystick.getRawButton(5));  
-     rightBumper.Value(joystick.getRawButton(6)); 
-     stopBackButton.Value(joystick.getRawButton(7)); 
-     startButton.Value(joystick.getRawButton(8));    
-     leftThumbstickButton.Value(joystick.getRawButton(9));  
-     rightThumbstickButton.Value(joystick.getRawButton(10));
+     aButton=joystick.getRawButton(1);
+     bButton=joystick.getRawButton(2);
+     xButton=joystick.getRawButton(3);   
+     yButton=joystick.getRawButton(4);
+     leftBumper=joystick.getRawButton(5); 
+     rightBumper=joystick.getRawButton(6);
+     stopBackButton=joystick.getRawButton(7);
+     startButton=joystick.getRawButton(8); 
+     leftThumbstickButton=joystick.getRawButton(9);  
+     rightThumbstickButton=joystick.getRawButton(10);
     
     }
     
@@ -108,28 +85,28 @@ public class XBox360 {
   
  // joystick declarations   
   // remote joystick declarations
-    public DoubleOutput leftStickXaxis;
-    public DoubleOutput leftStickYaxis; 
-    public DoubleOutput rightStickXaxis;
-    public DoubleOutput rightStickYaxis;
-    public DoubleOutput directionalPad;
-    public DoubleOutput triggers;
-    public DoubleOutput leftTrigger;
-    public DoubleOutput rightTrigger;
+    public double leftStickXaxis;
+    public double leftStickYaxis; 
+    public double rightStickXaxis;
+    public double rightStickYaxis;
+    public double directionalPad;
+    public double triggers;
+    public double leftTrigger;
+    public double rightTrigger;
   
   
-    public BooleanOutput aButton;  
-    public BooleanOutput bButton;  
-    public BooleanOutput xButton;  
-    public BooleanOutput yButton;
-    public BooleanOutput leftBumper;  
-    public BooleanOutput rightBumper;  
-    public BooleanOutput stopBackButton;
-    public BooleanOutput startButton;  
-    public BooleanOutput leftThumbstickButton;
-    public BooleanOutput rightThumbstickButton;
-    public cpi.Interface.DoubleInput rightRumble;
-    public cpi.Interface.DoubleInput leftRumble;
+    public boolean aButton;  
+    public boolean bButton;  
+    public boolean xButton;  
+    public boolean yButton;
+    public boolean leftBumper;  
+    public boolean rightBumper;  
+    public boolean stopBackButton;
+    public boolean startButton;  
+    public boolean leftThumbstickButton;
+    public boolean rightThumbstickButton;
+    public double rightRumble;
+    public double leftRumble;
 
     DeadBand dbLeftStickX;
     DeadBand dbLeftStickY;
