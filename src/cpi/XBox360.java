@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
  *
  * @author Thomas Wulff
  * 
- * The XBox360 class maps the wpilibl.Joystick to the XBox360 controls 
+ * <br>The XBox360 class maps the wpilibl.Joystick to the XBox360 controls 
  */
 public class XBox360 {
     Joystick joystick;
@@ -179,10 +179,8 @@ public class XBox360 {
     	return joystick.getRawButton(10); 
     }
 }
-    /**
+    /*
      * XBox 360
-     */
-    /**
  * Description XBox 360:
     This maps the XBox controller to the WPILIB Joystick class
     Use the Joystick.GetRawAxis() method for the axies
