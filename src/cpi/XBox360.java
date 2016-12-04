@@ -10,120 +10,186 @@ import edu.wpi.first.wpilibj.Joystick;
 
 /**
  *
- * @author Robotics
+ * @author Thomas Wulff
+ * 
+ * The XBox360 class maps the wpilibl.Joystick to the XBox360 controls 
  */
 public class XBox360 {
-    public XBox360(String pname){
-        name=pname;
-        instance++;
- 
-          dbLeftStickX=new DeadBand("XBox360/" +name,"Left Stick X Deadband value");
-          dbLeftStickY=new DeadBand("XBox360/" +name,"Left Stick Y Deadband value");
-          dbRightStickX=new DeadBand("XBox360/" +name,"Right Stick X Deadband value");
-          dbRightStickY=new DeadBand("XBox360/" +name,"Right Stick Y Deadband value");
-    }
-    
-    public void robotInit(){
-        joystick=new Joystick(instance);
-        
-       
-        // Test remote equivalents to interfacs instantiations
-    }
-    
-       
-    public void autonomousInit(){
-    }
-    public void autonomousPeriodic() {
-    }
-    
-    public void teleopInit(){
-    }
-    
-    public void teleopPeriodic() {
-     // Get values from joystick     
-     leftStickXaxis=dbLeftStickX.Value(joystick.getRawAxis(0));
-     leftStickYaxis=dbLeftStickY.Value(joystick.getRawAxis(1));
-     
-     leftTrigger=joystick.getRawAxis(2);
-     rightTrigger=joystick.getRawAxis(3);
-     
-     rightStickXaxis=dbRightStickX.Value(joystick.getRawAxis(4));
-     rightStickYaxis=dbRightStickY.Value(joystick.getRawAxis(5));
-     
-     directionalPad=joystick.getPOV();
-     joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kRightRumble, (float)rightRumble);
-     joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kLeftRumble, (float)leftRumble);
-     
-     
-     aButton=joystick.getRawButton(1);
-     bButton=joystick.getRawButton(2);
-     xButton=joystick.getRawButton(3);   
-     yButton=joystick.getRawButton(4);
-     leftBumper=joystick.getRawButton(5); 
-     rightBumper=joystick.getRawButton(6);
-     stopBackButton=joystick.getRawButton(7);
-     startButton=joystick.getRawButton(8); 
-     leftThumbstickButton=joystick.getRawButton(9);  
-     rightThumbstickButton=joystick.getRawButton(10);
-    
-    }
-    
-    //$$$$ Begin Test Code - BO NOT REMOVE THIS COMMENT!!!
-    public void testInit(){
-    }
-    
-    public void testPeriodic() {
-    }
-    //$$$$ End Test Code - BO NOT REMOVE THIS COMMENT!!!
-    
-    
-    public void disabledInit(){
-    }
     Joystick joystick;
-    java.lang.String name;
-  static int instance=-1;
-  
- // joystick declarations   
-  // remote joystick declarations
-    public double leftStickXaxis;
-    public double leftStickYaxis; 
-    public double rightStickXaxis;
-    public double rightStickYaxis;
-    public double directionalPad;
-    public double triggers;
-    public double leftTrigger;
-    public double rightTrigger;
-  
-  
-    public boolean aButton;  
-    public boolean bButton;  
-    public boolean xButton;  
-    public boolean yButton;
-    public boolean leftBumper;  
-    public boolean rightBumper;  
-    public boolean stopBackButton;
-    public boolean startButton;  
-    public boolean leftThumbstickButton;
-    public boolean rightThumbstickButton;
-    public double rightRumble;
-    public double leftRumble;
+/**
+ * 
+ * @param port - Joystick Port Number
+ */
+    public XBox360(int port){
+       joystick=new Joystick(port);
+    }
+/**
+ * 
+ * @return - returns the Left Stick X Axis value
+ */
+    public double leftStickXaxis(){
+    	return joystick.getRawAxis(0);
+    }
 
-    DeadBand dbLeftStickX;
-    DeadBand dbLeftStickY;
-    DeadBand dbRightStickX;
-    DeadBand dbRightStickY;
+/**
+ * 
+ * @return - returns the Left Stick Y Axis value
+ */
+    public double leftStickYaxis(){
+    	return joystick.getRawAxis(1);
+    }
+
+/**
+ * 
+ * @return - returns the Left Trigger value
+ */
+    public double leftTrigger(){
+    	return joystick.getRawAxis(2);
+    }
+
+/**
+ * 
+ * @return - returns the Right Trigger value
+ */
+    public double rightTrigger(){
+    	return joystick.getRawAxis(3);
+    }
+
+/**
+ * 
+ * @return - returns the Right Stick X Axis value
+ */
+    public double rightStickXaxis(){
+    	return joystick.getRawAxis(4);
+    }
+
+/**
+ * 
+ * @return - returns the Right Stick Y Axis value
+ */
+    public double rightStickYaxis(){
+    	return joystick.getRawAxis(5);
+    }
+
+/**
+ * 
+ * @return - returns the directional pad value
+ */
+    public double directionalPad(){
+    	return joystick.getPOV();
+    }
+    
+    /**
+     * 
+     * @param value - Sets the right rumble to value
+     */
+    public void rightRumble(double value){
+        joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kRightRumble, (float)value);
+    }
+
+    /**
+     * 
+     * @param value - Sets the left rumble to value
+     */
+    public void leftRumble(double value){
+        joystick.setRumble(edu.wpi.first.wpilibj.Joystick.RumbleType.kLeftRumble, (float)value);
+    }
+    
+    /**
+     * 
+     * @return - Returns the A button value
+     */
+    public boolean aButton(){
+    	return joystick.getRawButton(1); 
+    }
+
+    
+    /**
+     * 
+     * @return - Returns the B button value
+     */
+    public boolean bButton(){
+    	return joystick.getRawButton(2); 
+    }
+
+    
+    /**
+     * 
+     * @return - Returns the X button value
+     */
+    public boolean xButton(){
+    	return joystick.getRawButton(3); 
+    }
+
+    
+    /**
+     * 
+     * @return - Returns the Y button value
+     */
+    public boolean yButton(){
+    	return joystick.getRawButton(4); 
+    }
+
+    /**
+     * 
+     * @return - Returns the left bumper value
+     */
+    public boolean leftBumper(){
+    	return joystick.getRawButton(5); 
+    }
+
+    /**
+     * 
+     * @return - Returns the right bumper value
+     */
+    public boolean rightBumper(){
+    	return joystick.getRawButton(6); 
+    }
+
+    /**
+     * 
+     * @return - Returns the stop/back button value
+     */
+    public boolean stopBackButton(){
+    	return joystick.getRawButton(7); 
+    }
+
+    /**
+     * 
+     * @return - Returns the start button value
+     */
+    public boolean startButton(){
+    	return joystick.getRawButton(8); 
+    }
+
+    /**
+     * 
+     * @return - Returns the left thumbstick button value
+     */
+    public boolean leftThumbstickButton(){
+    	return joystick.getRawButton(9); 
+    }
+
+
+    /**
+     * 
+     * @return - Returns the right thumbstick button value
+     */
+    public boolean rightThumbstickButton(){
+    	return joystick.getRawButton(10); 
+    }
 }
     /**
      * XBox 360
      */
-    /*
+    /**
  * Description XBox 360:
     This maps the XBox controller to the WPILIB Joystick class
     Use the Joystick.GetRawAxis() method for the axies
     Use the Joystick.GetRawButton() methods for the buttons
     
- */
-/*
+
+
 1: A
 2: B
 3: X
@@ -183,6 +249,3 @@ DPAD:
 315: North-West Thumbpad Button
  * 
  */
-    /**
-     * Axis
-     */
