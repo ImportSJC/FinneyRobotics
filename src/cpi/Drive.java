@@ -70,8 +70,8 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-		rightMotor = org.usfirst.frc.team1405.robot.Robot.pilot.rightStickYaxis;
-		leftMotor = -org.usfirst.frc.team1405.robot.Robot.pilot.leftStickYaxis;
+		rightMotor = org.usfirst.frc.team1405.robot.Robot.pilot.rightStickYaxis();
+		leftMotor = -org.usfirst.frc.team1405.robot.Robot.pilot.leftStickYaxis();
 		System.out.println("RightMotor: " + rightMotor);
 		System.out.println("LeftMotor: " + leftMotor);
 		switch(mode){
