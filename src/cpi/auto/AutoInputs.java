@@ -2,8 +2,7 @@ package cpi.auto;
 
 import cpi.Drive;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.GyroBase;
 
 public class AutoInputs {
@@ -12,7 +11,7 @@ public class AutoInputs {
 	public static CANTalon rightMotor1;
 	
 	//Gyros
-	public static GyroBase myGyro = new ADXRS450_Gyro();
+	private static GyroBase myGyro = new ADXRS450_Gyro();
 	
 	public static void robotInit(){
 		leftMotor1 = Drive.leftTalon1;
@@ -46,5 +45,41 @@ public class AutoInputs {
 		System.out.println("Right Encoder position: " + getRightEncoder());
 //		return (getLeftEncoder() + getRightEncoder())/2;
 		return getLeftEncoder();
+	}
+	
+	public static void resetGyro(){
+		try{
+			myGyro.reset();
+		}catch(NullPointerException e){
+			System.out.println("ERROR: Onboard Gyro is not connected");
+		}
+	}
+	
+	public static double getGyroRate(){
+		double myDouble = 0;
+		
+		try{
+			myDouble = myGyro.getRate();
+		}catch(NullPointerException e){
+			System.out.println("ERROR: Onboard Gyro is not connected");
+		}
+		
+		return myDouble;
+	}
+	
+	public static double getGyroAngle(){
+		double myDouble = 0;
+		
+		try{
+			myDouble = myGyro.getAngle();
+		}catch(NullPointerException e){
+			System.out.println("ERROR: Onboard Gyro is not connected");
+		}
+		
+		return myDouble;
+	}
+	
+	public static GyroBase getGyro(){
+		return myGyro;
 	}
 }

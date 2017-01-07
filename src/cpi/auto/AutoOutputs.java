@@ -1,7 +1,7 @@
 package cpi.auto;
 
 import cpi.Drive;
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 
 public class AutoOutputs {
 //	public static double leftMotor1 = 0.0;
@@ -30,23 +30,23 @@ public class AutoOutputs {
 		if(gyroAssist){
 			if (driveSpeed>=0){
 				//Moderate gyro assist (not as fast of correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
-//				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
+//				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
+//				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
 				
 				//Drastic gyro assist (a faster correction)
-				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
-						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
-				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.getGyroAngle()
+						 + " Gyro angle: " + AutoInputs.getGyroAngle());
+				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.getGyroAngle());
 			}
 			else{
 				//Moderate gyro assist (not as fast of correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
-//				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.myGyro.getAngle());
+//				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
+//				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
 				
 				//Drastic gyro assist (a faster correction)
-				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle()
-						 + " Gyro angle: " + AutoInputs.myGyro.getAngle());
-				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.myGyro.getAngle());
+				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.getGyroAngle()
+						 + " Gyro angle: " + AutoInputs.getGyroAngle());
+				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.getGyroAngle());
 			}
 		}
 	}
@@ -104,12 +104,12 @@ public class AutoOutputs {
 		//intelligently turn the robot smoothly into the target angle 
 		
 		//turn the robot slower until it reaches the target angle (remaining angle == 0)
-		System.out.println("Gyro Rate: " + AutoInputs.myGyro.getRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + turnSpeed);
-		if(Math.abs(AutoInputs.myGyro.getRate())<=20){
+		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + turnSpeed);
+		if(Math.abs(AutoInputs.getGyroRate())<=20){
 			setDrive(driveSpeed, turnSpeed * 1.25);
 		}
 		
-		if(Math.abs(AutoInputs.myGyro.getRate())>=Math.abs(remainingAngle)){
+		if(Math.abs(AutoInputs.getGyroRate())>=Math.abs(remainingAngle)){
 			setDrive(driveSpeed, turnSpeed * 0.75);
 		}
 		

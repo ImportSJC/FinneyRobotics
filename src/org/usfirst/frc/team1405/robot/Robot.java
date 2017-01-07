@@ -1,7 +1,7 @@
 
 package org.usfirst.frc.team1405.robot;
 
-//import edu.wpi.first.wpilibj.CANTalon;
+//import com.ctre.CANTalon;
 //import cpi.CANTalon;
 import cpi.Drive;
 import cpi.XBox360;
@@ -39,8 +39,7 @@ public class Robot extends IterativeRobot {
     	Autonomous.robotInit();
     	drive= new Drive("Teleop Drive");
     	drive.robotInit();
-    	pilot=new XBox360("Pilot");
-    	pilot.robotInit();
+    	pilot=new XBox360(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
     }
@@ -60,7 +59,6 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	pilot.teleopPeriodic();
     	drive.TeleopPeriodic();
     }
     
@@ -73,11 +71,9 @@ public class Robot extends IterativeRobot {
     	LiveWindow.setEnabled(false);
     }
     public void testPeriodic() {
-    	pilot.teleopPeriodic();
     }
     
     public void disabledPeriodic(){
-    	pilot.teleopPeriodic();
     	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
 }

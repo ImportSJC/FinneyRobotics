@@ -6,7 +6,7 @@ public class GyroControl {
 	private GyroBase myGyro;
 	public GyroControl(int myChannel)
 	{	
-		if (myChannel == 0){ myGyro = AutoInputs.myGyro; }
+		if (myChannel == 0){ myGyro = AutoInputs.getGyro(); }
 	}
 	
     public void Init(){

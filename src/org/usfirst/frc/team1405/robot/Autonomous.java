@@ -16,7 +16,7 @@ public class Autonomous extends AutonomousBase{
 	public static void robotInit(){
 		AutoInputs.robotInit();
 		AutoOutputs.robotInit();
-		AutoInputs.myGyro.reset();
+		AutoInputs.resetGyro();
 		Set.setDefault(TEST_DRIVING);
 		Set.addName(TEST_AUTO_MODE);
 		Set.addName(TEST_DRIVING);
