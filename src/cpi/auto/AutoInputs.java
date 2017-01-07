@@ -47,6 +47,8 @@ public class AutoInputs {
 		return getLeftEncoder();
 	}
 	
+	
+	//Wrapping all gyro access code in try catch so that no exceptions go unchecked if no gyro is connected
 	public static void resetGyro(){
 		try{
 			myGyro.reset();
