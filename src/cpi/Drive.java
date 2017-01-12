@@ -1,10 +1,6 @@
 package cpi;
 
-import java.awt.Robot;
-
-import com.ctre.CANTalon;
-import edu.wpi.first.wpilibj.tables.ITable;
-import edu.wpi.first.wpilibj.tables.ITableListener;
+import cpi.outputDevices.MotorController;
 
 public class Drive {
 	static final String DIRECT_MECANUM="Direct Mecanum";
@@ -17,19 +13,10 @@ public class Drive {
 	public Drive(String name){
 	this.name=name;
 	
-//	rightFrontTalon1 = new CANTalon(1);
-//	rightFrontTalon2 = new CANTalon(2);
-//	leftFrontTalon1 = new CANTalon(3);
-//	leftFrontTalon2 = new CANTalon(4);
-//	rightRearTalon1 = new CANTalon(5);
-//	rightRearTalon2 = new CANTalon(6);
-//	leftRearTalon1 =  new CANTalon(7);
-//	leftRearTalon2 =  new CANTalon(8);
-	
-	rightTalon1 =  new CANTalon(3);
-	rightTalon2 =  new CANTalon(4);
-	leftTalon1 =  new CANTalon(1);
-	leftTalon2 =  new CANTalon(2);
+	right1 =  new MotorController(3);
+	right2 =  new MotorController(4);
+	left1 =  new MotorController(1);
+	left2 =  new MotorController(2);
 	
 //	centerHTalon1 =  new CANTalon(5);
 //	centerHTalon2 =  new CANTalon(6);
@@ -52,10 +39,10 @@ public class Drive {
 //	}
 	
 	public void tankMotors(double right,double left){
-		  rightTalon1.set(right);
-		  rightTalon2.set(right);
-		  leftTalon1.set(left);
-		  leftTalon2.set(left);
+		  right1.set(right);
+		  right2.set(right);
+		  left1.set(left);
+		  left2.set(left);
 		
 	}
 	
@@ -96,19 +83,10 @@ public class Drive {
 	
   String name;
   
-//  CANTalon rightFrontTalon1;
-//  CANTalon rightFrontTalon2;
-//  CANTalon leftFrontTalon1;
-//  CANTalon leftFrontTalon2;
-//  CANTalon rightRearTalon1;
-//  CANTalon rightRearTalon2;
-//  CANTalon leftRearTalon1;
-//  CANTalon leftRearTalon2;
-  
-  static public CANTalon rightTalon1;
-  static public CANTalon rightTalon2;
-  static public CANTalon leftTalon1;
-  static public CANTalon leftTalon2;
+  static public MotorController right1;
+  static public MotorController right2;
+  static public MotorController left1;
+  static public MotorController left2;
   
 //  CANTalon centerHTalon1;
 //  CANTalon centerHTalon2;

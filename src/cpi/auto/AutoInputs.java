@@ -1,21 +1,21 @@
 package cpi.auto;
 
 import cpi.Drive;
+import cpi.outputDevices.MotorController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.GyroBase;
 
 public class AutoInputs {
 	//Encoders
-	public static CANTalon leftMotor1;
-	public static CANTalon rightMotor1;
+	public static MotorController leftMotor1;
+	public static MotorController rightMotor1;
 	
 	//Gyros
 	private static GyroBase myGyro = new ADXRS450_Gyro();
 	
 	public static void robotInit(){
-		leftMotor1 = Drive.leftTalon1;
-		rightMotor1 = Drive.rightTalon1;
+		leftMotor1 = Drive.left1;
+		rightMotor1 = Drive.right1;
 //		leftMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 //		rightMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		

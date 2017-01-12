@@ -1,7 +1,7 @@
 package cpi.auto;
 
 import cpi.Drive;
-import com.ctre.CANTalon;
+import cpi.outputDevices.MotorController;
 
 public class AutoOutputs {
 //	public static double leftMotor1 = 0.0;
@@ -9,20 +9,20 @@ public class AutoOutputs {
 //	public static double leftMotor2 = 0.0;
 //	public static double rightMotor2 = 0.0;
 	
-	public static CANTalon leftMotor1;
-	public static CANTalon leftMotor2;
-	public static CANTalon rightMotor1;
-	public static CANTalon rightMotor2;
+	public static MotorController leftMotor1;
+	public static MotorController leftMotor2;
+	public static MotorController rightMotor1;
+	public static MotorController rightMotor2;
 	
 	private static boolean gyroAssist = false;
 	private static double driveSpeed = 0.0;
 	private static double turnSpeed = 0.0;
 	
 	public static void robotInit(){
-		leftMotor1 = Drive.leftTalon1;
-		leftMotor2 = Drive.leftTalon2;
-		rightMotor1 = Drive.rightTalon1;
-		rightMotor2 = Drive.rightTalon2;
+		leftMotor1 = Drive.left1;
+		leftMotor2 = Drive.left2;
+		rightMotor1 = Drive.right1;
+		rightMotor2 = Drive.right2;
 	}
 	
 	public void AutonomousPeriodic(){

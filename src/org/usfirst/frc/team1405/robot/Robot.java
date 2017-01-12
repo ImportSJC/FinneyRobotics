@@ -1,9 +1,8 @@
 
 package org.usfirst.frc.team1405.robot;
 
-//import com.ctre.CANTalon;
-//import cpi.CANTalon;
 import cpi.Drive;
+import cpi.GRIP;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
@@ -42,6 +41,8 @@ public class Robot extends IterativeRobot {
     	pilot=new XBox360(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
+    	
+    	GRIP.init();
     }
     
     public void autonomousInit(){

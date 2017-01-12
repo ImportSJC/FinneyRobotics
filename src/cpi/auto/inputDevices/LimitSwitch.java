@@ -1,7 +1,8 @@
 package cpi.auto.inputDevices;
 
-import cpi.auto.SuperClass;
 import com.ctre.CANTalon;
+
+import cpi.auto.SuperClass;
 
 public class LimitSwitch extends SuperClass{
 	private boolean targetPosition = true;
