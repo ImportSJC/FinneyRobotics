@@ -28,7 +28,7 @@ public class XBox360 {
  * @return - returns the Left Stick X Axis value
  */
     public double leftStickXaxis(){
-    	return joystick.getRawAxis(0);
+    	return DeadBand.value(joystick.getRawAxis(0));
     }
 
 /**
@@ -36,7 +36,7 @@ public class XBox360 {
  * @return - returns the Left Stick Y Axis value
  */
     public double leftStickYaxis(){
-    	return joystick.getRawAxis(1);
+    	return DeadBand.value(joystick.getRawAxis(1));
     }
 
 /**
@@ -60,7 +60,7 @@ public class XBox360 {
  * @return - returns the Right Stick X Axis value
  */
     public double rightStickXaxis(){
-    	return joystick.getRawAxis(4);
+    	return DeadBand.value(joystick.getRawAxis(4));
     }
 
 /**
@@ -68,7 +68,7 @@ public class XBox360 {
  * @return - returns the Right Stick Y Axis value
  */
     public double rightStickYaxis(){
-    	return joystick.getRawAxis(5);
+    	return DeadBand.value(joystick.getRawAxis(5));
     }
 
 /**
