@@ -1,8 +1,15 @@
 package cpi;
 
+import org.usfirst.frc.team1405.robot.Robot;
+
 import cpi.outputDevices.MotorController;
 
 public class Drive {
+	/**
+	 * Max speed of the drive system
+	 */
+	static final double MAX_SPEED = 0.5;
+	
 	static final String DIRECT_MECANUM="Direct Mecanum";
 	static final String DIRECT_TANK="Direct Tank";
 	static final String DIRECT_HDRIVE="Direct H Drive";
@@ -25,6 +32,22 @@ public class Drive {
 	}
 	
 	public void robotInit(){}
+	
+	private void tankDrive(){
+		rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
+		leftMotor = (Robot.pilot.leftStickYaxis() * MAX_SPEED);
+		System.out.println("RightMotor: " + rightMotor);
+		System.out.println("LeftMotor: " + leftMotor);
+	}
+	
+	private void arcadeDrive(){
+		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		leftMotor = -leftMotor;
+		System.out.println("( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
+//		System.out.print("( " + rightMotor);
+//		System.out.println(" , " + leftMotor + " )");
+	}
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
 //		  rightFrontTalon1.set(rightFront);
@@ -57,10 +80,9 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-		rightMotor = -org.usfirst.frc.team1405.robot.Robot.pilot.rightStickYaxis();
-		leftMotor = org.usfirst.frc.team1405.robot.Robot.pilot.leftStickYaxis();
-		System.out.println("RightMotor: " + rightMotor);
-		System.out.println("LeftMotor: " + leftMotor);
+//		tankDrive();
+		arcadeDrive();
+		
 		switch(mode){
 		case DIRECT_MECANUM:
 //			mecanumMotors( rightFrontMotor, rightRearMotor,leftFrontMotor,leftRearMotor);
