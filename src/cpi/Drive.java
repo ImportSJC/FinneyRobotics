@@ -49,6 +49,14 @@ public class Drive {
 //		System.out.println(" , " + leftMotor + " )");
 	}
 	
+	private void arcadeDriveSingleStick(){
+		
+		rightMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		leftMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		leftMotor = -leftMotor;
+		
+	}
+	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
 //		  rightFrontTalon1.set(rightFront);
 //		  rightFrontTalon2.set(rightFront);
@@ -81,7 +89,8 @@ public class Drive {
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
 //		tankDrive();
-		arcadeDrive();
+//		arcadeDrive();
+		arcadeDriveSingleStick();
 		
 		switch(mode){
 		case DIRECT_MECANUM:
