@@ -17,3 +17,10 @@ Code for Finney Robotics Team
 - Instead click "No" when asked to replace the .project file and "Yes" to all the rest
 - You should now have all of the source code in the project
 - You should also now be able to right click on the project > Run As > WPILib Java Desploy
+
+<h2>Steps for updating Eclipse Plugins for the 2017 season</h2>
+- In eclispe click help > install new software
+- Under the dropdown select "Frc Plugins ..."
+- Select "WPILib Robot Development" and hit next
+- Hit next again and agree to the terms
+- After the plugins are done installing restart eclipse when prompted and let the workspace build fully
