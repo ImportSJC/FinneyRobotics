@@ -17,6 +17,8 @@ Code for Finney Robotics Team
 - Instead click "No" when asked to replace the .project file and "Yes" to all the rest
 - You should now have all of the source code in the project
 - You should also now be able to right click on the project > Run As > WPILib Java Desploy
+- Right click on the project and click Teams > Share Project > Finish
+- You should now be able to right click on the project > teams > commit
 
 <h2>Steps for updating Eclipse Plugins for the 2017 season</h2>
 - In eclispe click help > install new software
