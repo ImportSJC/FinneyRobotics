@@ -41,12 +41,12 @@ public class Drive {
 	}
 	
 	private void arcadeDrive(){
+		//rightMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		//leftMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		rightMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
-		rightMotor = (-Robot.pilot.rightStickXaxis() * MAX_SPEED) - (Robot.pilot.rightStickYaxis() * MAX_SPEED);
-		leftMotor = (-Robot.pilot.rightStickXaxis() * MAX_SPEED) + (Robot.pilot.rightStickYaxis() * MAX_SPEED);
 		
-		leftMotor = -leftMotor;
+		leftMotor= -leftMotor;
 		
 	}
 /*	
