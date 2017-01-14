@@ -26,3 +26,11 @@ Code for Finney Robotics Team
 - Select "WPILib Robot Development" and hit next
 - Hit next again and agree to the terms
 - After the plugins are done installing restart eclipse when prompted and let the workspace build fully
+
+<h2>Steps fro adding CANTalon Library</h2>
+- Download and install the CTRE Toolsuite installer from here: http://www.ctr-electronics.com/control-system/hro.html#product_tabs_technical_resources
+- Right click on your project and click build path > configure build path > Libraries tab > add external jars
+- Browse to the wpilib folder and then to user > java > lib > CTRLib.jar
+- Click open and OK
+- Project Erros should be gone after the workspace finishes building
+- Warnings are OK
