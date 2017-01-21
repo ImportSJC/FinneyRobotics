@@ -2,7 +2,7 @@
 package org.usfirst.frc.team1405.robot;
 
 import cpi.Drive;
-import cpi.GRIP;
+import cpi.SimpleCamera;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
@@ -20,7 +20,7 @@ public class Robot extends IterativeRobot {
     
 
    Drive drive;
-   static public XBox360 pilot;
+   static public Control pilot;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -36,13 +36,13 @@ public class Robot extends IterativeRobot {
     void initialize(){
     	
     	Autonomous.robotInit();
-    	drive= new Drive("Teleop Drive");
+    	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
-    	pilot=new XBox360(0);
+    	pilot=new Control(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
     	
-    	GRIP.init();
+    	SimpleCamera.init();
     }
     
     public void autonomousInit(){

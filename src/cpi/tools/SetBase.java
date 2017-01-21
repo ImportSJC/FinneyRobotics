@@ -95,8 +95,6 @@ public class  SetBase <Type>{
 	public SetBase(String table,String key,Type Default,boolean setPersistance)
 	{
 		if(isFirst){ // this is done once upon  the first instanciation
-			// Initialize NetworkTables here
-	        NetworkTable.initialize();
 	        HCtable.putBoolean(Constants.HC_KEY, true);
 	        HCtable.clearPersistent(Constants.HC_KEY);
 	        HCtable.addTableListener(Constants.HC_KEY, HClistener, true);
@@ -130,7 +128,8 @@ public class  SetBase <Type>{
 			this.table.clearPersistent(this.key);
 		}
 		HCconstantsTable=NetworkTable.getTable(Constants.TITLE+"/"+Constants.HC_TABLE+"/"+tableName);
-		HCvalue=(Type) HCconstantsTable.getValue(this.key, this.Default);
+		HCconstantsTable.putValue(this.key, this.Default);
+		HCvalue=this.Default;
 		HCconstantsTable.addTableListener(this.key, HCconstantsTablelistener, true); // Permanently locked
 		tablesAndKeys.addElement(Constants.TITLE+"/"+tableName+Constants.TABLE_AND_KEYS_SEPARATOR+this.key);
 	}	
