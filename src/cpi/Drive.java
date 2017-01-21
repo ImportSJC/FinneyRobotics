@@ -20,6 +20,8 @@ public class Drive {
 	public Drive(String name){
 	this.name=name;
 	
+	System.out.println("INSTANTIATE THE MOTOR CONTROLLERS");
+	
 	right1 =  new MotorController(3);
 	right2 =  new MotorController(4);
 	left1 =  new MotorController(1);
@@ -80,8 +82,8 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-//		tankDrive();
-		arcadeDrive();
+		tankDrive();
+//		arcadeDrive();
 		
 		switch(mode){
 		case DIRECT_MECANUM:
