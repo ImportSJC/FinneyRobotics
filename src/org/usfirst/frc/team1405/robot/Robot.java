@@ -48,6 +48,7 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit(){
+    	AutoInputs.AutoInit();
     	Autonomous.autonomousInit();
     }
 
@@ -57,23 +58,32 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
     }
+    
+    @Override
+    public void teleopInit(){
+    	AutoInputs.TeleInit();
+    }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
     	drive.TeleopPeriodic();
+    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoder());
+    	System.out.println("Right Encoder: " + AutoInputs.getRightEncoder());
     }
     
     /**
      * This function is called periodically during test mode
      */
     public void disabledInit(){
+    	AutoInputs.freeEncoders();
     }
     public void testInit(){
     	LiveWindow.setEnabled(false);
     }
     public void testPeriodic() {
+    	drive.TestPeriodic();
     }
     
     public void disabledPeriodic(){

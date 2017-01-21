@@ -1,50 +1,70 @@
 package cpi.auto;
 
-import cpi.Drive;
-import cpi.outputDevices.MotorController;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GyroBase;
 
 public class AutoInputs {
 	//Encoders
-	public static MotorController leftMotor1;
-	public static MotorController rightMotor1;
+	private static EncoderControl leftEnc;
+	private static EncoderControl rightEnc;
 	
 	//Gyros
 	private static GyroBase myGyro = new ADXRS450_Gyro();
 	
 	public static void robotInit(){
-		leftMotor1 = Drive.left1;
-		rightMotor1 = Drive.right1;
-//		leftMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-//		rightMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		
-//		myGyro = new GyroBase(new AnalogInput(0));
 	}
 	
-	public void AutoInit(){
-		leftMotor1.setPosition(0);
-		rightMotor1.setPosition(0);
+	public static void AutoInit(){
+		freeEncoders();
+		initEncoders();
+		resetEncoders();
+	}
+	
+	public static void TeleInit(){
+		freeEncoders();
+		initEncoders();
+		resetEncoders();
+	}
+	
+	public static void freeEncoders(){
+		if(leftEnc != null){
+			leftEnc.free();
+			leftEnc = null;
+		}
+		if(rightEnc != null){
+			rightEnc.free();
+			rightEnc = null;
+		}
+	}
+	
+	public static void initEncoders(){
+		if(leftEnc == null)
+			leftEnc = new EncoderControl(0, 1);
+		if(rightEnc == null)
+			rightEnc = new EncoderControl(2, 3, true);
 	}
 	
 	public static void resetEncoders(){
-		leftMotor1.setPosition(0);
-		rightMotor1.setPosition(0);
+		if(leftEnc != null){
+			leftEnc.resetAll();
+		}
+		if(rightEnc != null){
+			rightEnc.resetAll();
+		}
 	}
 	
 	public static double getLeftEncoder(){
-		return leftMotor1.getPosition();
+		return leftEnc.getPos();
 	}
 	
 	public static double getRightEncoder(){
-		return -rightMotor1.getPosition();
+		return rightEnc.getPos();
 	}
 	
-	public static double getEncoder(){
+	public static double getEncoderAvg(){
 		System.out.println("Left Encoder position: " + getLeftEncoder());
 		System.out.println("Right Encoder position: " + getRightEncoder());
-//		return (getLeftEncoder() + getRightEncoder())/2;
-		return getLeftEncoder();
+		return (leftEnc.getPos() + rightEnc.getPos())/2;
 	}
 	
 	

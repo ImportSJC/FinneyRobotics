@@ -9,7 +9,7 @@ public class Drive {
 	 * Max speed of the drive system
 	 */
 	static final double MAX_SPEED = 0.5;
-	
+	//comment here
 	static final String DIRECT_MECANUM="Direct Mecanum";
 	static final String DIRECT_TANK="Direct Tank";
 	static final String DIRECT_HDRIVE="Direct H Drive";
@@ -19,6 +19,8 @@ public class Drive {
 	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
 	public Drive(String name){
 	this.name=name;
+	
+	System.out.println("INSTANTIATE THE MOTOR CONTROLLERS");
 	
 	right1 =  new MotorController(3);
 	right2 =  new MotorController(4);
@@ -48,8 +50,6 @@ public class Drive {
 	private void tankDrive(){
 		rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
 		leftMotor = (Robot.pilot.leftStickYaxis() * MAX_SPEED);
-		System.out.println("RightMotor: " + rightMotor);
-		System.out.println("LeftMotor: " + leftMotor);
 	}
 	
 	private void singlestickarcadeDrive(){
@@ -66,9 +66,6 @@ public class Drive {
 		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = -leftMotor;
-		System.out.println("( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
-//		System.out.print("( " + rightMotor);
-//		System.out.println(" , " + leftMotor + " )");
 	}
 	
 	
@@ -107,7 +104,6 @@ public class Drive {
 //		arcadeDrive();
 //		singlestickarcadeDrive();
 		
-		
 		switch(mode){
 		case DIRECT_MECANUM:
 //			mecanumMotors( rightFrontMotor, rightRearMotor,leftFrontMotor,leftRearMotor);
@@ -122,6 +118,15 @@ public class Drive {
 	  break;
 		}
 	}
+	
+	public void TestPeriodic(){
+		TeleopPeriodic();
+		System.out.println("RightMotor: " + rightMotor);
+		System.out.println("LeftMotor: " + leftMotor);
+		System.out.println("Left Joystick ( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.leftStickXaxis() + " )");
+		System.out.println("Right Joystick ( " + -Robot.pilot.rightStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
+	}
+
 
 	String mode;
 	boolean tank;
