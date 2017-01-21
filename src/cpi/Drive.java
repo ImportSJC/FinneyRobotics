@@ -42,9 +42,6 @@ public class Drive {
 		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = -leftMotor;
-		System.out.println("( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
-//		System.out.print("( " + rightMotor);
-//		System.out.println(" , " + leftMotor + " )");
 	}
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
@@ -100,6 +97,7 @@ public class Drive {
 		TeleopPeriodic();
 		System.out.println("RightMotor: " + rightMotor);
 		System.out.println("LeftMotor: " + leftMotor);
+		System.out.println("( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
 	}
 
 	String mode;
