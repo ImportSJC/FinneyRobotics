@@ -97,13 +97,10 @@ public class Drive {
 		TeleopPeriodic();
 		System.out.println("RightMotor: " + rightMotor);
 		System.out.println("LeftMotor: " + leftMotor);
-		if(leftMotor!=-leftMotor){
-		System.out.println("Joystick position is ( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickYaxis() + " )");
-		}
-		else{
-		System.out.println("Joystick position is ( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
-		}
+		System.out.println("Left Joystick ( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.leftStickXaxis() + " )");
+		System.out.println("Right Joystick ( " + -Robot.pilot.rightStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
 	}
+
 
 	String mode;
 	boolean tank;
