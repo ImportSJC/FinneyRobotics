@@ -49,15 +49,6 @@ public class Drive {
 //		System.out.println(" , " + leftMotor + " )");
 	}
 	
-	private void arcadeDriveA(){
-		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.leftStickXaxis() * MAX_SPEED);
-		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.leftStickXaxis() * MAX_SPEED);
-		leftMotor = -leftMotor;
-		System.out.println("( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.leftStickXaxis() + " )");
-//		System.out.print("( " + rightMotor);
-//		System.out.println(" , " + leftMotor + " )");
-	}
-	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
 //		  rightFrontTalon1.set(rightFront);
 //		  rightFrontTalon2.set(rightFront);
@@ -89,8 +80,8 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-//		tankDrive();
-		arcadeDrive();
+		tankDrive();
+//		arcadeDrive();
 		
 		switch(mode){
 		case DIRECT_MECANUM:
@@ -105,6 +96,12 @@ public class Drive {
 //			hdriveMotors(rightMotor,leftMotor,centerMotor);
 	  break;
 		}
+	}
+	
+	public void TestPeriodic(){
+		TeleopPeriodic();
+		System.out.println("RightMotor: " + rightMotor);
+		System.out.println("LeftMotor: " + leftMotor);
 	}
 
 	String mode;
