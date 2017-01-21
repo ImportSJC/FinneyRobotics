@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj.Jaguar;
 
 public class MotorController {
 	
-	private boolean useTalon = false;
+	
+	private boolean useTalon = true;
 	
 	private CANTalon talon;
 	private Jaguar jaguar;
@@ -50,4 +51,17 @@ public class MotorController {
 			talon.enableBrakeMode(value);
 		}
 	}
+	
+	public void EnableCurrentLimit(boolean enable){
+	  if(useTalon){
+        	talon.EnableCurrentLimit(enable);
+        }
+	}
+	
+	public void setCurrentLimit(int amps){
+	  if(useTalon){
+			talon.set(amps);
+		}
+	}
+	    
 }
