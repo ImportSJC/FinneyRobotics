@@ -31,7 +31,19 @@ public class Drive {
 	mode=DIRECT_TANK;
 	}
 	
-	public void robotInit(){}
+	public void robotInit(){
+		
+		    right1.EnableCurrentLimit(true);
+		    right2.EnableCurrentLimit(true);
+		    left1.EnableCurrentLimit(true);
+		    left2.EnableCurrentLimit(true);
+		    
+		    right1.setCurrentLimit(35);
+			right2.setCurrentLimit(35);
+			left1.setCurrentLimit(35);
+			left2.setCurrentLimit(35);
+		
+	}
 	
 	private void tankDrive(){
 		rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
@@ -40,7 +52,7 @@ public class Drive {
 		System.out.println("LeftMotor: " + leftMotor);
 	}
 	
-	private void arcadeDrive(){
+	private void singlestickarcadeDrive(){
 		//rightMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		//leftMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		rightMotor = (-Robot.pilot.rightStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
@@ -49,7 +61,7 @@ public class Drive {
 		leftMotor= -leftMotor;
 		
 	}
-/*	
+	
 	private void arcadeDrive(){
 		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
@@ -58,7 +70,7 @@ public class Drive {
 //		System.out.print("( " + rightMotor);
 //		System.out.println(" , " + leftMotor + " )");
 	}
-	*/
+	
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
 //		  rightFrontTalon1.set(rightFront);
@@ -91,8 +103,10 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-//		tankDrive();
-		arcadeDrive();
+		tankDrive();
+//		arcadeDrive();
+//		singlestickarcadeDrive();
+		
 		
 		switch(mode){
 		case DIRECT_MECANUM:
@@ -132,4 +146,4 @@ public class Drive {
   double rightMotor;
   double leftMotor;
   double centerMotor;
-}
+ }
