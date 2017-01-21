@@ -38,17 +38,12 @@ public class Drive {
 	private void tankDrive(){
 		rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
 		leftMotor = (Robot.pilot.leftStickYaxis() * MAX_SPEED);
-		System.out.println("RightMotor: " + rightMotor);
-		System.out.println("LeftMotor: " + leftMotor);
 	}
 	
 	private void arcadeDrive(){
 		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = -leftMotor;
-		System.out.println("( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
-//		System.out.print("( " + rightMotor);
-//		System.out.println(" , " + leftMotor + " )");
 	}
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
@@ -99,6 +94,15 @@ public class Drive {
 	  break;
 		}
 	}
+	
+	public void TestPeriodic(){
+		TeleopPeriodic();
+		System.out.println("RightMotor: " + rightMotor);
+		System.out.println("LeftMotor: " + leftMotor);
+		System.out.println("Left Joystick ( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.leftStickXaxis() + " )");
+		System.out.println("Right Joystick ( " + -Robot.pilot.rightStickYaxis() + " , " + Robot.pilot.rightStickXaxis() + " )");
+	}
+
 
 	String mode;
 	boolean tank;
