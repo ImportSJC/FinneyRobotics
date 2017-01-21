@@ -42,7 +42,7 @@ public class Robot extends IterativeRobot {
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
     	
-    	SimpleCamera.init();
+    	SimpleCamera.init(0);
     }
     
     public void autonomousInit(){
