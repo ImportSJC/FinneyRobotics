@@ -72,6 +72,7 @@ public class Robot extends IterativeRobot {
     	LiveWindow.setEnabled(false);
     }
     public void testPeriodic() {
+    	drive.TestPeriodic();
     }
     
     public void disabledPeriodic(){
