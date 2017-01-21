@@ -36,8 +36,6 @@ public class Drive {
 	private void tankDrive(){
 		rightMotor = -(Robot.pilot.rightStickYaxis() * MAX_SPEED);
 		leftMotor = (Robot.pilot.leftStickYaxis() * MAX_SPEED);
-		System.out.println("RightMotor: " + rightMotor);
-		System.out.println("LeftMotor: " + leftMotor);
 	}
 	
 	private void arcadeDrive(){
