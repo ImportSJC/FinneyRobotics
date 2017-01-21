@@ -20,6 +20,8 @@ public class Drive {
 	public Drive(String name){
 	this.name=name;
 	
+	System.out.println("INSTANTIATE THE MOTOR CONTROLLERS");
+	
 	right1 =  new MotorController(3);
 	right2 =  new MotorController(4);
 	left1 =  new MotorController(1);
