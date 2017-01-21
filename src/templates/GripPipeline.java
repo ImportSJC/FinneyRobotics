@@ -1,4 +1,4 @@
-package cpi.tools.grip;
+package templates;
 
 import java.io.File;
 import java.io.FileWriter;

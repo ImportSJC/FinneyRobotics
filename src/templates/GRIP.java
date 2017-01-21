@@ -10,6 +10,8 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import cpi.tools.grip.GripPipeline;
+
+import cpi.Net;
 /**
  * 
  * @author Thomas Wulff
@@ -18,17 +20,21 @@ import cpi.tools.grip.GripPipeline;
 public class GRIP {
 
 	Thread visionThread;
-	GRIP(){
+	GripPipeline pipeline;
+	CvSource outputStream;
+	Net<Double[]> contours;
+	GRIP(int channel){
+		pipeline = new GripPipeline();
 		visionThread = new Thread(() -> {
 			// Get the UsbCamera from CameraServer
-			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+			UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(channel);
 			// Set the resolution
 			camera.setResolution(640, 480);
 
 			// Get a CvSink. This will capture Mats from the camera
 			CvSink cvSink = CameraServer.getInstance().getVideo();
 			// Setup a CvSource. This will send images back to the Dashboard
-			CvSource outputStream = CameraServer.getInstance().putVideo("Rectangle", 640, 480);
+			outputStream = CameraServer.getInstance().putVideo("GRIP", 640, 480);
 
 			// Mats are very memory expensive. Lets reuse this Mat.
 			Mat mat = new Mat();
@@ -45,11 +51,11 @@ public class GRIP {
 					// skip the rest of the current iteration
 					continue;
 				}
-				// Put a rectangle on the image
-				Imgproc.rectangle(mat, new Point(100, 100), new Point(400, 400),
-						new Scalar(255, 255, 255), 5);
+				// Run your pipeline
+				pipeline.process(mat);
 				// Give the output stream a new image to display
-				outputStream.putFrame(mat);
+				outputStream.putFrame(pipeline.hslThresholdOutput());
+				contours=new Net <Double[]> ("Grip","Contours",(Double[])pipeline.filterContoursOutput().toArray());
 			}
 		});
 		visionThread.setDaemon(true);
