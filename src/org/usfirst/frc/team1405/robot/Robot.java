@@ -34,7 +34,6 @@ public class Robot extends IterativeRobot {
     	initialize();
     }
     void initialize(){
-    	
     	Autonomous.robotInit();
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
@@ -43,6 +42,8 @@ public class Robot extends IterativeRobot {
     	AutoInputs.robotInit();
     	
     	SimpleCamera.init(0);
+    	TestSimpleEncoder.robotInit();
+    	TestSimpleMultiMotorPWM.robotInit();
     }
     
     public void autonomousInit(){
@@ -55,7 +56,9 @@ public class Robot extends IterativeRobot {
     public void autonomousPeriodic() {
     	Autonomous.autonomousPeriodic();
     }
-
+    
+    
+   
     /**
      * This function is called periodically during operator control
      */
@@ -63,17 +66,27 @@ public class Robot extends IterativeRobot {
     	drive.TeleopPeriodic();
     }
     
+      
     /**
-     * This function is called periodically during test mode
+     * This function is called once every time the robot is disabled
      */
     public void disabledInit(){
+    	TestSimpleMultiMotorPWM.disabledInit();
     }
     public void testInit(){
     	LiveWindow.setEnabled(false);
+    	TestSimpleMultiMotorPWM.testInit();
     }
+    /**
+     * This function is called periodically during test mode
+     */
     public void testPeriodic() {
+    	TestSimpleMultiMotorPWM.testPeriodic();
     }
-    
+
+    /**
+     * This function is called periodically when the robot is disabled
+     */
     public void disabledPeriodic(){
     	cpi.autoSupportClasses.Set.disabledPeriodic();
     }

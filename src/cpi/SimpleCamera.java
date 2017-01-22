@@ -18,7 +18,6 @@ public class SimpleCamera {
 	 * @param channel - The camera channel you wish to display on the default Dashboard or the SmartDashboard.
 	 */
     public static void init(int channel){
-    CameraServer.getInstance().startAutomaticCapture(channel);
     CameraServer.getInstance().startAutomaticCapture(channel).setResolution(WIDTH, WIDTH);
     }
     
