@@ -8,6 +8,7 @@ import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,19 +31,22 @@ public class Robot extends IterativeRobot {
      */
 	
 	final static public String header="2016 Competition ver. 1.0"; // This is required
+	private static NetworkTable settings;
 	
     public void robotInit() {
-    	
     	initialize();
     }
     void initialize(){
-    	
+    	settings = NetworkTable.getTable("Test Table/SJC");
+    	settings.putNumber("testVar", 5.5);
     	Autonomous.robotInit();
     	drive= new Drive("Teleop Drive");
     	drive.robotInit();
     	pilot=new XBox360(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
+    	
+    	AutoOutputs.setDriveBrake(true);
     	
     	GRIP.init();
     }
@@ -56,6 +60,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
+    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
     	Autonomous.autonomousPeriodic();
     }
     
@@ -69,8 +74,8 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	drive.TeleopPeriodic();
-    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoder());
-    	System.out.println("Right Encoder: " + AutoInputs.getRightEncoder());
+    	System.out.println("Left Encoder: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
     }
     
     /**

@@ -8,7 +8,7 @@ public class Drive {
 	/**
 	 * Max speed of the drive system
 	 */
-	static final double MAX_SPEED = 0.5;
+	static final double MAX_SPEED = 1.0;
 	//comment here
 	static final String DIRECT_MECANUM="Direct Mecanum";
 	static final String DIRECT_TANK="Direct Tank";
@@ -100,8 +100,8 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-		tankDrive();
-//		arcadeDrive();
+//		tankDrive();
+		arcadeDrive();
 //		singlestickarcadeDrive();
 		
 		switch(mode){

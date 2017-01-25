@@ -60,7 +60,7 @@ public class MotorController {
 	
 	public void setCurrentLimit(int amps){
 	  if(useTalon){
-			talon.set(amps);
+			talon.setCurrentLimit(amps);
 		}
 	}
 	    

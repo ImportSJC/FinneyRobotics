@@ -70,10 +70,10 @@ public class AutoOutputs {
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
 		System.out.println("Drive Motors are assigned the drivespeed: " + drivingSpeed + " turnSpeed: " + turningSpeed);
-		leftMotor1.set(drivingSpeed+turningSpeed);
-		leftMotor2.set(drivingSpeed+turningSpeed);
-		rightMotor1.set(-drivingSpeed+turningSpeed);
-		rightMotor2.set(-drivingSpeed+turningSpeed);
+		leftMotor1.set(-drivingSpeed-turningSpeed);
+		leftMotor2.set(-drivingSpeed-turningSpeed);
+		rightMotor1.set(drivingSpeed-turningSpeed);
+		rightMotor2.set(drivingSpeed-turningSpeed);
 		turnSpeed = turningSpeed;
 		driveSpeed = drivingSpeed;
 	}
@@ -86,10 +86,10 @@ public class AutoOutputs {
 		driveSpeed = speed;
 		gyroAssist = true;
 		System.out.println("Drive Motors are assigned the speed: " + speed);
-		leftMotor1.set(speed);
-		leftMotor2.set(speed);
-		rightMotor1.set(-speed);
-		rightMotor2.set(-speed);
+		leftMotor1.set(-speed);
+		leftMotor2.set(-speed);
+		rightMotor1.set(speed);
+		rightMotor2.set(speed);
 	}
 	
 	public static void setDriveTurn(double speed){

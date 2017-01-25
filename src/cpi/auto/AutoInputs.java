@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GyroBase;
 
 public class AutoInputs {
+	
 	//Encoders
 	private static EncoderControl leftEnc;
 	private static EncoderControl rightEnc;
@@ -53,20 +54,39 @@ public class AutoInputs {
 		}
 	}
 	
-	public static double getLeftEncoder(){
-		return leftEnc.getPos();
+//	public static double getLeftEncoderCount(){
+//		return leftEnc.getCount();
+//	}
+	
+	public static double getSummedEncoderCount(){
+		return Math.abs(leftEnc.getCount())+Math.abs(rightEnc.getCount());
 	}
 	
-	public static double getRightEncoder(){
-		return rightEnc.getPos();
+	public static double getLeftEncoderCount(){
+		return leftEnc.getCount();
 	}
 	
-	public static double getEncoderAvg(){
-		System.out.println("Left Encoder position: " + getLeftEncoder());
-		System.out.println("Right Encoder position: " + getRightEncoder());
-		return (leftEnc.getPos() + rightEnc.getPos())/2;
+	public static double getRightEncoderCount(){
+		return rightEnc.getCount();
 	}
 	
+	public static double getLeftEncoderDistance(){
+		return leftEnc.getDistance();
+	}
+	
+	public static double getRightEncoderDistance(){
+		return rightEnc.getDistance();
+	}
+	
+	public static double getEncoderCountAvg(){
+		System.out.println("Left Encoder position: " + getSummedEncoderCount());
+		System.out.println("Right Encoder position: " + getRightEncoderCount());
+		return (leftEnc.getCount() + rightEnc.getCount())/2;
+	}
+	
+	public static double getEncoderDistanceAvg(){
+		return (leftEnc.getDistance() + rightEnc.getDistance())/2;
+	}
 	
 	//Wrapping all gyro access code in try catch so that no exceptions go unchecked if no gyro is connected
 	public static void resetGyro(){

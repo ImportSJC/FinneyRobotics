@@ -5,7 +5,7 @@ import cpi.auto.AutoOutputs;
 import cpi.auto.Auto_Drive;
 import cpi.auto.SuperClass;
 import cpi.auto.conditions.And;
-import cpi.auto.inputDevices.Time;
+import cpi.auto.inputDevices.Encoder;
 import cpi.autoSupportClasses.AutonomousBase;
 import cpi.autoSupportClasses.Set;
 
@@ -49,6 +49,7 @@ public class Autonomous extends AutonomousBase{
 	
 	public static void testDrive(){
 		autoStates = new SuperClass[][]{
-			{ new And(new Auto_Drive(.5), new Time(4)) }};
+			{ new And(new Auto_Drive(0, 0.5), new Encoder(360, 10, false)) }};
+//			{ new And(new Auto_Drive(0.35), new Encoder(63.6, false)) }};
 	}
 }

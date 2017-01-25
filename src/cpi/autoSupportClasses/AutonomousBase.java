@@ -36,7 +36,6 @@ public class AutonomousBase {
 	}
 	public static final void autonomousPeriodic() {
 		if(autoStates==null)return;
-		System.out.println("AutonomousPeriodic");
 		if (columnIndex<autoStates.length){
 			if (!columnInit){
 				AutoInputs.resetGyro();
@@ -57,12 +56,12 @@ public class AutonomousBase {
 			System.out.println("End of Autonomous Loop");
 			
 			//TODO: remove this debug code for competitions
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			AutoOutputs.setDriveBrake(false);
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			AutoOutputs.setDriveBrake(false);
 		}
 	}
 
