@@ -21,6 +21,7 @@ public class Robot extends IterativeRobot {
 
    Drive drive;
    static public Control pilot;
+	GRIP imageProcessor;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -34,16 +35,18 @@ public class Robot extends IterativeRobot {
     	initialize();
     }
     void initialize(){
+    	
     	Autonomous.robotInit();
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
     	pilot=new Control(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
-    	
-    	SimpleCamera.init(0);
+ //   	imageProcessor=new GRIP(0,1,2);
+//    	SimpleCamera.init(0);
     	TestSimpleEncoder.robotInit();
     	TestSimpleMultiMotorPWM.robotInit();
+    	TestSimpleSpikeRelay.robotInit();
     }
     
     public void autonomousInit(){
@@ -71,17 +74,20 @@ public class Robot extends IterativeRobot {
      * This function is called once every time the robot is disabled
      */
     public void disabledInit(){
+    	TestSimpleSpikeRelay.disabledInit();
     	TestSimpleMultiMotorPWM.disabledInit();
     }
     public void testInit(){
     	LiveWindow.setEnabled(false);
     	TestSimpleMultiMotorPWM.testInit();
+    	TestSimpleSpikeRelay.testInit();
     }
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
     	TestSimpleMultiMotorPWM.testPeriodic();
+    	TestSimpleSpikeRelay.testPeriodic();
     }
 
     /**

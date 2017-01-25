@@ -9,7 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import cpi.tools.grip.SwitchPipeline;
+import cpi.tools.grip.GRIP3To1Switch;
 
 import cpi.Net;
 /**
@@ -20,15 +20,16 @@ import cpi.Net;
 public class GRIP {
 
 	Thread visionThread;
-	SwitchPipeline pipeline;
+	GRIP3To1Switch pipeline;
 	CvSource outputStream;
 	Net<Double[]> contours;
-	GRIP(int channel,int channe2){
-		pipeline = new SwitchPipeline();
+	GRIP(int channel0,int channel1,int channel2){
+		pipeline = new GRIP3To1Switch();
 		visionThread = new Thread(() -> {
 			// Get the UsbCamera from CameraServer
-			UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(channel);
-			UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(channe2);
+			UsbCamera camera0 = CameraServer.getInstance().startAutomaticCapture(channel1);
+			UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(channel1);
+			UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(channel2);
 			// Set the resolution
 			camera1.setResolution(640, 480);
 			camera2.setResolution(640, 480);
@@ -40,6 +41,7 @@ public class GRIP {
 			outputStream = CameraServer.getInstance().putVideo("GRIP", 320, 240);
 
 			// Mats are very memory expensive. Lets reuse this Mat.
+			Mat mat0 = new Mat();
 			Mat mat1 = new Mat();
 			Mat mat2 = new Mat();
 
@@ -62,9 +64,9 @@ public class GRIP {
 					continue;
 				}
 				// Run your pipeline
-				pipeline.process(mat1,mat2);
+				pipeline.process(mat0,mat1,mat2);
 				// Give the output stream a new image to display
-				outputStream.putFrame(pipeline.switchOutput());
+				outputStream.putFrame(pipeline.switch1Output());
 			}
 		});
 		visionThread.setDaemon(true);

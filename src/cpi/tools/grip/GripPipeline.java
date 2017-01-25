@@ -30,8 +30,8 @@ public class GripPipeline {
 	private Mat switch1Output = new Mat();
 	private Mat resizeImageOutput = new Mat();
 
-	private boolean switch0Switch = source0;
-	private boolean switch1Switch = source0;
+	private boolean switch0Switch = true;
+	private boolean switch1Switch = true;
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 	}
