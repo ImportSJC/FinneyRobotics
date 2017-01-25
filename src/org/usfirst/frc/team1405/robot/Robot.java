@@ -42,6 +42,7 @@ public class Robot extends IterativeRobot {
     	pilot=new Control(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
+    	templates.GRIPIntermediate.robotInit();
  //   	imageProcessor=new GRIP(0,1,2);
 //    	SimpleCamera.init(0);
     	TestSimpleEncoder.robotInit();
