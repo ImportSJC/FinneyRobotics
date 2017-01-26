@@ -8,6 +8,7 @@ import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -31,7 +32,6 @@ public class Robot extends IterativeRobot {
 	final static public String header="2016 Competition ver. 1.0"; // This is required
 	
     public void robotInit() {
-    	
     	initialize();
     }
     void initialize(){
@@ -42,7 +42,9 @@ public class Robot extends IterativeRobot {
     	pilot=new Control(0);
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
-    	templates.GRIPIntermediate.robotInit();
+ //   	templates.GRIP3X1.robotInit();
+ //   	templates.GRIPIntermediate2.robotInit();
+ //   	templates.GRIPIntermediate.robotInit();
  //   	imageProcessor=new GRIP(0,1,2);
 //    	SimpleCamera.init(0);
     	TestSimpleEncoder.robotInit();
@@ -95,6 +97,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically when the robot is disabled
      */
     public void disabledPeriodic(){
+    	//System.out.println(timer.get());
     	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
 }

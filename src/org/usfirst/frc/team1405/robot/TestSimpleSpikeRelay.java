@@ -11,7 +11,7 @@ public class TestSimpleSpikeRelay {
 	static boolean enteredTestMode=false;
 	static Relay relay;
 	static String ENABLE="Enable";
-	static String DIRECTION="Direction (true=CW : false=CCW)";
+	static String DIRECTION="Direction (true=CCW : false=CW)";
 	static String TOGGLE="Toggle";
 	static String CW_TIME="CW Time (sec)";
 	static String CCW_TIME="CCW Time (sec)";
@@ -33,18 +33,22 @@ public class TestSimpleSpikeRelay {
     public static void testInit(){
     	LiveWindow.setEnabled(false);
     	enteredTestMode=true;
-		relay=new Relay(0); 
-		once=true;
 		timer.start();
-		value=Relay.Value.kForward;
   
     }
-    static boolean once=true;
+    static boolean isFirst=true;
 
     public static void testPeriodic() {
     	if(!settings.getBoolean(ENABLE, false)){
-        	relay.set(Relay.Value.kOff);
+        	if(!isFirst)relay.set(Relay.Value.kOff);
     		return;
+    	}
+    	
+    	if(isFirst){
+    		System.out.println("testPeriodic - isFirst");
+		relay=new Relay(0); 
+		value=Relay.Value.kReverse;
+    	isFirst=false;
     	}
     	if(settings.getBoolean(TOGGLE, true)){
     		
@@ -64,9 +68,10 @@ public class TestSimpleSpikeRelay {
     	
     	if(settings.getBoolean(DIRECTION, true)){
         	relay.set(Relay.Value.kForward);
-    		
+    		System.out.println("testPeriodic - kForward");
     	}else{
     	relay.set(Relay.Value.kReverse);
+		System.out.println("testPeriodic - kReverse");
     	}
     		
     	}
@@ -77,8 +82,7 @@ public class TestSimpleSpikeRelay {
 		System.out.println("RC-disabledInit 1");
     	enteredTestMode=false;
     	settings.putBoolean(ENABLE, false);
-    	relay.set(Relay.Value.kOff);
-    	relay.free();
+    	if(!isFirst)relay.set(Relay.Value.kOff);
     	timer.stop();
     }
     

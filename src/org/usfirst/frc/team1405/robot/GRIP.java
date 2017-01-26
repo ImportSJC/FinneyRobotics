@@ -9,7 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-import cpi.tools.grip.GRIP3To1Switch;
+import cpi.tools.grip.GRIP3X1SwitchPipeline;
 
 import cpi.Net;
 /**
@@ -20,19 +20,19 @@ import cpi.Net;
 public class GRIP {
 
 	Thread visionThread;
-	GRIP3To1Switch pipeline;
+	GRIP3X1SwitchPipeline pipeline;
 	CvSource outputStream;
 	Net<Double[]> contours;
 	GRIP(int channel0,int channel1,int channel2){
-		pipeline = new GRIP3To1Switch();
+		pipeline = new GRIP3X1SwitchPipeline();
 		visionThread = new Thread(() -> {
 			// Get the UsbCamera from CameraServer
 			UsbCamera camera0 = CameraServer.getInstance().startAutomaticCapture(channel1);
 			UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(channel1);
 			UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(channel2);
 			// Set the resolution
-			camera1.setResolution(640, 480);
-			camera2.setResolution(640, 480);
+			camera1.setResolution(320,280);
+			camera2.setResolution(320, 280);
 
 			// Get a CvSink. This will capture Mats from the camera
 			CvSink cvSink1 = CameraServer.getInstance().getVideo(camera1);

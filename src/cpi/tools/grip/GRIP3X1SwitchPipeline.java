@@ -23,7 +23,7 @@ import org.opencv.objdetect.*;
 *
 * @author GRIP
 */
-public class GRIP3To1Switch {
+public class GRIP3X1SwitchPipeline {
 
 	//Outputs
 	private Mat switch0Output = new Mat();
