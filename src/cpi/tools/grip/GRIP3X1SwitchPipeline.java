@@ -97,7 +97,7 @@ public class GRIP3X1SwitchPipeline {
 	 * This method is a generated getter for the output of a Switch.
 	 * @return Mat output from Switch.
 	 */
-	public Mat switch1Output() {
+	public Mat grip3X1Output() {
 		return switch1Output;
 	}
 
