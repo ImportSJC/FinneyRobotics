@@ -60,7 +60,8 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
+//    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Gyro: " + AutoInputs.getGyroAngle());
     	Autonomous.autonomousPeriodic();
     }
     

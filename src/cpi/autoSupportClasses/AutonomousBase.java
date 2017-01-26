@@ -32,13 +32,13 @@ public class AutonomousBase {
 		rowIndex = 0;
 		columnInit = false;
 		AutoOutputs.setDriveBrake(true);
-		AutoInputs.resetGyro();
+		AutoInputs.resetGyros();
 	}
 	public static final void autonomousPeriodic() {
 		if(autoStates==null)return;
 		if (columnIndex<autoStates.length){
 			if (!columnInit){
-				AutoInputs.resetGyro();
+				AutoInputs.resetGyros();
 				AutoInputs.resetEncoders();
 				for (int i=0; i<autoStates[columnIndex].length; i++){
 					autoStates[columnIndex][i].start();

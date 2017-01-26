@@ -1,7 +1,5 @@
 package cpi.auto;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.GyroBase;
 
 public class AutoInputs {
 	
@@ -10,12 +8,15 @@ public class AutoInputs {
 	private static EncoderControl rightEnc;
 	
 	//Gyros
-	private static GyroBase myGyro = new ADXRS450_Gyro();
+	private static GyroControl onboardGyro;
 	
 	public static void robotInit(){
+		initGyros();
 	}
 	
 	public static void AutoInit(){
+		resetGyros();
+		
 		freeEncoders();
 		initEncoders();
 		resetEncoders();
@@ -45,6 +46,12 @@ public class AutoInputs {
 			rightEnc = new EncoderControl(2, 3, true);
 	}
 	
+	public static void initGyros(){
+		System.out.println("start init");
+		onboardGyro = new GyroControl();
+		System.out.println("end init");
+	}
+	
 	public static void resetEncoders(){
 		if(leftEnc != null){
 			leftEnc.resetAll();
@@ -52,6 +59,15 @@ public class AutoInputs {
 		if(rightEnc != null){
 			rightEnc.resetAll();
 		}
+	}
+	
+	public static void resetGyros(){
+		System.out.println("start reset");
+		if(onboardGyro != null){
+			System.out.println("reset gyros");
+			onboardGyro.resetAll();
+		}
+		System.out.println("end reset");
 	}
 	
 //	public static double getLeftEncoderCount(){
@@ -89,19 +105,12 @@ public class AutoInputs {
 	}
 	
 	//Wrapping all gyro access code in try catch so that no exceptions go unchecked if no gyro is connected
-	public static void resetGyro(){
-		try{
-			myGyro.reset();
-		}catch(NullPointerException e){
-			System.out.println("ERROR: Onboard Gyro is not connected");
-		}
-	}
-	
+	//TODO figure out if the wrapping below is even necessary, and if it is can we move that code into the GyroControl class
 	public static double getGyroRate(){
 		double myDouble = 0;
 		
 		try{
-			myDouble = myGyro.getRate();
+			myDouble = onboardGyro.getRate();
 		}catch(NullPointerException e){
 			System.out.println("ERROR: Onboard Gyro is not connected");
 		}
@@ -113,15 +122,11 @@ public class AutoInputs {
 		double myDouble = 0;
 		
 		try{
-			myDouble = myGyro.getAngle();
+			myDouble = onboardGyro.getAngle();
 		}catch(NullPointerException e){
 			System.out.println("ERROR: Onboard Gyro is not connected");
 		}
 		
 		return myDouble;
-	}
-	
-	public static GyroBase getGyro(){
-		return myGyro;
 	}
 }

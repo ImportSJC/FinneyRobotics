@@ -2,10 +2,12 @@ package org.usfirst.frc.team1405.robot;
 
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
+import cpi.auto.AutoValues;
 import cpi.auto.Auto_Drive;
 import cpi.auto.SuperClass;
 import cpi.auto.conditions.And;
 import cpi.auto.inputDevices.Encoder;
+import cpi.auto.inputDevices.Gyroscope;
 import cpi.autoSupportClasses.AutonomousBase;
 import cpi.autoSupportClasses.Set;
 
@@ -16,7 +18,7 @@ public class Autonomous extends AutonomousBase{
 	public static void robotInit(){
 		AutoInputs.robotInit();
 		AutoOutputs.robotInit();
-		AutoInputs.resetGyro();
+		AutoInputs.resetGyros();
 		Set.setDefault(TEST_DRIVING);
 		Set.addName(TEST_AUTO_MODE);
 		Set.addName(TEST_DRIVING);
@@ -49,7 +51,8 @@ public class Autonomous extends AutonomousBase{
 	
 	public static void testDrive(){
 		autoStates = new SuperClass[][]{
-			{ new And(new Auto_Drive(0, 0.5), new Encoder(360, 10, false)) }};
+//			{ new And(new Auto_Drive(0, AutoValues.speed_turnCarpet), new Encoder(90, 10, false)) }};
+			{ new And(new Auto_Drive(0, 0.7), new Gyroscope(90)) }};
 //			{ new And(new Auto_Drive(0.35), new Encoder(63.6, false)) }};
 	}
 }

@@ -1,17 +1,19 @@
 package cpi.auto;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GyroBase;
 
 public class GyroControl {
-	private GyroBase myGyro;
-	public GyroControl(int myChannel)
-	{	
-		if (myChannel == 0){ myGyro = AutoInputs.getGyro(); }
+	private static GyroBase myGyro;
+//	private GyroBase myGyro;
+	
+	public GyroControl(){
+		Init();
 	}
 	
     public void Init(){
     	System.out.println("Gyro Init");
-        myGyro.reset();
+    	myGyro = new ADXRS450_Gyro();
     }
     
     public void resetAll(){
@@ -29,5 +31,6 @@ public class GyroControl {
     
     public void free(){
     	myGyro.free();
+    	myGyro = null;
     }
 }

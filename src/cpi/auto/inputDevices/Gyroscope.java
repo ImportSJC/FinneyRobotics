@@ -1,36 +1,32 @@
 package cpi.auto.inputDevices;
 
+import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
-import cpi.auto.GyroControl;
 import cpi.auto.SuperClass;
 
 public class Gyroscope extends SuperClass{
 	private double targetAngle;
 	
-	GyroControl myGyro;
-	
-	public Gyroscope(double value, int channel){
+	public Gyroscope(double value){
 		targetAngle = value;
-		myGyro = new GyroControl(channel);
 	}
 	
 	@Override
 	public void start(){
-		myGyro.Init();
-		myGyro.resetAll();
+		AutoInputs.resetGyros();
 	}
 	
 	@Override 
 	public boolean check(){
-		System.out.println("Gyro Angle: " + myGyro.getAngle());
+		System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle());
 		
-//		if (targetAngle/2<=myGyro.getAngle()){
-		AutoOutputs.rampTurn(targetAngle-myGyro.getAngle(), targetAngle);
+//		if (targetAngle/2<=AutoInputs.getAngle()){
+		AutoOutputs.rampTurn(targetAngle-AutoInputs.getGyroAngle(), targetAngle);
 //		}
 		
 		//stop once it hits the target angle and its not moving fast
-		if(targetAngle>0 && myGyro.getAngle() >= targetAngle && myGyro.getRate() < 10){return true;}
-		else if(targetAngle<0 && myGyro.getAngle() <= targetAngle){return true;}
+		if(targetAngle>0 && AutoInputs.getGyroAngle() >= targetAngle && AutoInputs.getGyroRate() < 10){return true;}
+		else if(targetAngle<0 && AutoInputs.getGyroAngle() <= targetAngle){return true;}
 		return false;
 	}
 }

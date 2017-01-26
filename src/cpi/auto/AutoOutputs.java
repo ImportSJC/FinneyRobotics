@@ -106,16 +106,16 @@ public class AutoOutputs {
 		//turn the robot slower until it reaches the target angle (remaining angle == 0)
 		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + turnSpeed);
 		if(Math.abs(AutoInputs.getGyroRate())<=20){
-			setDrive(driveSpeed, turnSpeed * 1.25);
+			setDrive(driveSpeed, turnSpeed);
 		}
 		
-		if(Math.abs(AutoInputs.getGyroRate())>=Math.abs(remainingAngle)){
+		if(Math.abs(AutoInputs.getGyroRate()/2)>=Math.abs(remainingAngle)){
 			setDrive(driveSpeed, turnSpeed * 0.75);
 		}
 		
 		//make sure the turnspeed never drops below a certain value
-		if(turnSpeed<=0 && turnSpeed>-0.085){setDrive(driveSpeed, -0.085);}
-		else if(turnSpeed>0 && turnSpeed<0.085){setDrive(driveSpeed, 0.085);}
+		if(turnSpeed<=0 && turnSpeed>-0.5){setDrive(driveSpeed, -0.5);}
+		else if(turnSpeed>0 && turnSpeed<0.5){setDrive(driveSpeed, 0.5);}
 		
 		//make sure the robot doesnt over shoot the targetAngle
 		if( (targetAngle>0 && remainingAngle<0) ||
