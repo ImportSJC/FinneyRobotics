@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class EncoderControl {
-	private static final double WHEEL_DIAMETER = 4; // wheel diameter in inches
+	private static final double WHEEL_DIAMETER = 3.875; // wheel diameter in inches
 	private static final int COUNTS_PER_ROTATION = 360; //encoder counts per rotation of the wheel
 	private static final double ROBOT_DIAMETER = 20.25; // the distance between the two sets of wheels on the robot
 	private static final double fullTurnCount = 5600; // (should be 3243) the number of encoder counts it takes to turn the robot a full rotation

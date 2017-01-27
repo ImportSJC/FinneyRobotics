@@ -2,7 +2,7 @@ package cpi.auto;
 
 public class AutoValues {
 	/*		Distances		*/
-	public static final double distance_allianceWall_to_centerAirShip = 93.3;//is this right?
+	public static final double distance_allianceWall_to_centerAirShip = 114.3;
 	
 	public static final int distance_canToTote = 1142;//tested
 	public static final int distance_toteToTote = 4385;

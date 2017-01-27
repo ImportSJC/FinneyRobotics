@@ -52,7 +52,7 @@ public class Autonomous extends AutonomousBase{
 	public static void testDrive(){
 		autoStates = new SuperClass[][]{
 //			{ new And(new Auto_Drive(0, AutoValues.speed_turnCarpet), new Encoder(90, 10, false)) }};
-			{ new And(new Auto_Drive(0, 0.7), new Gyroscope(90)) }};
+			{ new And(new Auto_Drive(0, 0), new Gyroscope(90)) }};
 //			{ new And(new Auto_Drive(0.35), new Encoder(63.6, false)) }};
 	}
 }

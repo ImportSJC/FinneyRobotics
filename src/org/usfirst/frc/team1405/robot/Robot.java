@@ -54,6 +54,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit(){
     	AutoInputs.AutoInit();
     	Autonomous.autonomousInit();
+    	AutoOutputs.AutoInit();
     }
 
     /**
@@ -61,7 +62,7 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
 //    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
-    	System.out.println("Gyro: " + AutoInputs.getGyroAngle());
+    	System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle() + " Rate: " + AutoInputs.getGyroRate());
     	Autonomous.autonomousPeriodic();
     }
     

@@ -4,18 +4,12 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GyroBase;
 
 public class GyroControl {
-	private static GyroBase myGyro;
+	private static GyroBase myGyro = new ADXRS450_Gyro();;
 //	private GyroBase myGyro;
 	
 	public GyroControl(){
-		Init();
 	}
 	
-    public void Init(){
-    	System.out.println("Gyro Init");
-    	myGyro = new ADXRS450_Gyro();
-    }
-    
     public void resetAll(){
 		myGyro.reset();
     }

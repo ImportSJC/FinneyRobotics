@@ -5,6 +5,8 @@ import cpi.auto.AutoOutputs;
 import cpi.auto.SuperClass;
 
 public class Gyroscope extends SuperClass{
+	private static final double MARGIN_OF_ERROR = 0.5;
+	
 	private double targetAngle;
 	
 	public Gyroscope(double value){
@@ -16,17 +18,24 @@ public class Gyroscope extends SuperClass{
 		AutoInputs.resetGyros();
 	}
 	
+	private boolean atTargetAngle(double currentAngle){
+		if(currentAngle>targetAngle-MARGIN_OF_ERROR && currentAngle<targetAngle+MARGIN_OF_ERROR){
+			return true;
+		}
+		return false;
+	}
+	
 	@Override 
 	public boolean check(){
 		System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle());
+
+		//stop once it hits the target angle and its not moving fast
+		if(atTargetAngle(AutoInputs.getGyroAngle()) && Math.abs(AutoInputs.getGyroRate()) < 15){return true;}
 		
 //		if (targetAngle/2<=AutoInputs.getAngle()){
 		AutoOutputs.rampTurn(targetAngle-AutoInputs.getGyroAngle(), targetAngle);
 //		}
 		
-		//stop once it hits the target angle and its not moving fast
-		if(targetAngle>0 && AutoInputs.getGyroAngle() >= targetAngle && AutoInputs.getGyroRate() < 10){return true;}
-		else if(targetAngle<0 && AutoInputs.getGyroAngle() <= targetAngle){return true;}
 		return false;
 	}
 }

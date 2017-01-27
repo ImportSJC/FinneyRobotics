@@ -18,11 +18,19 @@ public class AutoOutputs {
 	private static double driveSpeed = 0.0;
 	private static double turnSpeed = 0.0;
 	
+	private static double adjustment;
+	private static double perfectRate;
+	
 	public static void robotInit(){
 		leftMotor1 = Drive.left1;
 		leftMotor2 = Drive.left2;
 		rightMotor1 = Drive.right1;
 		rightMotor2 = Drive.right2;
+	}
+	
+	public static void AutoInit(){
+		adjustment = .01;
+		perfectRate = 30;
 	}
 	
 	public void AutonomousPeriodic(){
@@ -103,22 +111,43 @@ public class AutoOutputs {
 	public static void rampTurn(double remainingAngle, double targetAngle){
 		//intelligently turn the robot smoothly into the target angle 
 		
-		//turn the robot slower until it reaches the target angle (remaining angle == 0)
-		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + turnSpeed);
-		if(Math.abs(AutoInputs.getGyroRate())<=20){
-			setDrive(driveSpeed, turnSpeed);
+		double tmpDrive = driveSpeed;
+		double tmpTurn = turnSpeed;
+		
+		double rateMargin = 2;
+		
+		if(remainingAngle < 0 && perfectRate > 0){
+			perfectRate-=10;
+			perfectRate = -perfectRate;
+		}else if (remainingAngle > 0 && perfectRate < 0){
+			perfectRate = -perfectRate;
+			perfectRate-=10;
 		}
 		
-		if(Math.abs(AutoInputs.getGyroRate()/2)>=Math.abs(remainingAngle)){
-			setDrive(driveSpeed, turnSpeed * 0.75);
+		if(AutoInputs.getGyroRate() > perfectRate){
+			tmpTurn = tmpTurn - adjustment;
+		}else if(AutoInputs.getGyroRate() < perfectRate){
+			tmpTurn = tmpTurn + adjustment;
 		}
+		
+		//turn the robot slower until it reaches the target angle (remaining angle == 0)
+		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
+//		if(Math.abs(AutoInputs.getGyroRate())<=20){
+//			setDrive(tmpDrive, turnSpeed);
+//		}
+		
+//		if(Math.abs(AutoInputs.getGyroRate()/2)>=Math.abs(remainingAngle)){
+//			tmpTurn = tmpTurn * 0.75;
+//		}
 		
 		//make sure the turnspeed never drops below a certain value
-		if(turnSpeed<=0 && turnSpeed>-0.5){setDrive(driveSpeed, -0.5);}
-		else if(turnSpeed>0 && turnSpeed<0.5){setDrive(driveSpeed, 0.5);}
+//		if(tmpTurn<=0 && tmpTurn>-0.5){tmpTurn = -0.5;}
+//		else if(tmpTurn>0 && tmpTurn<0.5){tmpTurn = 0.5;}
 		
-		//make sure the robot doesnt over shoot the targetAngle
-		if( (targetAngle>0 && remainingAngle<0) ||
-			 targetAngle<0 && remainingAngle>0){setDrive(driveSpeed,-turnSpeed);}
+		//make sure the robot doesn't over shoot the targetAngle
+//		if( (targetAngle>0 && remainingAngle<0) ||
+//			 targetAngle<0 && remainingAngle>0){tmpTurn = -0.5;}
+		
+		setDrive(tmpDrive, tmpTurn);
 	}
 }
