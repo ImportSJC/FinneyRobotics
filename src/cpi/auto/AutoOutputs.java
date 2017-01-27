@@ -29,8 +29,8 @@ public class AutoOutputs {
 	}
 	
 	public static void AutoInit(){
-		adjustment = .01;
-		perfectRate = 30;
+		adjustment = .05;
+		perfectRate = 70;
 	}
 	
 	public void AutonomousPeriodic(){
@@ -117,11 +117,11 @@ public class AutoOutputs {
 		double rateMargin = 2;
 		
 		if(remainingAngle < 0 && perfectRate > 0){
-			perfectRate-=10;
+			perfectRate/=2;
 			perfectRate = -perfectRate;
 		}else if (remainingAngle > 0 && perfectRate < 0){
 			perfectRate = -perfectRate;
-			perfectRate-=10;
+			perfectRate/=2;
 		}
 		
 		if(AutoInputs.getGyroRate() > perfectRate){
