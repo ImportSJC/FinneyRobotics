@@ -67,7 +67,7 @@ public class GRIP3X1 {
 				//Place process here
 				pipeline.process(mat[0],mat[1],mat[2]);
 				// Give the output stream a new image to display
-				mat[0]=pipeline.grip3X1Output();
+				mat[0]=pipeline.switch3X1Output();
 				outputStream.putFrame(mat[0]);
 			}
 		});
