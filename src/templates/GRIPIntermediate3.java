@@ -28,6 +28,9 @@ public class GRIPIntermediate3 {
 			UsbCamera camera1 = CameraServer.getInstance().startAutomaticCapture(1);
 			// Set the resolution
 			camera1.setResolution(320, 240);
+			UsbCamera camera2 = CameraServer.getInstance().startAutomaticCapture(2);
+			// Set the resolution
+			camera1.setResolution(320, 240);
 
 			// Get a CvSink. This will capture Mats from the camera
 			CvSink cvSink = CameraServer.getInstance().getVideo(camera);
