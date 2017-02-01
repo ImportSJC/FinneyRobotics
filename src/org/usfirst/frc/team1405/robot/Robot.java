@@ -1,6 +1,8 @@
 
 package org.usfirst.frc.team1405.robot;
 
+import org.usfirst.frc.team1405.robot.Vision.Vision2017;
+
 import cpi.Drive;
 import cpi.SimpleCamera;
 import cpi.XBox360;
@@ -40,6 +42,7 @@ public class Robot extends IterativeRobot {
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
     	pilot=new Control(0);
+    	Vision2017.robotInit();
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
  //   	templates.GRIP3X1.robotInit();
