@@ -102,7 +102,7 @@ public class GeneralDetectionPipeline {
 	//Outputs
 	private Mat hsvThresholdOutput = new Mat();
 	private Mat cvErodeOutput = new Mat();
-	private Mat cvErodeOutput = new Mat();
+	private Mat cvtColorOutput = new Mat();
 	private Mat cvDilateOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
@@ -201,6 +201,10 @@ public class GeneralDetectionPipeline {
 	public ArrayList<MatOfPoint> filterContoursOutput() {
 		return filterContoursOutput;
 	}
+	
+	public Mat CvtColorOutput(){
+		return cvtColorOutput;
+	}
 
 
 	/**
@@ -215,6 +219,7 @@ public class GeneralDetectionPipeline {
 	private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
 	    Mat out) {
 		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HSV);
+		cvtColorOutput=out;
 		Core.inRange(out, new Scalar(hue[0], sat[0], val[0]),
 			new Scalar(hue[1], sat[1], val[1]), out);
 	}

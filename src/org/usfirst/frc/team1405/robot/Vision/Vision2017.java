@@ -79,7 +79,7 @@ public class Vision2017 {
 					continue;
 				}
 				pipeline.process(mat[0]);
-				outputStream.putFrame(pipeline.);
+				outputStream.putFrame(pipeline.CvtColorOutput());
 			}
 		});
 		visionThread.setDaemon(true);
