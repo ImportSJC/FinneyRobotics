@@ -11,20 +11,41 @@ public class GyroControl {
 	}
 	
     public void resetAll(){
-		myGyro.reset();
+    	try {
+    		myGyro.reset();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
     }
     
     public double getAngle()
     {
-    	return myGyro.getAngle();
+    	try {
+    		return myGyro.getAngle();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	
+    	return 0;
     }
     
     public double getRate(){
-    	return myGyro.getRate();
+    	try {
+    		return myGyro.getRate();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	
+    	return 0;
     }
     
     public void free(){
-    	myGyro.free();
+    	try {
+    		myGyro.free();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    	
     	myGyro = null;
     }
 }

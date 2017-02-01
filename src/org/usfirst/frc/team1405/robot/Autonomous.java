@@ -14,12 +14,14 @@ import cpi.autoSupportClasses.Set;
 public class Autonomous extends AutonomousBase{
 	static final String TEST_AUTO_MODE = "test_mode";
 	static final String TEST_DRIVING = "test_driving";
+	static final String SIDE_AIRSHIP_GEAR = "side_airship_gear";
 	
 	public static void robotInit(){
 		AutoInputs.robotInit();
 		AutoOutputs.robotInit();
 		AutoInputs.resetGyros();
-		Set.setDefault(TEST_DRIVING);
+		Set.setDefault(SIDE_AIRSHIP_GEAR);
+		Set.addName(SIDE_AIRSHIP_GEAR);
 		Set.addName(TEST_AUTO_MODE);
 		Set.addName(TEST_DRIVING);
 	}
@@ -38,6 +40,9 @@ public class Autonomous extends AutonomousBase{
 		case(TEST_DRIVING):
 			Autonomous.testDrive();
 			break;
+		case(SIDE_AIRSHIP_GEAR):
+			Autonomous.sideAirshipGear();
+			break;
 		}
 	}
 
@@ -51,8 +56,20 @@ public class Autonomous extends AutonomousBase{
 	
 	public static void testDrive(){
 		autoStates = new SuperClass[][]{
-//			{ new And(new Auto_Drive(0, AutoValues.speed_turnCarpet), new Encoder(90, 10, false)) }};
+//			{ new And(new Auto_Drive(0, 0), new Encoder(90, 10, true, true)) }};
 			{ new And(new Auto_Drive(0, 0), new Gyroscope(90)) }};
 //			{ new And(new Auto_Drive(0.35), new Encoder(63.6, false)) }};
+	}
+	
+	public static void wallToAirshipGear(){
+		autoStates = new SuperClass[][]{
+				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_centerAirShip, false))}};
+	}
+	
+	public static void sideAirshipGear(){
+		autoStates = new SuperClass[][]{
+				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_turn, false))}};//,
+//				{ new And(new Auto_Drive(0, 0), new Gyroscope(-AutoValues.angle_turnToSideGear))},
+//				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_turn_to_sideAirShip, false))} };
 	}
 }

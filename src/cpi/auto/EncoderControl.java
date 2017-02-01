@@ -4,12 +4,15 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 
 public class EncoderControl {
-	private static final double WHEEL_DIAMETER = 3.875; // wheel diameter in inches
-	private static final int COUNTS_PER_ROTATION = 360; //encoder counts per rotation of the wheel
-	private static final double ROBOT_DIAMETER = 20.25; // the distance between the two sets of wheels on the robot
-	private static final double fullTurnCount = 5600; // (should be 3243) the number of encoder counts it takes to turn the robot a full rotation
-	private static final double countOvershoot = 45; // the number of counts that the robot overshoots by (at .5 speed)
+	//old base
+	private static final double WHEEL_DIAMETER = 4; // wheel diameter in inches
 	
+	//new base
+	//	private static final double WHEEL_DIAMETER = 3.875; // wheel diameter in inches
+	
+	private static final double COUNTS_PER_ROTATION = 250; //encoder counts per rotation of the wheel
+	private static final double fullTurnCount = 5784; // (should be 3243) the number of encoder counts it takes to turn the robot a full rotation
+	private static final double countOvershoot = 0; // the number of counts that the robot overshoots by (at .5 speed)
 	
 	private Encoder myEncoder;
 	
@@ -49,15 +52,21 @@ public class EncoderControl {
     }
     
     private static double convertCountToDistance(double counts){
-    	return (counts/COUNTS_PER_ROTATION)*getCircumference(WHEEL_DIAMETER);
+//    	System.out.println("Circ: " + getCircumference(WHEEL_DIAMETER) + "counts/cpr: " + (counts/COUNTS_PER_ROTATION));
+    	return (getCircumference(WHEEL_DIAMETER)*(counts/COUNTS_PER_ROTATION))/(22.0/12.0);
     }
     
     public double getDistance(){
+//    	System.out.println("Count: " + getCount() + " distance: " + convertCountToDistance(getCount()));
     	return convertCountToDistance(getCount());
     }
     
+    public double getRate(){
+    	return myEncoder.getRate();
+    }
+    
     public static double convertAngleToCount(double angle){
-    	return (fullTurnCount/(360/angle))-countOvershoot;
+    	return (fullTurnCount/(360/angle));
     }
     
     public void free(){

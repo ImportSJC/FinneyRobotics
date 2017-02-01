@@ -19,7 +19,14 @@ public class AutoOutputs {
 	private static double turnSpeed = 0.0;
 	
 	private static double adjustment;
-	private static double perfectRate;
+	private static double perfectRateTurn_Gyro;
+	private static double perfectRateTurn_Encoder;
+	private static double perfectRateDrive_Encoder;
+	
+	private static double leftEnc_driveFwd_zero = 0;
+	private static double rightEnc_driveFwd_zero = 0;
+	private static double driveFwd_margin = 1; //number of counts the right encoder can be off the left encoder while driving fwd
+	private static double driveFwd_adjustment = .15;
 	
 	public static void robotInit(){
 		leftMotor1 = Drive.left1;
@@ -28,9 +35,12 @@ public class AutoOutputs {
 		rightMotor2 = Drive.right2;
 	}
 	
-	public static void AutoInit(){
+	public static void ResetValues(){
 		adjustment = .05;
-		perfectRate = 70;
+		perfectRateTurn_Gyro = 70;
+		perfectRateTurn_Encoder = 1200;
+//		perfectRateDrive_Encoder = 2500; //this is a fast option
+		perfectRateDrive_Encoder = 1500;
 	}
 	
 	public void AutonomousPeriodic(){
@@ -77,7 +87,7 @@ public class AutoOutputs {
 	}
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
-		System.out.println("Drive Motors are assigned the drivespeed: " + drivingSpeed + " turnSpeed: " + turningSpeed);
+//		System.out.println("Drive Motors are assigned the drivespeed: " + drivingSpeed + " turnSpeed: " + turningSpeed);
 		leftMotor1.set(-drivingSpeed-turningSpeed);
 		leftMotor2.set(-drivingSpeed-turningSpeed);
 		rightMotor1.set(drivingSpeed-turningSpeed);
@@ -91,13 +101,30 @@ public class AutoOutputs {
 //		leftMotor2 = speed;
 //		rightMotor1 = -speed;
 //		rightMotor1 = -speed;
+		
+		double leftChange = 0;
+		double rightChange = 0;
+		
+		if(leftEnc_driveFwd_zero-driveFwd_margin>rightEnc_driveFwd_zero){
+			leftChange=driveFwd_adjustment;
+		}else if(rightEnc_driveFwd_zero-driveFwd_margin>leftEnc_driveFwd_zero) {
+			rightChange=driveFwd_adjustment;
+		}
+		
+//		rightChange+=driveFwd_adjustment;
+		
+		leftMotor1.set(-speed+leftChange);
+		leftMotor2.set(-speed+leftChange);
+		rightMotor1.set(speed-rightChange);
+		rightMotor2.set(speed-rightChange);
+		
 		driveSpeed = speed;
-		gyroAssist = true;
-		System.out.println("Drive Motors are assigned the speed: " + speed);
-		leftMotor1.set(-speed);
-		leftMotor2.set(-speed);
-		rightMotor1.set(speed);
-		rightMotor2.set(speed);
+//		gyroAssist = true;
+//		System.out.println("Drive Motors are assigned the speed: " + speed);
+		System.out.println("Left Enc: " + AutoInputs.getLeftEncoderCount() + " Right enc: " + AutoInputs.getRightEncoderCount());
+		System.out.println("left change: " + leftChange + " right change: " + rightChange);
+		leftEnc_driveFwd_zero = AutoInputs.getLeftEncoderCount();
+		rightEnc_driveFwd_zero = AutoInputs.getRightEncoderCount();
 	}
 	
 	public static void setDriveTurn(double speed){
@@ -108,46 +135,137 @@ public class AutoOutputs {
 		rightMotor2.set(speed);
 	}
 	
-	public static void rampTurn(double remainingAngle, double targetAngle){
+	public static void rampTurn_Gyro(double remainingAngle, double targetAngle){
 		//intelligently turn the robot smoothly into the target angle 
 		
 		double tmpDrive = driveSpeed;
 		double tmpTurn = turnSpeed;
 		
-		double rateMargin = 2;
-		
-		if(remainingAngle < 0 && perfectRate > 0){
-			perfectRate/=2;
-			perfectRate = -perfectRate;
-		}else if (remainingAngle > 0 && perfectRate < 0){
-			perfectRate = -perfectRate;
-			perfectRate/=2;
+		if(remainingAngle < 0 && perfectRateTurn_Gyro > 0){
+			perfectRateTurn_Gyro/=2;
+			perfectRateTurn_Gyro = -perfectRateTurn_Gyro;
+		}else if (remainingAngle > 0 && perfectRateTurn_Gyro < 0){
+			perfectRateTurn_Gyro = -perfectRateTurn_Gyro;
+			perfectRateTurn_Gyro/=2;
 		}
 		
-		if(AutoInputs.getGyroRate() > perfectRate){
+		if(AutoInputs.getGyroRate() > perfectRateTurn_Gyro){
 			tmpTurn = tmpTurn - adjustment;
-		}else if(AutoInputs.getGyroRate() < perfectRate){
+		}else if(AutoInputs.getGyroRate() < perfectRateTurn_Gyro){
 			tmpTurn = tmpTurn + adjustment;
 		}
 		
 		//turn the robot slower until it reaches the target angle (remaining angle == 0)
 		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
-//		if(Math.abs(AutoInputs.getGyroRate())<=20){
-//			setDrive(tmpDrive, turnSpeed);
+		
+		setDrive(tmpDrive, tmpTurn);
+	}
+	
+	public static void rampDrive_Encoder(double remainingDistance, double targetDistance){
+		//intelligently turn the robot smoothly into the target angle 
+		
+		double tmpDrive = driveSpeed;
+		
+		if(remainingDistance < 0 && perfectRateDrive_Encoder > 0){
+			System.out.print("Case 1 - ");
+			perfectRateDrive_Encoder/=2;
+			perfectRateDrive_Encoder = -perfectRateDrive_Encoder;
+		}else if (remainingDistance > 0 && perfectRateDrive_Encoder < 0){
+			System.out.print("Case 2 - ");
+			perfectRateDrive_Encoder = -perfectRateDrive_Encoder;
+			perfectRateDrive_Encoder/=2;
+		}
+		
+		if(AutoInputs.getEncoderDriveDirection() == -1 && perfectRateDrive_Encoder > 0){
+			tmpDrive = tmpDrive + adjustment;
+		}else if(AutoInputs.getEncoderDriveDirection() == 1 && perfectRateDrive_Encoder < 0){
+			tmpDrive = tmpDrive - adjustment;
+		}else{
+			if(remainingDistance > 0){
+				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder)){
+					System.out.print("Case 3 - ");
+					tmpDrive = tmpDrive - adjustment;
+				}else{
+					System.out.print("Case 4 - ");
+					tmpDrive = tmpDrive + adjustment;
+				}
+			}else{
+				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder)){
+					System.out.print("Case 5 - ");
+					tmpDrive = tmpDrive + adjustment;
+				}else{
+					System.out.print("Case 6 - ");
+					tmpDrive = tmpDrive - adjustment;
+				}
+			}
+		}
+		
+		System.out.println("Perfect Rate: " + perfectRateDrive_Encoder);
+		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining distance: " + remainingDistance + " drive Speed: " + tmpDrive);
+		setDriveFwd(tmpDrive);
+	}
+	
+	public static void rampTurn_Encoder(double remainingAngle, double targetAngle){
+		//intelligently turn the robot smoothly into the target angle 
+		
+		double tmpDrive = driveSpeed;
+		double tmpTurn = turnSpeed;
+		
+		if(remainingAngle < 0 && perfectRateTurn_Encoder > 0){
+			System.out.print("Case 1 - ");
+			perfectRateTurn_Encoder/=2;
+			perfectRateTurn_Encoder = -perfectRateTurn_Encoder;
+		}else if (remainingAngle > 0 && perfectRateTurn_Encoder < 0){
+			System.out.print("Case 2 - ");
+			perfectRateTurn_Encoder = -perfectRateTurn_Encoder;
+			perfectRateTurn_Encoder/=2;
+		}
+		
+		if(AutoInputs.getEncoderTurnDirection() == -1 && perfectRateTurn_Encoder > 0){
+			tmpTurn = tmpTurn + adjustment;
+		}else if(AutoInputs.getEncoderTurnDirection() == 1 && perfectRateTurn_Encoder < 0){
+			tmpTurn = tmpTurn - adjustment;
+		}else{
+			if(remainingAngle > 0){
+				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateTurn_Encoder)){
+					System.out.print("Case 3 - ");
+					tmpTurn = tmpTurn - adjustment;
+				}else{
+					System.out.print("Case 4 - ");
+					tmpTurn = tmpTurn + adjustment;
+				}
+			}else{
+				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateTurn_Encoder)){
+					System.out.print("Case 5 - ");
+					tmpTurn = tmpTurn + adjustment;
+				}else{
+					System.out.print("Case 6 - ");
+					tmpTurn = tmpTurn - adjustment;
+				}
+			}
+		}
+		
+//		if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRate_Encoder)){
+//			if(remainingAngle > 0){
+//				System.out.print("Case 3 - ");
+//				tmpTurn = tmpTurn - adjustment;
+//			}else{
+//				System.out.print("Case 4 - ");
+//				tmpTurn = tmpTurn + adjustment;
+//			}
+//		}else if(AutoInputs.getSummedEncoderRate() < Math.abs(perfectRate_Encoder)){
+//			if(remainingAngle > 0){
+//				System.out.print("Case 5 - ");
+//				tmpTurn = tmpTurn + adjustment;
+//			}else{
+//				System.out.print("Case 6 - ");
+//				tmpTurn = tmpTurn - adjustment;
+//			}
 //		}
 		
-//		if(Math.abs(AutoInputs.getGyroRate()/2)>=Math.abs(remainingAngle)){
-//			tmpTurn = tmpTurn * 0.75;
-//		}
-		
-		//make sure the turnspeed never drops below a certain value
-//		if(tmpTurn<=0 && tmpTurn>-0.5){tmpTurn = -0.5;}
-//		else if(tmpTurn>0 && tmpTurn<0.5){tmpTurn = 0.5;}
-		
-		//make sure the robot doesn't over shoot the targetAngle
-//		if( (targetAngle>0 && remainingAngle<0) ||
-//			 targetAngle<0 && remainingAngle>0){tmpTurn = -0.5;}
-		
+		//turn the robot slower until it reaches the target angle (remaining angle == 0)
+		System.out.println("Perfect Rate: " + perfectRateTurn_Encoder);
+		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
 		setDrive(tmpDrive, tmpTurn);
 	}
 }

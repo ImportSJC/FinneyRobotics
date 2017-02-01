@@ -54,7 +54,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit(){
     	AutoInputs.AutoInit();
     	Autonomous.autonomousInit();
-    	AutoOutputs.AutoInit();
+    	AutoOutputs.ResetValues();
     }
 
     /**
@@ -62,7 +62,8 @@ public class Robot extends IterativeRobot {
      */
     public void autonomousPeriodic() {
 //    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
-    	System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle() + " Rate: " + AutoInputs.getGyroRate());
+//    	System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle() + " Rate: " + AutoInputs.getGyroRate());
+    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
     	Autonomous.autonomousPeriodic();
     }
     
@@ -76,7 +77,9 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	drive.TeleopPeriodic();
-    	System.out.println("Left Encoder: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+    	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount());
     	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
     }
     

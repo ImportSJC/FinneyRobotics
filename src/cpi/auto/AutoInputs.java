@@ -101,7 +101,40 @@ public class AutoInputs {
 	}
 	
 	public static double getEncoderDistanceAvg(){
+//		System.out.println("Avg Dist - left: " + leftEnc.getDistance() + " right: " + rightEnc.getDistance() + " total: " + (leftEnc.getDistance() + rightEnc.getDistance())/2);
 		return (leftEnc.getDistance() + rightEnc.getDistance())/2;
+	}
+	
+	/**
+	 * 
+	 * @return -1 for CCW turn, 0 for no turn, and 1 for CW turn
+	 */
+	public static double getEncoderTurnDirection(){
+		if(leftEnc.getRate() > 0 && rightEnc.getRate() < 0){
+			return 1;
+		}else if(leftEnc.getRate() < 0 && rightEnc.getRate() > 0){
+			return -1;
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * 
+	 * @return -1 for backwards, 0 for no direction, and 1 for forwards
+	 */
+	public static double getEncoderDriveDirection(){
+		if(leftEnc.getRate() > 0 && -rightEnc.getRate() < 0){
+			return 1;
+		}else if(leftEnc.getRate() < 0 && -rightEnc.getRate() > 0){
+			return -1;
+		}
+		
+		return 0;
+	}
+	
+	public static double getSummedEncoderRate(){
+		return Math.abs(leftEnc.getRate())+Math.abs(rightEnc.getRate());
 	}
 	
 	//Wrapping all gyro access code in try catch so that no exceptions go unchecked if no gyro is connected
