@@ -66,7 +66,7 @@ public class GRIP {
 				// Run your pipeline
 				pipeline.process(mat0,mat1,mat2);
 				// Give the output stream a new image to display
-				outputStream.putFrame(pipeline.switch1Output());
+				outputStream.putFrame(pipeline.switch3X1Output());
 			}
 		});
 		visionThread.setDaemon(true);

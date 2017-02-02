@@ -10,7 +10,7 @@ public class GRIPIntermediate2Pipeline {
 	Mat mat;
 	public void process (Mat source0){
 		mat=source0;
-		Imgproc.rectangle(mat, new Point(100, 100), new Point(400, 400),
+		Imgproc.rectangle(mat, new Point(50, 50), new Point(200, 200),
 				
 			
 				new Scalar(255, 255, 255), 5);

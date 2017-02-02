@@ -6,6 +6,7 @@ public class EncoderControl {
 	private Encoder myEncoder;
 	public EncoderControl(int aChannel, int bChannel)
 	{
+		myEncoder = new Encoder(aChannel,bChannel);//TODO: set this up properly
 //		myEncoder = new Encoder();//TODO: set this up properly
 	}
 	
@@ -16,6 +17,10 @@ public class EncoderControl {
     
     public void resetAll(){
 		myEncoder.reset();
+    }
+    
+    public double getSpeed(){
+    	return myEncoder.getRate();
     }
     
     public double getPos()

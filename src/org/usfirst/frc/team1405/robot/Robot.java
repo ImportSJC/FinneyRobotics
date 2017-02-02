@@ -8,6 +8,9 @@ import cpi.SimpleCamera;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
+import cpi.testBeds.TestSimpleEncoder;
+import cpi.testBeds.TestSimpleMultiMotorPWM;
+import cpi.testBeds.TestSimpleSpikeRelay;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.Timer;
@@ -45,14 +48,17 @@ public class Robot extends IterativeRobot {
     	Vision2017.robotInit();
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
- //   	templates.GRIP3X1.robotInit();
+    	templates.GRIP3X1v2.robotInit();
+  //  	templates.GRIPIntermediate3.robotInit();
  //   	templates.GRIPIntermediate2.robotInit();
  //   	templates.GRIPIntermediate.robotInit();
  //   	imageProcessor=new GRIP(0,1,2);
-//    	SimpleCamera.init(0);
-    	TestSimpleEncoder.robotInit();
-    	TestSimpleMultiMotorPWM.robotInit();
-    	TestSimpleSpikeRelay.robotInit();
+ //   	SimpleCamera.init(0);
+ //   	TestSimpleEncoder.robotInit();
+ //   	TestSimpleMultiMotorPWM.robotInit();
+ //   	TestSimpleSpikeRelay.robotInit();
+    	ShooterControl.setInstance();
+    	ShooterControl.robotInit();
     }
     
     public void autonomousInit(){
@@ -80,20 +86,27 @@ public class Robot extends IterativeRobot {
      * This function is called once every time the robot is disabled
      */
     public void disabledInit(){
-    	TestSimpleSpikeRelay.disabledInit();
-    	TestSimpleMultiMotorPWM.disabledInit();
+ //   	TestSimpleSpikeRelay.disabledInit();
+ //   	TestSimpleMultiMotorPWM.disabledInit();
+ //   	TestSimpleEncoder.disabledInit();
+    	ShooterControl.disabledInit();
+    	
     }
     public void testInit(){
     	LiveWindow.setEnabled(false);
-    	TestSimpleMultiMotorPWM.testInit();
-    	TestSimpleSpikeRelay.testInit();
+ //   	TestSimpleMultiMotorPWM.testInit();
+ //   	TestSimpleSpikeRelay.testInit();
+ //   	TestSimpleEncoder.testInit();
+    	ShooterControl.testInit();
     }
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-    	TestSimpleMultiMotorPWM.testPeriodic();
-    	TestSimpleSpikeRelay.testPeriodic();
+ //   	TestSimpleMultiMotorPWM.testPeriodic();
+//    	TestSimpleSpikeRelay.testPeriodic();
+//    	TestSimpleEncoder.testPeriodic();
+    	ShooterControl.testPeriodic();
     }
 
     /**
