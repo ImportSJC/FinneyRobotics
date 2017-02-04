@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1405.robot;
 
+import cpi.AutoMode;
+import cpi.MySet;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
 import cpi.auto.AutoValues;
@@ -24,11 +26,23 @@ public class Autonomous extends AutonomousBase{
 		Set.addName(SIDE_AIRSHIP_GEAR);
 		Set.addName(TEST_AUTO_MODE);
 		Set.addName(TEST_DRIVING);
+		
+		createAutoModes();
+	}
+	
+	public static void createAutoModes(){
+		
+		SuperClass[][] tmpMatrix = new SuperClass[][]{
+			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_centerAirShip, false))}};
+			
+		MySet.addAutoMode(new AutoMode(tmpMatrix, "someID", "drive forward"));
+		
+		MySet.assignAutoMode(0);
 	}
 	
 	public static void autonomousInit(){
 		AutonomousInit();
-		selectAutoMode(autoMode);
+		//selectAutoMode(autoMode);
 	}
 	
 	
