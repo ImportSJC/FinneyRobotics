@@ -48,6 +48,7 @@ public class Robot extends IterativeRobot {
     	GearControl.robotInit();
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
+    	AutoOutputs.setDriveBrake(true);
   //  	Vision2017.robotInit();
   //  	templates.GRIP3X1v2.robotInit();
   //  	templates.GRIPIntermediate3.robotInit();
@@ -80,7 +81,10 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	drive.TeleopPeriodic();
-    	GearControl.TeleopPeriodic(pilot.aButton());
+    	GearControl.TeleopPeriodic(pilot.aButton());    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+    	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount());
+    	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
     	
     }
     
@@ -92,6 +96,7 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleSpikeRelay.disabledInit();
   //  	TestSimpleMultiMotorPWM.disabledInit();
  //   	TestSimpleEncoder.disabledInit();
+    	AutoInputs.freeEncoders();
     	ShooterControl.disabledInit();
     	
     }
@@ -109,6 +114,7 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleMultiMotorPWM.testPeriodic();
 //    	TestSimpleSpikeRelay.testPeriodic();
 //    	TestSimpleEncoder.testPeriodic();
+    	drive.TestPeriodic();
     	ShooterControl.testPeriodic();
     }
 
@@ -117,6 +123,6 @@ public class Robot extends IterativeRobot {
      */
     public void disabledPeriodic(){
     	//System.out.println(timer.get());
-    	cpi.autoSupportClasses.Set.disabledPeriodic();
+ //   	cpi.autoSupportClasses.Set.disabledPeriodic();
     }
 }

@@ -1,36 +1,42 @@
 package cpi.auto.inputDevices;
 
+import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
-import cpi.auto.GyroControl;
 import cpi.auto.SuperClass;
 
 public class Gyroscope extends SuperClass{
+	private static final double MARGIN_OF_ERROR = 0.5;
+	private static final double END_RATE = 15; // the rate the robot must be under to end the turn
+	
 	private double targetAngle;
 	
-	GyroControl myGyro;
-	
-	public Gyroscope(double value, int channel){
+	public Gyroscope(double value){
 		targetAngle = value;
-		myGyro = new GyroControl(channel);
 	}
 	
 	@Override
 	public void start(){
-		myGyro.Init();
-		myGyro.resetAll();
+		AutoInputs.resetGyros();
+	}
+	
+	private boolean atTargetAngle(double currentAngle){
+		if(currentAngle>targetAngle-MARGIN_OF_ERROR && currentAngle<targetAngle+MARGIN_OF_ERROR){
+			return true;
+		}
+		return false;
 	}
 	
 	@Override 
 	public boolean check(){
-		System.out.println("Gyro Angle: " + myGyro.getAngle());
+		System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle());
+
+		//stop once it hits the target angle and its not moving fast
+		if(atTargetAngle(AutoInputs.getGyroAngle()) && Math.abs(AutoInputs.getGyroRate()) < END_RATE){return true;}
 		
-//		if (targetAngle/2<=myGyro.getAngle()){
-		AutoOutputs.rampTurn(targetAngle-myGyro.getAngle(), targetAngle);
+//		if (targetAngle/2<=AutoInputs.getAngle()){
+		AutoOutputs.rampTurn_Gyro(targetAngle-AutoInputs.getGyroAngle(), targetAngle);
 //		}
 		
-		//stop once it hits the target angle and its not moving fast
-		if(targetAngle>0 && myGyro.getAngle() >= targetAngle && myGyro.getRate() < 10){return true;}
-		else if(targetAngle<0 && myGyro.getAngle() <= targetAngle){return true;}
 		return false;
 	}
 }

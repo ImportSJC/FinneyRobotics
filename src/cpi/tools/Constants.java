@@ -9,7 +9,7 @@ public class Constants {
  * Title may be modified to suit the user. eg within the Robot Class the initial statement before any instantiation of Set or Net
  * cpi.tools.Constants.TITLE="Team 1405 Robot (2017)";
  */
-	public static String TITLE=cpi.Set.TITLE;
+	public static String TITLE="Team 1405 Robot (2017)";
 /**
  * 
  */

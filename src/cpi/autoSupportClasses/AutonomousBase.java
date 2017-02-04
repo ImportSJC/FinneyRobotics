@@ -3,18 +3,20 @@ package cpi.autoSupportClasses;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
 import cpi.auto.SuperClass;
+import cpi.auto.inputDevices.Time;
 
 public class AutonomousBase {
-	public static int columnIndex = 0;
-	public static int rowIndex = 0;
-	public static boolean columnInit = false; //has all the modes in the column been started yet?
+	private static int columnIndex = 0;
+	private static int rowIndex = 0;
+	private static boolean columnInit = false; //has all the modes in the column been started yet?
 //	public static boolean[] checks; //an array storing the boolean values of all mode checks in the current row
 	public static SuperClass[][] autoStates = null;
 	public static String autoMode = "";//this should be set to "" or "default"
 	
-	
+	private static Time autoTimer = new Time(15);
 	
 	public static void selectAutoMode(String modeName){
+		System.out.println("ModelName: " + modeName);
 		autoMode=modeName;
 	}
 	
@@ -32,15 +34,17 @@ public class AutonomousBase {
 		rowIndex = 0;
 		columnInit = false;
 		AutoOutputs.setDriveBrake(true);
-		AutoInputs.resetGyro();
+		AutoInputs.resetGyros();
+		
+		autoTimer.start();
 	}
 	public static final void autonomousPeriodic() {
 		if(autoStates==null)return;
-		System.out.println("AutonomousPeriodic");
 		if (columnIndex<autoStates.length){
 			if (!columnInit){
-				AutoInputs.resetGyro();
+				AutoInputs.resetGyros();
 				AutoInputs.resetEncoders();
+				AutoOutputs.ResetValues();
 				for (int i=0; i<autoStates[columnIndex].length; i++){
 					autoStates[columnIndex][i].start();
 				}
@@ -51,18 +55,20 @@ public class AutonomousBase {
 //				AutoInputs.resetGyro();
 				columnIndex++;
 				columnInit = false;
+				
+				autoTimer.stopTime();
 			}
 		}
 		else{
-			System.out.println("End of Autonomous Loop");
+			System.out.println("End of Autonomous Loop, Time: " + autoTimer.getStopTime());
 			
 			//TODO: remove this debug code for competitions
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			AutoOutputs.setDriveBrake(false);
+//			try {
+//				Thread.sleep(1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			AutoOutputs.setDriveBrake(false);
 		}
 	}
 
