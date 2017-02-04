@@ -45,17 +45,18 @@ public class Robot extends IterativeRobot {
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
     	pilot=new Control(0);
-    	Vision2017.robotInit();
+    	GearControl.robotInit();
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
-    	templates.GRIP3X1v2.robotInit();
+  //  	Vision2017.robotInit();
+  //  	templates.GRIP3X1v2.robotInit();
   //  	templates.GRIPIntermediate3.robotInit();
  //   	templates.GRIPIntermediate2.robotInit();
  //   	templates.GRIPIntermediate.robotInit();
  //   	imageProcessor=new GRIP(0,1,2);
  //   	SimpleCamera.init(0);
  //   	TestSimpleEncoder.robotInit();
- //   	TestSimpleMultiMotorPWM.robotInit();
+ //'   	TestSimpleMultiMotorPWM.robotInit();
  //   	TestSimpleSpikeRelay.robotInit();
     	ShooterControl.setInstance();
     	ShooterControl.robotInit();
@@ -79,6 +80,8 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	drive.TeleopPeriodic();
+    	GearControl.TeleopPeriodic(pilot.aButton());
+    	
     }
     
       
@@ -87,14 +90,14 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
  //   	TestSimpleSpikeRelay.disabledInit();
- //   	TestSimpleMultiMotorPWM.disabledInit();
+  //  	TestSimpleMultiMotorPWM.disabledInit();
  //   	TestSimpleEncoder.disabledInit();
     	ShooterControl.disabledInit();
     	
     }
     public void testInit(){
     	LiveWindow.setEnabled(false);
- //   	TestSimpleMultiMotorPWM.testInit();
+  //  	TestSimpleMultiMotorPWM.testInit();
  //   	TestSimpleSpikeRelay.testInit();
  //   	TestSimpleEncoder.testInit();
     	ShooterControl.testInit();

@@ -37,6 +37,7 @@ public class TestSimpleMultiMotorPWM {
 	}
 	
     public static void testInit(){
+    	if(settings.getBoolean(ENABLE, false))return;
     	if(isNotFirstInit)return;
     	isNotFirstInit=true;
     	motor8 = new Jaguar(8);
@@ -44,11 +45,14 @@ public class TestSimpleMultiMotorPWM {
     	System.out.println("testInit");
     }
     public static void testPeriodic() {
+    	testInit();
     	if(!settings.getBoolean(ENABLE, false)){
+        	if(isNotFirstInit)return;
         	motor8.set(0);
         	motor9.set(0);
     		return;
     	}
+    	testInit();
     	motor8.set(settings.getNumber(SHOOTER_KEY, 0.25));
     	if(settings.getBoolean(ENABLE_TIMED_GATE, false)){
     		if((!isGateOn)&&timer.hasPeriodPassed(settings.getNumber(GATE__ON_TIME, 0.25))){
@@ -68,9 +72,13 @@ public class TestSimpleMultiMotorPWM {
     }
     
     public static void disabledInit(){
-    	testInit();
     	settings.putBoolean(ENABLE, false);
+    	settings.putBoolean(ENABLE_TIMED_GATE, false);
+    	if(!isNotFirstInit)return;
     	motor8.set(0);
     	motor9.set(0);
+    	motor8.free();
+    	motor9.free();
+    	isNotFirstInit=false;
     }
 }

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Jaguar;
 
 public class MotorController {
 	
-	private boolean useTalon = false;
+	private boolean useTalon = true;
 	
 	private CANTalon talon;
 	private Jaguar jaguar;
