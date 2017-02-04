@@ -10,7 +10,7 @@ public class EncoderControl {
 	//new base
 	//	private static final double WHEEL_DIAMETER = 3.875; // wheel diameter in inches
 	
-	private static final double COUNTS_PER_ROTATION = 250; //encoder counts per rotation of the wheel
+	private static final double COUNTS_PER_ROTATION = 360; //encoder counts per rotation of the wheel
 	private static final double fullTurnCount = 5784; // (should be 3243) the number of encoder counts it takes to turn the robot a full rotation
 	private static final double countOvershoot = 0; // the number of counts that the robot overshoots by (at .5 speed)
 	

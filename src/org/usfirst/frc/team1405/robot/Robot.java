@@ -97,6 +97,6 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledPeriodic(){
-    	cpi.autoSupportClasses.Set.disabledPeriodic();
+    	Autonomous.disabledPeriodic();
     }
 }
