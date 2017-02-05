@@ -35,16 +35,22 @@ public class EncoderControl {
 	
     public void Init(){
     	System.out.println("Encoder Init");
-        myEncoder.reset();
+        resetAll();
     }
     
     public void resetAll(){
-		myEncoder.reset();
+    	if(myEncoder != null){
+    		myEncoder.reset();
+    	}
     }
     
     public double getCount()
     {
-    	return myEncoder.get();
+    	if(myEncoder != null){
+    		return myEncoder.get();
+    	}
+    	
+    	return 0;
     }
     
     private static double getCircumference(double diameter){
@@ -62,7 +68,11 @@ public class EncoderControl {
     }
     
     public double getRate(){
-    	return myEncoder.getRate();
+    	if(myEncoder != null){
+    		return myEncoder.getRate();
+    	}
+    	
+    	return 0;
     }
     
     public static double convertAngleToCount(double angle){
@@ -70,7 +80,9 @@ public class EncoderControl {
     }
     
     public void free(){
-    	myEncoder.free();
+    	if(myEncoder != null){
+    		myEncoder.free();
+    	}
     	input1.free();
     	input2.free();
     }
