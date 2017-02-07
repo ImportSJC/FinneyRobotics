@@ -1,85 +1,111 @@
 package org.usfirst.frc.team1405.robot.Vision;
 
-
-
 import edu.wpi.cscore.CvSink;
 import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.MjpegServer;
 import edu.wpi.first.wpilibj.CameraServer;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team1405.robot.Vision.pipelines.*;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import templates.GRIPIntermediate2Pipeline;
+import org.usfirst.frc.team1405.robot.Vision.pipelines.GeneralDetectionPipeline;
 
 public class Vision2017 {
 
-	static final int RES_WIDTH=320;
-	static final int RES_HEIGHT=240;
-	static UsbCamera camera[];
-	static CvSink cvSink[];
-	static GeneralDetectionPipeline pipeline;
-	
 	static Thread visionThread;
+	static GeneralDetectionPipeline pipeline=new GeneralDetectionPipeline("Robot/Vision/Pipeline");
+	static NetworkTable table;
+	static String ENABLE_CHANNEL1="Enable channel 1";
+	static String CAMERA_ID_KEY="Camera ID (0, 1, 2)";
+	static final int VERT_RES=120;
+	static final int HOR_RES=160;
+
+	static CameraServer cameraServer;
+	static MjpegServer outputStreamServer;
+	static UsbCamera camera[]=new UsbCamera[3];
+	static UsbCamera camera0;
+	static UsbCamera camera1;
+	static UsbCamera camera2;
+
+	static CvSink cvSink[]=new CvSink[3];
+	static CvSink cvSink0;
+	static CvSink cvSink1;
+	static CvSink cvSink2;
+	
+	static CvSource outputStream;
+
+	static boolean setupCamera1=true;
+	static boolean setuoCamera2=false;
 	
 	static public void robotInit(){
-		camera=new UsbCamera[3];
+		table=NetworkTable.getTable("Robot/Vision");
+		table.putString(CAMERA_ID_KEY, "0");
 		visionThread = new Thread(() -> {
-			// Get three UsbCamera from CameraServer
-			camera[0] = CameraServer.getInstance().startAutomaticCapture(0);
-			// Set the resolution
-			camera[0].setResolution(RES_WIDTH, RES_HEIGHT);
 			
-			// Get three UsbCamera from CameraServer
-			camera[1] = CameraServer.getInstance().startAutomaticCapture(1);
-			// Set the resolution
-			camera[1].setResolution(RES_WIDTH, RES_HEIGHT);
-
-			// Get three UsbCamera from CameraServer
-			camera[2] = CameraServer.getInstance().startAutomaticCapture(0);
-			// Set the resolution
-			camera[2].setResolution(RES_WIDTH, RES_HEIGHT);
-
-			// Get a CvSink. This will capture Mats from the camera
+			camera[0]=CameraServer.getInstance().startAutomaticCapture(0);
+			camera[0].setResolution(HOR_RES, VERT_RES);
+			camera[0].setFPS(15);
 			cvSink[0] = CameraServer.getInstance().getVideo(camera[0]);
+			camera[1]=CameraServer.getInstance().startAutomaticCapture(1);
+			camera[1].setResolution(HOR_RES, VERT_RES);	
+			camera[1].setFPS(15);		
 			cvSink[1] = CameraServer.getInstance().getVideo(camera[1]);
+			camera[2]=CameraServer.getInstance().startAutomaticCapture(2);
+			camera[2].setResolution(HOR_RES, VERT_RES);
+			camera[2].setFPS(15);
 			cvSink[2] = CameraServer.getInstance().getVideo(camera[2]);
-			// Setup a CvSource. This will send images back to the Dashboard
-			CvSource outputStream = CameraServer.getInstance().putVideo("Selected Video", RES_WIDTH, RES_HEIGHT);
 
+			outputStream = CameraServer.getInstance().putVideo("Switched Output", VERT_RES, HOR_RES);
+			
 			// Mats are very memory expensive. Lets reuse this Mat.
-			Mat mat[] = new Mat[3];
-			mat[0]=new Mat();
-			mat[1]=new Mat();
-			mat[2]=new Mat();
+			Mat mat = new Mat();
 
 			// This cannot be 'true'. The program will never exit if it is. This
 			// lets the robot stop this thread when restarting robot code or
 			// deploying.
 			while (!Thread.interrupted()) {
+//				System.out.println("!Thread.interrupted");
+				
+				
 				// Tell the CvSink to grab a frame from the camera and put it
 				// in the source mat.  If there is an error notify the output.
-				if (cvSink[0].grabFrame(mat[0]) == 0) {
+				switch(table.getString(CAMERA_ID_KEY,"0")){
+				case "0":
+				default:
+				if (cvSink[0].grabFrame(mat) == 0 ) {
 					// Send the output the error.
-					outputStream.notifyError(cvSink[0].getError());
+				outputStream.notifyError(cvSink[0].getError());
 					// skip the rest of the current iteration
 					continue;
-				}
-				pipeline.process(mat[0]);
-				if (cvSink[1].grabFrame(mat[1]) == 0) {
+					}
+				break;
+				
+				case"1":
+					if (cvSink[1].grabFrame(mat) == 0 ) {
 					// Send the output the error.
-					outputStream.notifyError(cvSink[1].getError());
+						outputStream.notifyError(cvSink[1].getError());
 					// skip the rest of the current iteration
 					continue;
-				}
-				if (cvSink[2].grabFrame(mat[2]) == 0) {
+					}
+				break;
+				
+				case"2":
+				if (cvSink[2].grabFrame(mat) == 0 ) {
 					// Send the output the error.
-					outputStream.notifyError(cvSink[2].getError());
+				outputStream.notifyError(cvSink[2].getError());
 					// skip the rest of the current iteration
 					continue;
+					}
+				break;
 				}
-				pipeline.process(mat[0]);
-				outputStream.putFrame(pipeline.CvtColorOutput());
+				
+				
+				// Put a rectangle on the image
+//				pipeline.process(mat);
+				pipeline.process(mat);
+				mat=pipeline.hsvThresholdOutput();
+				outputStream.putFrame(mat);
+//				
 			}
 		});
 		visionThread.setDaemon(true);

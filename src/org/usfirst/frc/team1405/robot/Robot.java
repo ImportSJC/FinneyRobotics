@@ -49,7 +49,9 @@ public class Robot extends IterativeRobot {
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
     	AutoOutputs.setDriveBrake(true);
-  //  	Vision2017.robotInit();
+ //   	templates.GRIP3Cameras2Switched.robotInit();
+ //   	cpi.SimpleTwoCamera.init(0);
+    	Vision2017.robotInit();
   //  	templates.GRIP3X1v2.robotInit();
   //  	templates.GRIPIntermediate3.robotInit();
  //   	templates.GRIPIntermediate2.robotInit();
@@ -81,10 +83,11 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	drive.TeleopPeriodic();
-    	GearControl.TeleopPeriodic(pilot.aButton());    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
-    	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
-    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount());
-    	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
+    	GearControl.TeleopPeriodic(pilot.aButton());
+//    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+ //   	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
+ //   	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount());
+ //   	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
     	
     }
     

@@ -11,7 +11,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import cpi.tools.grip.GRIP3X1SwitchPipeline;
 
-import cpi.Net;
+//import cpi.Net;
 /**
  * 
  * @author Thomas Wulff
@@ -22,7 +22,7 @@ public class GRIP {
 	Thread visionThread;
 	GRIP3X1SwitchPipeline pipeline;
 	CvSource outputStream;
-	Net<Double[]> contours;
+//	Net<Double[]> contours;
 	GRIP(int channel0,int channel1,int channel2){
 		pipeline = new GRIP3X1SwitchPipeline();
 		visionThread = new Thread(() -> {

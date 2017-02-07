@@ -12,7 +12,7 @@ import org.opencv.imgproc.Imgproc;
 
 //import cpi.tools.grip.SwitchPipeline; // uncomment this during customization
 
-import cpi.Net;
+//import cpi.Net;
 /**
  * 
  * @author Thomas Wulff
@@ -23,7 +23,7 @@ public class GRIP {
 	Thread visionThread;
 	GripPipeline pipeline;
 	CvSource outputStream;
-	Net<Double[]> contours;
+	//Net<Double[]> contours;
 	GRIP(int channel){
 		pipeline = new GripPipeline();
 		visionThread = new Thread(() -> {
@@ -56,7 +56,7 @@ public class GRIP {
 				pipeline.process(mat);
 				// Give the output stream a new image to display
 				outputStream.putFrame(pipeline.hslThresholdOutput());
-				contours=new Net <Double[]> ("Grip","Contours",(Double[])pipeline.filterContoursOutput().toArray());
+//				contours=new Net <Double[]> ("Grip","Contours",(Double[])pipeline.filterContoursOutput().toArray());
 			}
 		});
 		visionThread.setDaemon(true);

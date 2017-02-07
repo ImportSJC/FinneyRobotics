@@ -48,7 +48,7 @@ public class ShooterControl {
 	}
 	static public void setInstance(String mode, int shooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int gateID,int mixerRelayID){
 	if(mode == Mode.PWM){
-		THIS_TABLE_NAME= Set.TITLE+"/Test Beds/Shooter";
+		THIS_TABLE_NAME= "Robot"+"/Test Beds/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
     	settings.putNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
     	settings.putNumber(GATE_THRESHOLD, GATE_THRESHOLD_VALUE);

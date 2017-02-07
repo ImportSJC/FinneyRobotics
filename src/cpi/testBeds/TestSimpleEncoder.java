@@ -29,8 +29,8 @@ public class TestSimpleEncoder {
     }
     public static void testPeriodic() {
     	if(!settings.getBoolean("Enable", false))return;
-    	settings.putNumber("Encoder_0_1 position",  Encoder_0_1.getPos());	
-    	settings.putNumber("Encoder_2_3 position",  Encoder_2_3.getPos());
+    	settings.putNumber("Encoder_0_1 position",  Encoder_0_1.getSpeed());	
+    	settings.putNumber("Encoder_2_3 position",  Encoder_2_3.getSpeed());
     	settings.putNumber("Encoder_0_1 speed",  Encoder_0_1.getSpeed());	
     	settings.putNumber("Encoder_2_3 position",  Encoder_2_3.getSpeed());
     }
