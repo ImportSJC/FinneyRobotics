@@ -5,18 +5,18 @@ import edu.wpi.cscore.CvSource;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import org.opencv.core.Mat;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import templates.GRIPIntermediate2Pipeline;
+//import templates.GRIPIntermediate2Pipeline;
 import org.usfirst.frc.team1405.robot.Vision.pipelines.GeneralDetectionPipeline;
 
 public class Vision2017 {
 
 	static Thread visionThread;
-	static GeneralDetectionPipeline pipeline=new GeneralDetectionPipeline("Robot/Vision/Pipeline");
+	static GeneralDetectionPipeline boilerPipeline=new GeneralDetectionPipeline("Robot/Vision/Pipelines/Boiler");
 	static NetworkTable table;
-	static String ENABLE_CHANNEL1="Enable channel 1";
-	static String CAMERA_ID_KEY="Camera ID (0, 1, 2)";
+	static String CAMERA_ID_KEY="Select boiler camera ID (0, 1, 2)";
 	static final int VERT_RES=120;
 	static final int HOR_RES=160;
 
@@ -36,10 +36,14 @@ public class Vision2017 {
 
 	static boolean setupCamera1=true;
 	static boolean setuoCamera2=false;
+	static boolean settingsEnable=false;
+	static String cameraID="0";
 	
 	static public void robotInit(){
 		table=NetworkTable.getTable("Robot/Vision");
-		table.putString(CAMERA_ID_KEY, "0");
+		cameraID=table.getString(CAMERA_ID_KEY,"0");
+		table.putString(CAMERA_ID_KEY, cameraID);
+		table.setPersistent(CAMERA_ID_KEY);
 		visionThread = new Thread(() -> {
 			
 			camera[0]=CameraServer.getInstance().startAutomaticCapture(0);
@@ -55,7 +59,7 @@ public class Vision2017 {
 			camera[2].setFPS(15);
 			cvSink[2] = CameraServer.getInstance().getVideo(camera[2]);
 
-			outputStream = CameraServer.getInstance().putVideo("Switched Output", VERT_RES, HOR_RES);
+			outputStream = CameraServer.getInstance().putVideo("Vew selected feed", VERT_RES, HOR_RES);
 			
 			// Mats are very memory expensive. Lets reuse this Mat.
 			Mat mat = new Mat();
@@ -69,7 +73,8 @@ public class Vision2017 {
 				
 				// Tell the CvSink to grab a frame from the camera and put it
 				// in the source mat.  If there is an error notify the output.
-				switch(table.getString(CAMERA_ID_KEY,"0")){
+				if(DriverStation.getInstance().isDisabled())cameraID=table.getString(CAMERA_ID_KEY,"0");
+				switch(cameraID){
 				case "0":
 				default:
 				if (cvSink[0].grabFrame(mat) == 0 ) {
@@ -101,9 +106,9 @@ public class Vision2017 {
 				
 				
 				// Put a rectangle on the image
-//				pipeline.process(mat);
-				pipeline.process(mat);
-				mat=pipeline.hsvThresholdOutput();
+//				boilerPipeline.process(mat);
+				boilerPipeline.process(mat);
+				mat=boilerPipeline.hsvThresholdOutput();
 				outputStream.putFrame(mat);
 //				
 			}

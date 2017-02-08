@@ -17,6 +17,7 @@ import org.opencv.imgproc.*;
 import org.opencv.objdetect.*;
 
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
 * GeneralDetectionPipeline class.
@@ -27,20 +28,42 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 */
 public class GeneralDetectionPipeline {
 	
+	static final String SELECTION="Selection";
+	static final String OUTPUT_CONTROL="Select view";	
+	static final String SOURCE="1 - Source";	
+	static final String HSV_THRESHOLD="2 - HSV Threshold";	
+	static final String ERODE="3 - Erode";	
+	static final String DILATE="4 - Dilate";	
+	static final String FIND_CONTOURS="5 - Find contours";	
+	static final String FILTER_CONTOURS="6 - Filter contours";
+	
+	
 	NetworkTable table;
-	String HSV_THRESHOLD_HUE_LOW="HSV Hue Low Threshold";
-	String HSV_THRESHOLD_HUE_HIGH="HSV Hue High Threshold";
-	String HSV_THRESHOLD_SATURATION_HIGH="HSV Saturation High";
-	String HSV_THRESHOLD_SATURATION_LOW="HSV Saturation Low";
-	String HSV_THRESHOLD_VALUE_LOW="HSV Value Low";
-	String HSV_THRESHOLD_VALUE_HIGH="HSV Value High";
+	static final String HSV_THRESHOLD_HUE_LOW="HSV Hue Low Threshold";
+	static final String HSV_THRESHOLD_HUE_HIGH="HSV Hue High Threshold";
+	static final String HSV_THRESHOLD_SATURATION_HIGH="HSV Saturation High";
+	static final String HSV_THRESHOLD_SATURATION_LOW="HSV Saturation Low";
+	static final String HSV_THRESHOLD_VALUE_LOW="HSV Value Low";
+	static final String HSV_THRESHOLD_VALUE_HIGH="HSV Value High";
+
+	double hsvThresholdHueLow;
+	double hsvThresholdHueHigh;
+	double hsvThresholdSaturationLow;
+	double hsvThresholdSaturationHigh;
+	double hsvThresholdValueLow;
+	double hsvThresholdValueHigh;
 	
-	String ERODE_BOARDER="Erode Boarder";		
-	String ERODE_ITERATIONS="Erode Iterations";	
-	String DILATE_BOARDER="Dilate Boarder";		
-	String DILATE_ITERATIONS="Dilate Iterations";
+	static final String ERODE_BOARDER="Erode Boarder";		
+	static final String ERODE_ITERATIONS="Erode Iterations";	
+	static final String DILATE_BOARDER="Dilate Boarder";		
+	static final String DILATE_ITERATIONS="Dilate Iterations";
+
+	String erodeBoarder;
+	double erodeIterations;
+	String dilateBoarder;
+	double dilateIterations;
 	
-	String ALLOWED_BOARDER_TYPES="Allowed Boarder Types";
+	static final String ALLOWED_BOARDER_TYPES="Allowed Boarder Types";
 	
 	static final String BOARDER_CONSTANT="BOARDER_CONSTANT";
 	static final String BOARDER_REPLECATE="BOARDER_REPLECATE";	
@@ -53,56 +76,106 @@ public class GeneralDetectionPipeline {
 	static final String BOARDER_ISOLATED="BOARDER_ISOLATED";
 
 
-	String FILTER_CONTOURS_MIN_AREA="Filter Contours - Min Area";	
-	String FILTER_CONTOURS_MIN_PERIMETER="Filter Contours - Min Perimeter";
-	String FILTER_CONTOURS_MIN_WIDTH="Filter Contours - Min Width";
-	String FILTER_CONTOURS_MAX_WIDTH="Filter Contours - Max Width";
-	String FILTER_CONTOURS_MIN_HEIGHT="Filter Contours - Min Height";
-	String FILTER_CONTOURS_MAX_HEIGHT="Filter Contours - Max Height";
-	String FILTER_CONTOURS_SOLIDITY_LOW="Filter Contours - Solidity (Low)";
-	String FILTER_CONTOURS_SOLIDITY_HIGH="Filter Contours - Solidity (High)";
-	String FILTER_CONTOURS_MIN_VERTICES="Filter Contours - Min Vertices";
-	String FILTER_CONTOURS_MAX_VERTICES="Filter Contours - Max Vertices";
-	String FILTER_CONTOURS_MIN_RATIO="Filter Contours - Min Ratio";
-	String FILTER_CONTOURS_MAX_RATIO="Filter Contours - Max Ratio";
-	
+	static final String FILTER_CONTOURS_MIN_AREA="Filter Contours - Min Area";	
+	static final String FILTER_CONTOURS_MIN_PERIMETER="Filter Contours - Min Perimeter";
+	static final String FILTER_CONTOURS_MIN_WIDTH="Filter Contours - Min Width";
+	static final String FILTER_CONTOURS_MAX_WIDTH="Filter Contours - Max Width";
+	static final String FILTER_CONTOURS_MIN_HEIGHT="Filter Contours - Min Height";
+	static final String FILTER_CONTOURS_MAX_HEIGHT="Filter Contours - Max Height";
+	static final String FILTER_CONTOURS_SOLIDITY_LOW="Filter Contours - Solidity (Low)";
+	static final String FILTER_CONTOURS_SOLIDITY_HIGH="Filter Contours - Solidity (High)";
+	static final String FILTER_CONTOURS_MIN_VERTICES="Filter Contours - Min Vertices";
+	static final String FILTER_CONTOURS_MAX_VERTICES="Filter Contours - Max Vertices";
+	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours - Min Ratio";
+	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours - Max Ratio";
+
+	double filterContoursMinArea;
+	double filterContoursMinPerimeter;
+	double filterContoursMinWidth;
+	double filterContoursMaxWidth;
+	double filterContoursMinHeight;
+	double filterContoursMaxHeight;
+	double filterContoursSolidityLow;
+	double filterContoursSolidityHight;
+	double filterContoursMinVertices;
+	double filterContoursMaxVertices;
+	double filterContoursMinRatio;
+	double filterContoursMaxRatio;
+	String outputID="1";
+	Mat hsvThresholdInput;
 	
 	public GeneralDetectionPipeline(String table){
 		this.table=NetworkTable.getTable(table);
-		this.table.putNumber(HSV_THRESHOLD_HUE_LOW, this.table.getNumber(HSV_THRESHOLD_HUE_LOW, 0.0));
-		this.table.putNumber(HSV_THRESHOLD_HUE_HIGH, this.table.getNumber(HSV_THRESHOLD_HUE_HIGH, 180.0));
-		this.table.putNumber(HSV_THRESHOLD_SATURATION_LOW, this.table.getNumber(HSV_THRESHOLD_SATURATION_LOW, 0.0));
-		this.table.putNumber(HSV_THRESHOLD_SATURATION_HIGH, this.table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, 255.0));
-		this.table.putNumber(HSV_THRESHOLD_VALUE_LOW, this.table.getNumber(HSV_THRESHOLD_VALUE_LOW, 0.0));
-		this.table.putNumber(HSV_THRESHOLD_VALUE_HIGH, this.table.getNumber(HSV_THRESHOLD_VALUE_HIGH, 255.0));
+
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, true);
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+		
+		
+		this.table.putNumber(HSV_THRESHOLD_HUE_LOW, hsvThresholdHueLow=this.table.getNumber(HSV_THRESHOLD_HUE_LOW, 0.0));
+		this.table.putNumber(HSV_THRESHOLD_HUE_HIGH, hsvThresholdHueHigh=this.table.getNumber(HSV_THRESHOLD_HUE_HIGH, 180.0));
+		this.table.putNumber(HSV_THRESHOLD_SATURATION_LOW,hsvThresholdSaturationLow= this.table.getNumber(HSV_THRESHOLD_SATURATION_LOW, 0.0));
+		this.table.putNumber(HSV_THRESHOLD_SATURATION_HIGH, hsvThresholdSaturationHigh=this.table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, 255.0));
+		this.table.putNumber(HSV_THRESHOLD_VALUE_LOW, hsvThresholdValueLow=this.table.getNumber(HSV_THRESHOLD_VALUE_LOW, 0.0));
+		this.table.putNumber(HSV_THRESHOLD_VALUE_HIGH, hsvThresholdValueHigh=this.table.getNumber(HSV_THRESHOLD_VALUE_HIGH, 255.0));
+
+		this.table.setPersistent(HSV_THRESHOLD_HUE_LOW);
+		this.table.setPersistent(HSV_THRESHOLD_HUE_HIGH);
+		this.table.setPersistent(HSV_THRESHOLD_SATURATION_LOW);
+		this.table.setPersistent(HSV_THRESHOLD_SATURATION_HIGH);
+		this.table.setPersistent(HSV_THRESHOLD_VALUE_LOW);
+		this.table.setPersistent(HSV_THRESHOLD_VALUE_HIGH);
+		
 		
 		this.table.putString(ALLOWED_BOARDER_TYPES, "{ "+BOARDER_CONSTANT+", "+BOARDER_REPLECATE+", "+BOARDER_REPLECATE+", "+
 														BOARDER_REFLECT+", "+BOARDER_WRAP+", "+BOARDER_REFLECT_101+", "+
 														BOARDER_TRANSPARENT+", "+BOARDER_REFLECT101+", "+BOARDER_DEFAULT+", "+BOARDER_ISOLATED);
-		this.table.putString(ERODE_BOARDER, this.table.getString(ERODE_BOARDER, BOARDER_CONSTANT));
-		this.table.putNumber(ERODE_ITERATIONS, this.table.getNumber(ERODE_ITERATIONS, 1));
-		this.table.putString(DILATE_BOARDER, this.table.getString(DILATE_BOARDER, BOARDER_CONSTANT));
-		this.table.putNumber(DILATE_ITERATIONS, this.table.getNumber(ERODE_ITERATIONS, 1));
+		this.table.putString(ERODE_BOARDER,erodeBoarder= this.table.getString(ERODE_BOARDER, BOARDER_CONSTANT));
+		this.table.putNumber(ERODE_ITERATIONS, erodeIterations=this.table.getNumber(ERODE_ITERATIONS, 1));
+		this.table.putString(DILATE_BOARDER, dilateBoarder=this.table.getString(DILATE_BOARDER, BOARDER_CONSTANT));
+		this.table.putNumber(DILATE_ITERATIONS,dilateIterations= this.table.getNumber(ERODE_ITERATIONS, 1));
 		
 
-		this.table.putNumber(FILTER_CONTOURS_MIN_AREA, this.table.getNumber(FILTER_CONTOURS_MIN_AREA, 0));
-		this.table.putNumber(FILTER_CONTOURS_MIN_PERIMETER, this.table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, 0));
-		this.table.putNumber(FILTER_CONTOURS_MIN_WIDTH, this.table.getNumber(FILTER_CONTOURS_MIN_WIDTH, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_WIDTH, this.table.getNumber(FILTER_CONTOURS_MAX_WIDTH, 1000));
-		this.table.putNumber(FILTER_CONTOURS_MIN_HEIGHT, this.table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_HEIGHT, this.table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, 1000));
-		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_LOW, this.table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, 0));
-		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_HIGH, this.table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, 100));
-		this.table.putNumber(FILTER_CONTOURS_MIN_VERTICES, this.table.getNumber(FILTER_CONTOURS_MIN_VERTICES, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_VERTICES, this.table.getNumber(FILTER_CONTOURS_MAX_VERTICES, 1000000));
-		this.table.putNumber(FILTER_CONTOURS_MIN_RATIO, this.table.getNumber(FILTER_CONTOURS_MIN_RATIO, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_RATIO, this.table.getNumber(FILTER_CONTOURS_MAX_RATIO, 1000));
+		this.table.setPersistent(ERODE_BOARDER);
+		this.table.setPersistent(ERODE_ITERATIONS);
+		this.table.setPersistent(DILATE_BOARDER);
+		this.table.setPersistent(DILATE_ITERATIONS);
+
+		this.table.putNumber(FILTER_CONTOURS_MIN_AREA,filterContoursMinArea= this.table.getNumber(FILTER_CONTOURS_MIN_AREA, 0));
+		this.table.putNumber(FILTER_CONTOURS_MIN_PERIMETER,filterContoursMinPerimeter= this.table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, 0));
+		this.table.putNumber(FILTER_CONTOURS_MIN_WIDTH,filterContoursMinWidth= this.table.getNumber(FILTER_CONTOURS_MIN_WIDTH, 0));
+		this.table.putNumber(FILTER_CONTOURS_MAX_WIDTH, filterContoursMaxWidth=this.table.getNumber(FILTER_CONTOURS_MAX_WIDTH, 1000));
+		this.table.putNumber(FILTER_CONTOURS_MIN_HEIGHT,filterContoursMinHeight= this.table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, 0));
+		this.table.putNumber(FILTER_CONTOURS_MAX_HEIGHT, filterContoursMaxHeight=this.table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, 1000));
+		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_LOW,filterContoursSolidityLow= this.table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, 0));
+		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_HIGH,filterContoursSolidityHight= this.table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, 100));
+		this.table.putNumber(FILTER_CONTOURS_MIN_VERTICES,filterContoursMinVertices= this.table.getNumber(FILTER_CONTOURS_MIN_VERTICES, 0));
+		this.table.putNumber(FILTER_CONTOURS_MAX_VERTICES,filterContoursMaxVertices= this.table.getNumber(FILTER_CONTOURS_MAX_VERTICES, 1000000));
+		this.table.putNumber(FILTER_CONTOURS_MIN_RATIO,filterContoursMinRatio= this.table.getNumber(FILTER_CONTOURS_MIN_RATIO, 0));
+		this.table.putNumber(FILTER_CONTOURS_MAX_RATIO,filterContoursMaxRatio= this.table.getNumber(FILTER_CONTOURS_MAX_RATIO, 1000));
+		
+
+		this.table.setPersistent(FILTER_CONTOURS_MIN_AREA);
+		this.table.setPersistent(FILTER_CONTOURS_MIN_PERIMETER);
+		this.table.setPersistent(FILTER_CONTOURS_MIN_WIDTH);
+		this.table.setPersistent(FILTER_CONTOURS_MAX_WIDTH);
+		this.table.setPersistent(FILTER_CONTOURS_MIN_HEIGHT);
+		this.table.setPersistent(FILTER_CONTOURS_MAX_HEIGHT);
+		this.table.setPersistent(FILTER_CONTOURS_SOLIDITY_LOW);
+		this.table.setPersistent(FILTER_CONTOURS_SOLIDITY_HIGH);
+		this.table.setPersistent(FILTER_CONTOURS_MIN_VERTICES);
+		this.table.setPersistent(FILTER_CONTOURS_MAX_VERTICES);
+		this.table.setPersistent(FILTER_CONTOURS_MIN_RATIO);
+		this.table.setPersistent(FILTER_CONTOURS_MAX_RATIO);
 	}
 
 	//Outputs
 	private Mat hsvThresholdOutput = new Mat();
 	private Mat cvErodeOutput = new Mat();
-	private Mat cvtColorOutput = new Mat();
+	private Mat selectedOutput = new Mat();
 	private Mat cvDilateOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
@@ -116,27 +189,45 @@ public class GeneralDetectionPipeline {
 	 */
 	public void process(Mat source0) {
 		// Step HSV_Threshold0:
-		Mat hsvThresholdInput = source0;
-		double[] hsvThresholdHue = {table.getNumber(HSV_THRESHOLD_HUE_LOW, 0),table.getNumber(HSV_THRESHOLD_HUE_HIGH, 180)};
-		double[] hsvThresholdSaturation = {table.getNumber(HSV_THRESHOLD_SATURATION_LOW, 0),table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, 255)};
-		double[] hsvThresholdValue = {table.getNumber(HSV_THRESHOLD_VALUE_LOW, 0),table.getNumber(HSV_THRESHOLD_VALUE_HIGH, 255)};
+		hsvThresholdInput = source0;
+
+		if(DriverStation.getInstance().isDisabled()){
+		hsvThresholdHueLow=table.getNumber(HSV_THRESHOLD_HUE_LOW, 0);
+		hsvThresholdHueHigh=table.getNumber(HSV_THRESHOLD_HUE_HIGH, 180);
+		hsvThresholdSaturationLow=table.getNumber(HSV_THRESHOLD_SATURATION_LOW, 0);
+		hsvThresholdSaturationHigh=table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, 255);
+		hsvThresholdValueLow=table.getNumber(HSV_THRESHOLD_VALUE_LOW, 0);
+		hsvThresholdValueHigh=table.getNumber(HSV_THRESHOLD_VALUE_HIGH, 255);
+		}
+		
+		double[] hsvThresholdHue = {hsvThresholdHueLow,hsvThresholdHueHigh};
+		double[] hsvThresholdSaturation ={ hsvThresholdSaturationLow,hsvThresholdSaturationHigh};
+		double[] hsvThresholdValue = {hsvThresholdValueLow,hsvThresholdValueHigh};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
+
+		if(DriverStation.getInstance().isDisabled()){
+			erodeBoarder=table.getString(ERODE_BOARDER, BOARDER_CONSTANT);
+			erodeIterations=table.getNumber(ERODE_ITERATIONS, 1);
+			dilateBoarder=table.getString(DILATE_BOARDER, BOARDER_CONSTANT);
+			dilateIterations=table.getNumber(DILATE_ITERATIONS, 1);
+		}
+		
 		// Step CV_erode0:
-		int boarderConstant=getBoarder(table.getString(ERODE_BOARDER, BOARDER_CONSTANT));
+		int boarderConstant=getBoarder(erodeBoarder);
 		Mat cvErodeSrc = hsvThresholdOutput;
 		Mat cvErodeKernel = new Mat();
 		Point cvErodeAnchor = new Point(-1, -1);
-		double cvErodeIterations =  table.getNumber(ERODE_ITERATIONS, 1);
+		double cvErodeIterations = erodeIterations ;
 		int cvErodeBordertype = boarderConstant;
 		Scalar cvErodeBordervalue = new Scalar(-1);
 		cvErode(cvErodeSrc, cvErodeKernel, cvErodeAnchor, cvErodeIterations, cvErodeBordertype, cvErodeBordervalue, cvErodeOutput);
 
 		// Step CV_dilate0:
-		boarderConstant=getBoarder(table.getString(DILATE_BOARDER, BOARDER_CONSTANT));
+		boarderConstant=getBoarder(dilateBoarder);
 		Mat cvDilateSrc = cvErodeOutput;
 		Mat cvDilateKernel = new Mat();
 		Point cvDilateAnchor = new Point(-1, -1);
-		double cvDilateIterations = table.getNumber(DILATE_ITERATIONS, 1);
+		double cvDilateIterations = dilateIterations;
 		int cvDilateBordertype = boarderConstant;
 		Scalar cvDilateBordervalue = new Scalar(-1);
 		cvDilate(cvDilateSrc, cvDilateKernel, cvDilateAnchor, cvDilateIterations, cvDilateBordertype, cvDilateBordervalue, cvDilateOutput);
@@ -145,19 +236,25 @@ public class GeneralDetectionPipeline {
 		Mat findContoursInput = cvDilateOutput;
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
+		
+		if(DriverStation.getInstance().isDisabled()){
+			 filterContoursMinArea=table.getNumber(FILTER_CONTOURS_MIN_AREA, 0);
+			 filterContoursMinPerimeter= table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, 0);
+			 filterContoursMinWidth=table.getNumber(FILTER_CONTOURS_MIN_WIDTH, 0);
+			 filterContoursMaxWidth=table.getNumber(FILTER_CONTOURS_MAX_WIDTH, 1000);
+			 filterContoursMinHeight=table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, 0);
+			 filterContoursMaxHeight=table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, 1000);
+			 filterContoursSolidityLow=table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, 0);
+			 filterContoursSolidityHight=table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, 100);
+			 filterContoursMinVertices= table.getNumber(FILTER_CONTOURS_MIN_VERTICES, 0);
+			 filterContoursMaxVertices=table.getNumber(FILTER_CONTOURS_MAX_VERTICES, 1000000);
+			 filterContoursMinRatio=table.getNumber(FILTER_CONTOURS_MIN_RATIO, 0);
+			 filterContoursMaxRatio=table.getNumber(FILTER_CONTOURS_MAX_RATIO, 1000);
+		}
+		
 		// Step Filter_Contours0:
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
-		double filterContoursMinArea = table.getNumber(FILTER_CONTOURS_MIN_AREA, 0);
-		double filterContoursMinPerimeter = table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, 0);
-		double filterContoursMinWidth = table.getNumber(FILTER_CONTOURS_MIN_WIDTH, 0);
-		double filterContoursMaxWidth = table.getNumber(FILTER_CONTOURS_MAX_WIDTH, 1000);
-		double filterContoursMinHeight = table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, 0);
-		double filterContoursMaxHeight = table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, 1000);
-		double[] filterContoursSolidity = {table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, 0), table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, 100)};
-		double filterContoursMinVertices = table.getNumber(FILTER_CONTOURS_MIN_VERTICES, 0);
-		double filterContoursMaxVertices = table.getNumber(FILTER_CONTOURS_MAX_VERTICES, 1000000);
-		double filterContoursMinRatio = table.getNumber(FILTER_CONTOURS_MIN_RATIO, 0);
-		double filterContoursMaxRatio = table.getNumber(FILTER_CONTOURS_MAX_RATIO, 1000);
+		double[] filterContoursSolidity = {filterContoursSolidityLow, filterContoursSolidityHight};
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 
 	}
@@ -201,10 +298,7 @@ public class GeneralDetectionPipeline {
 	public ArrayList<MatOfPoint> filterContoursOutput() {
 		return filterContoursOutput;
 	}
-	
-	public Mat CvtColorOutput(){
-		return cvtColorOutput;
-	}
+
 
 
 	/**
@@ -219,7 +313,6 @@ public class GeneralDetectionPipeline {
 	private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
 	    Mat out) {
 		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HSV);
-		cvtColorOutput=out;
 		Core.inRange(out, new Scalar(hue[0], sat[0], val[0]),
 			new Scalar(hue[1], sat[1], val[1]), out);
 	}
@@ -341,6 +434,58 @@ public class GeneralDetectionPipeline {
 			if (ratio < minRatio || ratio > maxRatio) continue;
 			output.add(contour);
 		}
+	}
+	
+	public Mat selectedOutput(){
+
+		if(DriverStation.getInstance().isDisabled()){
+			switch(table.getString(SELECTION, "1")){
+			
+			case "1":
+			default:
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, true);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				selectedOutput=hsvThresholdInput;
+				break;
+
+			case "2":
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, true);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				selectedOutput=hsvThresholdOutput;
+				break;
+
+			case "3":
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, true);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				selectedOutput=cvErodeOutput;
+				break;
+
+			case "4":
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, true);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				selectedOutput=cvDilateOutput;
+				break;
+				
+			} // End of switch
+			
+		}
+		return selectedOutput;
 	}
 
 	int getBoarder(String boarder){
