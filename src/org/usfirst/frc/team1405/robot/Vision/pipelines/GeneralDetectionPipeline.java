@@ -106,13 +106,14 @@ public class GeneralDetectionPipeline {
 	
 	public GeneralDetectionPipeline(String table){
 		this.table=NetworkTable.getTable(table);
-
+		
+		this.table.putString(OUTPUT_CONTROL+"/"+SELECTION, "1");
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, true);
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
-		this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+		this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 		
 		
 		this.table.putNumber(HSV_THRESHOLD_HUE_LOW, hsvThresholdHueLow=this.table.getNumber(HSV_THRESHOLD_HUE_LOW, 0.0));
@@ -439,7 +440,7 @@ public class GeneralDetectionPipeline {
 	public Mat selectedOutput(){
 
 		if(DriverStation.getInstance().isDisabled()){
-			switch(table.getString(SELECTION, "1")){
+			switch(table.getString(OUTPUT_CONTROL+"/"+SELECTION, "1")){
 			
 			case "1":
 			default:
@@ -448,7 +449,7 @@ public class GeneralDetectionPipeline {
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
-				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 				selectedOutput=hsvThresholdInput;
 				break;
 
@@ -458,7 +459,7 @@ public class GeneralDetectionPipeline {
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
-				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 				selectedOutput=hsvThresholdOutput;
 				break;
 
@@ -468,7 +469,7 @@ public class GeneralDetectionPipeline {
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, true);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
-				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 				selectedOutput=cvErodeOutput;
 				break;
 
@@ -478,7 +479,7 @@ public class GeneralDetectionPipeline {
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, true);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
-				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 				selectedOutput=cvDilateOutput;
 				break;
 				
