@@ -39,12 +39,12 @@ public class GeneralDetectionPipeline {
 	
 	
 	NetworkTable table;
-	static final String HSV_THRESHOLD_HUE_LOW="HSV Hue Low Threshold";
-	static final String HSV_THRESHOLD_HUE_HIGH="HSV Hue High Threshold";
-	static final String HSV_THRESHOLD_SATURATION_HIGH="HSV Saturation High";
-	static final String HSV_THRESHOLD_SATURATION_LOW="HSV Saturation Low";
-	static final String HSV_THRESHOLD_VALUE_LOW="HSV Value Low";
-	static final String HSV_THRESHOLD_VALUE_HIGH="HSV Value High";
+	static final String HSV_THRESHOLD_HUE_LOW="HSV/Hue Low Threshold";
+	static final String HSV_THRESHOLD_HUE_HIGH="HSV/Hue High Threshold";
+	static final String HSV_THRESHOLD_SATURATION_HIGH="HSV/Saturation High";
+	static final String HSV_THRESHOLD_SATURATION_LOW="HSV/Saturation Low";
+	static final String HSV_THRESHOLD_VALUE_LOW="HSV/Value Low";
+	static final String HSV_THRESHOLD_VALUE_HIGH="HSV/Value High";
 
 	double hsvThresholdHueLow;
 	double hsvThresholdHueHigh;
@@ -53,10 +53,10 @@ public class GeneralDetectionPipeline {
 	double hsvThresholdValueLow;
 	double hsvThresholdValueHigh;
 	
-	static final String ERODE_BOARDER="Erode Boarder";		
-	static final String ERODE_ITERATIONS="Erode Iterations";	
-	static final String DILATE_BOARDER="Dilate Boarder";		
-	static final String DILATE_ITERATIONS="Dilate Iterations";
+	static final String ERODE_BOARDER="Erode-Dilate/Erode Boarder";		
+	static final String ERODE_ITERATIONS="Erode-Dilate/Erode Iterations";	
+	static final String DILATE_BOARDER="Erode-Dilate/Dilate Boarder";		
+	static final String DILATE_ITERATIONS="Erode-Dilate/Dilate Iterations";
 
 	String erodeBoarder;
 	double erodeIterations;
@@ -76,18 +76,18 @@ public class GeneralDetectionPipeline {
 	static final String BOARDER_ISOLATED="BOARDER_ISOLATED";
 
 
-	static final String FILTER_CONTOURS_MIN_AREA="Filter Contours - Min Area";	
-	static final String FILTER_CONTOURS_MIN_PERIMETER="Filter Contours - Min Perimeter";
-	static final String FILTER_CONTOURS_MIN_WIDTH="Filter Contours - Min Width";
-	static final String FILTER_CONTOURS_MAX_WIDTH="Filter Contours - Max Width";
-	static final String FILTER_CONTOURS_MIN_HEIGHT="Filter Contours - Min Height";
-	static final String FILTER_CONTOURS_MAX_HEIGHT="Filter Contours - Max Height";
-	static final String FILTER_CONTOURS_SOLIDITY_LOW="Filter Contours - Solidity (Low)";
-	static final String FILTER_CONTOURS_SOLIDITY_HIGH="Filter Contours - Solidity (High)";
-	static final String FILTER_CONTOURS_MIN_VERTICES="Filter Contours - Min Vertices";
-	static final String FILTER_CONTOURS_MAX_VERTICES="Filter Contours - Max Vertices";
-	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours - Min Ratio";
-	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours - Max Ratio";
+	static final String FILTER_CONTOURS_MIN_AREA="Filter Contours/Min Area";	
+	static final String FILTER_CONTOURS_MIN_PERIMETER="Filter Contours/Min Perimeter";
+	static final String FILTER_CONTOURS_MIN_WIDTH="Filter Contours/Min Width";
+	static final String FILTER_CONTOURS_MAX_WIDTH="Filter Contours/Max Width";
+	static final String FILTER_CONTOURS_MIN_HEIGHT="Filter Contours/Min Height";
+	static final String FILTER_CONTOURS_MAX_HEIGHT="Filter Contours/Max Height";
+	static final String FILTER_CONTOURS_SOLIDITY_LOW="Filter Contours/Solidity (Low)";
+	static final String FILTER_CONTOURS_SOLIDITY_HIGH="Filter Contours/Solidity (High)";
+	static final String FILTER_CONTOURS_MIN_VERTICES="Filter Contours/Min Vertices";
+	static final String FILTER_CONTOURS_MAX_VERTICES="Filter Contours/Max Vertices";
+	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours/Min Ratio";
+	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours/Max Ratio";
 
 	double filterContoursMinArea;
 	double filterContoursMinPerimeter;
@@ -178,6 +178,7 @@ public class GeneralDetectionPipeline {
 	private Mat cvErodeOutput = new Mat();
 	private Mat selectedOutput = new Mat();
 	private Mat cvDilateOutput = new Mat();
+	Mat blankFrame= new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 	
@@ -205,6 +206,13 @@ public class GeneralDetectionPipeline {
 		double[] hsvThresholdSaturation ={ hsvThresholdSaturationLow,hsvThresholdSaturationHigh};
 		double[] hsvThresholdValue = {hsvThresholdValueLow,hsvThresholdValueHigh};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
+		
+	//  Create a blank (black) Mat		
+		double[] hsvThresholdHueBlank = {hsvThresholdHueLow,hsvThresholdHueHigh};
+		double[] hsvThresholdSaturationBlank ={ hsvThresholdSaturationLow,hsvThresholdSaturationHigh};
+		double[] hsvThresholdValueBlank = {hsvThresholdValueLow,hsvThresholdValueHigh};
+
+		hsvThreshold(hsvThresholdInput,hsvThresholdHueBlank,hsvThresholdSaturationBlank,hsvThresholdValueBlank,blankFrame);
 
 		if(DriverStation.getInstance().isDisabled()){
 			erodeBoarder=table.getString(ERODE_BOARDER, BOARDER_CONSTANT);
@@ -288,16 +296,21 @@ public class GeneralDetectionPipeline {
 	 * This method is a generated getter for the output of a Find_Contours.
 	 * @return ArrayList<MatOfPoint> output from Find_Contours.
 	 */
-	public ArrayList<MatOfPoint> findContoursOutput() {
-		return findContoursOutput;
+	public Mat findContoursOutput() {
+		Mat mat=blankFrame;
+		Imgproc.drawContours(mat, findContoursOutput, 0, new Scalar(255,0,255));
+		
+		return mat;
 	}
 
 	/**
 	 * This method is a generated getter for the output of a Filter_Contours.
 	 * @return ArrayList<MatOfPoint> output from Filter_Contours.
 	 */
-	public ArrayList<MatOfPoint> filterContoursOutput() {
-		return filterContoursOutput;
+	public Mat filterContoursOutput() {
+		Mat mat=blankFrame;
+		Imgproc.drawContours(mat, findContoursOutput, 0, new Scalar(0,255,255));
+		return mat;
 	}
 
 
@@ -442,7 +455,7 @@ public class GeneralDetectionPipeline {
 		if(DriverStation.getInstance().isDisabled()){
 			switch(table.getString(OUTPUT_CONTROL+"/"+SELECTION, "1")){
 			
-			case "1":
+			case "1": 
 			default:
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, true);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
@@ -481,6 +494,26 @@ public class GeneralDetectionPipeline {
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
 				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 				selectedOutput=cvDilateOutput;
+				break;
+				
+			case "5":
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, true);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
+				selectedOutput=findContoursOutput();
+				break;
+				
+			case "6":
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+ERODE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+DILATE, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FIND_CONTOURS, false);
+				this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, true);
+				selectedOutput=filterContoursOutput();
 				break;
 				
 			} // End of switch

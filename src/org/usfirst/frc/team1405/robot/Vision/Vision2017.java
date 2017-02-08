@@ -37,6 +37,8 @@ public class Vision2017 {
 	static boolean setupCamera1=true;
 	static boolean setuoCamera2=false;
 	static boolean settingsEnable=false;
+	
+	
 	static String cameraID="0";
 	
 	static public void robotInit(){
@@ -73,12 +75,11 @@ public class Vision2017 {
 				
 				// Tell the CvSink to grab a frame from the camera and put it
 				// in the source mat.  If there is an error notify the output.
-				boolean isPipeline=false;
 				if(DriverStation.getInstance().isDisabled())cameraID=table.getString(CAMERA_ID_KEY,"0");
 				switch(cameraID){
 				case "0":
 				default:
-				if (cvSink[0].grabFrame(mat) == 0 ) {
+				if(camera[0].isConnected())if (cvSink[0].grabFrame(mat) == 0 ) {
 					// Send the output the error.
 				outputStream.notifyError(cvSink[0].getError());
 					// skip the rest of the current iteration
@@ -87,7 +88,7 @@ public class Vision2017 {
 				break;
 				
 				case"1":
-					if (cvSink[1].grabFrame(mat) == 0 ) {
+					if(camera[1].isConnected())if (cvSink[1].grabFrame(mat) == 0 ) {
 					// Send the output the error.
 						outputStream.notifyError(cvSink[1].getError());
 					// skip the rest of the current iteration
@@ -96,7 +97,7 @@ public class Vision2017 {
 				break;
 
 				case"2":
-				if (cvSink[2].grabFrame(mat) == 0 ) {
+					if(camera[2].isConnected())if (cvSink[2].grabFrame(mat) == 0 ) {
 					// Send the output the error.
 				outputStream.notifyError(cvSink[2].getError());
 					// skip the rest of the current iteration
@@ -106,9 +107,10 @@ public class Vision2017 {
 				
 				
 				// Put a rectangle on the image
+				if(!mat.empty()){
 				boilerPipeline.process(mat);
 				outputStream.putFrame(boilerPipeline.selectedOutput());
-//				
+				}
 			}
 		});
 		visionThread.setDaemon(true);
