@@ -16,7 +16,7 @@ public class Vision2017 {
 	static Thread visionThread;
 	static GeneralDetectionPipeline boilerPipeline=new GeneralDetectionPipeline("Robot/Vision/Pipelines/Boiler");
 	static NetworkTable table;
-	static String CAMERA_ID_KEY="Select boiler camera ID (0, 1, 2)";
+	static String CAMERA_ID_KEY="Select boiler camera ID (0, 1, 2) or pipeline selected output (3)";
 	static final int VERT_RES=120;
 	static final int HOR_RES=160;
 
@@ -59,7 +59,7 @@ public class Vision2017 {
 			camera[2].setFPS(15);
 			cvSink[2] = CameraServer.getInstance().getVideo(camera[2]);
 
-			outputStream = CameraServer.getInstance().putVideo("Vew selected feed", VERT_RES, HOR_RES);
+			outputStream = CameraServer.getInstance().putVideo("selected view", VERT_RES, HOR_RES);
 			
 			// Mats are very memory expensive. Lets reuse this Mat.
 			Mat mat = new Mat();
@@ -73,6 +73,8 @@ public class Vision2017 {
 				
 				// Tell the CvSink to grab a frame from the camera and put it
 				// in the source mat.  If there is an error notify the output.
+				boolean isPipeline=false;
+				Mat mat2=new Mat();
 				if(DriverStation.getInstance().isDisabled())cameraID=table.getString(CAMERA_ID_KEY,"0");
 				switch(cameraID){
 				case "0":
@@ -83,6 +85,7 @@ public class Vision2017 {
 					// skip the rest of the current iteration
 					continue;
 					}
+				mat2=mat;
 				break;
 				
 				case"1":
@@ -92,8 +95,9 @@ public class Vision2017 {
 					// skip the rest of the current iteration
 					continue;
 					}
+					mat2=mat;
 				break;
-				
+
 				case"2":
 				if (cvSink[2].grabFrame(mat) == 0 ) {
 					// Send the output the error.
@@ -101,15 +105,19 @@ public class Vision2017 {
 					// skip the rest of the current iteration
 					continue;
 					}
+				mat2=mat;
+				break;
+				
+				case"3":
+					isPipeline=true;
+					mat2=boilerPipeline.selectedOutput();
 				break;
 				}
 				
 				
 				// Put a rectangle on the image
-//				boilerPipeline.process(mat);
 				boilerPipeline.process(mat);
-				mat=boilerPipeline.hsvThresholdOutput();
-				outputStream.putFrame(mat);
+				outputStream.putFrame(mat2);
 //				
 			}
 		});
