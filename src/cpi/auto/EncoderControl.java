@@ -23,7 +23,7 @@ public class EncoderControl {
 	{
 		input1 = new DigitalInput(aChannel);
 		input2 = new DigitalInput(bChannel);
-		myEncoder = new Encoder(input1, input2);
+//		myEncoder = new Encoder(input1, input2);
 	}
 	
 	public EncoderControl(int aChannel, int bChannel, boolean reverseEncoder)
@@ -43,7 +43,11 @@ public class EncoderControl {
     		myEncoder.reset();
     	}
     }
-    
+
+    public double getSpeed(){
+    	return myEncoder.getRate();
+    }
+ 
     public double getCount()
     {
     	if(myEncoder != null){
