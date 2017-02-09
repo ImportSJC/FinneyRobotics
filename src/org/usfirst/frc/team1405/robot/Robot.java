@@ -81,7 +81,11 @@ public class Robot extends IterativeRobot {
     	Autonomous.autonomousPeriodic();
     }
     
-    
+    @Override		    
+    public void teleopInit(){		   
+	AutoInputs.TeleInit();		
+    }		
+
    
     /**
      * This function is called periodically during operator control
@@ -132,5 +136,6 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic(){
     	//System.out.println(timer.get());
  //   	cpi.autoSupportClasses.Set.disabledPeriodic();
+	Autonomous.disabledPeriodic();
     }
 }
