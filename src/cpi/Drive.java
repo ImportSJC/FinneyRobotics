@@ -10,13 +10,13 @@ public class Drive {
 	 */
 	static final double MAX_SPEED = 1.0;
 	//comment here
-	static final String DIRECT_MECANUM="Direct Mecanum";
-	static final String DIRECT_TANK="Direct Tank";
-	static final String DIRECT_HDRIVE="Direct H Drive";
-	static final String FRC_ARCADE="FRC Arcade";
-	static final String FRC_MECANUM="FRC Mecanum";
-	static final String FRC_HDRIVE="FRC H Drive";
-	static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
+	public static final String DIRECT_MECANUM="Direct Mecanum";
+	public static final String DIRECT_TANK="Direct Tank";
+	public static final String DIRECT_HDRIVE="Direct H Drive";
+	public static final String FRC_ARCADE="FRC Arcade";
+	public static final String FRC_MECANUM="FRC Mecanum";
+	public static final String FRC_HDRIVE="FRC H Drive";
+	public static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
 	public Drive(String name){
 	this.name=name;
 	
@@ -39,7 +39,7 @@ public class Drive {
 //	centerHTalon1 =  new CANTalon(5);
 //	centerHTalon2 =  new CANTalon(6);
 	
-	mode=DIRECT_TANK;
+	mode=name;
 	}
 	
 	public void robotInit(){
