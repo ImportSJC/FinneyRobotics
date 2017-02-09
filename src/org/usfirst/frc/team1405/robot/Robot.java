@@ -26,7 +26,7 @@ public class Robot extends IterativeRobot {
     
 
    Drive drive;
-   static public Control pilot;
+   static public XBox360 pilot;
 	GRIP imageProcessor;
    
     /**
@@ -44,7 +44,7 @@ public class Robot extends IterativeRobot {
     	Autonomous.robotInit();
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
-    	pilot=new Control(0);
+    	pilot=new XBox360(0);
     	GearControl.robotInit();
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
