@@ -54,6 +54,14 @@ public class MotorController {
 		return 0;
 	}
 	
+	public double getOutputCurrent(){
+		if(useTalon){
+			return talon.getOutputCurrent();
+		}
+		
+		return 0;
+	}
+	
 	public void enableBrakeMode(boolean value){
 		if(useTalon){
 			talon.enableBrakeMode(value);
