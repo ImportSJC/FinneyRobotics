@@ -28,6 +28,51 @@ import edu.wpi.first.wpilibj.DriverStation;
 */
 public class GeneralDetectionPipeline {
 	
+	
+	// Default values
+	
+	static final String ALLOWED_BOARDER_TYPES="Erode-Dilate/Allowed Boarder Types";
+	
+	static final String BOARDER_CONSTANT="BOARDER_CONSTANT";
+	static final String BOARDER_REPLECATE="BOARDER_REPLECATE";	
+	static final String BOARDER_REFLECT="BOARDER_REFLECT";
+	static final String BOARDER_WRAP="BOARDER_WRAP";
+	static final String BOARDER_REFLECT_101="BOARDER_REFLECT_101";
+	static final String BOARDER_TRANSPARENT="BOARDER_TRANSPARENT";
+	static final String BOARDER_REFLECT101="BOARDER_REFLECT101";
+	static final String BOARDER_DEFAULT="BOARDER_DEFAULT";
+	static final String BOARDER_ISOLATED="BOARDER_ISOLATED";
+
+
+	static final double DEF_HSV_THRESHOLD_HUE_LOW=0;
+	static final double DEF_HSV_THRESHOLD_HUE_HIGH=180;
+	static final double DEF_HSV_THRESHOLD_SATURATION_LOW=0;
+	static final double DEF_HSV_THRESHOLD_SATURATION_HIGH=255;
+	static final double DEF_HSV_THRESHOLD_VALUE_LOW=0;
+	static final double DEF_HSV_THRESHOLD_VALUE_HIGH=255;
+	
+
+	static final String DEF_ERODE_BOARDER=BOARDER_CONSTANT;		
+	static final double DEF_ERODE_ITERATIONS=1;	
+	static final String DEF_DILATE_BOARDER=BOARDER_CONSTANT;		
+	static final double DEF_DILATE_ITERATIONS=1;
+	
+
+	static final double DEF_FILTER_CONTOURS_MIN_AREA=0;	
+	static final double DEF_FILTER_CONTOURS_MIN_PERIMETER=0;
+	static final double DEF_FILTER_CONTOURS_MIN_WIDTH=0;
+	static final double DEF_FILTER_CONTOURS_MAX_WIDTH=1000;
+	static final double DEF_FILTER_CONTOURS_MIN_HEIGHT=0;
+	static final double DEF_FILTER_CONTOURS_MAX_HEIGHT=1000;
+	static final double DEF_FILTER_CONTOURS_SOLIDITY_LOW=0;
+	static final double DEF_FILTER_CONTOURS_SOLIDITY_HIGH=100;
+	static final double DEF_FILTER_CONTOURS_MIN_VERTICES=0;
+	static final double DEF_FILTER_CONTOURS_MAX_VERTICES=1000000;
+	static final double DEF_FILTER_CONTOURS_MIN_RATIO=0;
+	static final double DEF_FILTER_CONTOURS_MAX_RATIO=1000;
+	
+	// END Default values
+	
 	static final String SELECTION="Selection";
 	static final String OUTPUT_CONTROL="Select view";	
 	static final String SOURCE="1 - Source";	
@@ -36,6 +81,9 @@ public class GeneralDetectionPipeline {
 	static final String DILATE="4 - Dilate";	
 	static final String FIND_CONTOURS="5 - Find contours";	
 	static final String FILTER_CONTOURS="6 - Filter contours";
+
+	static final String RESET_TO_DEFAULTS="Reset setings to defaults";
+	static final String DEFAULTS="Defaults";
 	
 	
 	NetworkTable table;
@@ -62,18 +110,7 @@ public class GeneralDetectionPipeline {
 	double erodeIterations;
 	String dilateBoarder;
 	double dilateIterations;
-	
-	static final String ALLOWED_BOARDER_TYPES="Allowed Boarder Types";
-	
-	static final String BOARDER_CONSTANT="BOARDER_CONSTANT";
-	static final String BOARDER_REPLECATE="BOARDER_REPLECATE";	
-	static final String BOARDER_REFLECT="BOARDER_REFLECT";
-	static final String BOARDER_WRAP="BOARDER_WRAP";
-	static final String BOARDER_REFLECT_101="BOARDER_REFLECT_101";
-	static final String BOARDER_TRANSPARENT="BOARDER_TRANSPARENT";
-	static final String BOARDER_REFLECT101="BOARDER_REFLECT101";
-	static final String BOARDER_DEFAULT="BOARDER_DEFAULT";
-	static final String BOARDER_ISOLATED="BOARDER_ISOLATED";
+
 
 
 	static final String FILTER_CONTOURS_MIN_AREA="Filter Contours/Min Area";	
@@ -107,6 +144,36 @@ public class GeneralDetectionPipeline {
 	public GeneralDetectionPipeline(String table){
 		this.table=NetworkTable.getTable(table);
 		
+		this.table.putBoolean(DEFAULTS+"/"+RESET_TO_DEFAULTS, false);
+		
+		this.table.putNumber(DEFAULTS+"/"+HSV_THRESHOLD_HUE_LOW, DEF_HSV_THRESHOLD_HUE_LOW);
+		this.table.putNumber(DEFAULTS+"/"+HSV_THRESHOLD_HUE_HIGH, DEF_HSV_THRESHOLD_HUE_HIGH);
+		this.table.putNumber(DEFAULTS+"/"+HSV_THRESHOLD_SATURATION_LOW, DEF_HSV_THRESHOLD_SATURATION_LOW);
+		this.table.putNumber(DEFAULTS+"/"+HSV_THRESHOLD_SATURATION_HIGH, DEF_HSV_THRESHOLD_SATURATION_HIGH);
+		this.table.putNumber(DEFAULTS+"/"+HSV_THRESHOLD_VALUE_LOW, DEF_HSV_THRESHOLD_VALUE_LOW);
+		this.table.putNumber(DEFAULTS+"/"+HSV_THRESHOLD_VALUE_HIGH, DEF_HSV_THRESHOLD_VALUE_HIGH);
+		
+
+		this.table.putString(DEFAULTS+"/"+ERODE_BOARDER, DEF_ERODE_BOARDER);
+		this.table.putNumber(DEFAULTS+"/"+ERODE_ITERATIONS, DEF_ERODE_ITERATIONS);
+		this.table.putString(DEFAULTS+"/"+DILATE_BOARDER, DEF_DILATE_BOARDER);
+		this.table.putNumber(DEFAULTS+"/"+DILATE_ITERATIONS, DEF_DILATE_ITERATIONS);
+
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MIN_WIDTH, DEF_FILTER_CONTOURS_MIN_WIDTH);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MAX_WIDTH, DEF_FILTER_CONTOURS_MAX_WIDTH);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MIN_HEIGHT, DEF_FILTER_CONTOURS_MIN_HEIGHT);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MAX_HEIGHT, DEF_FILTER_CONTOURS_MAX_HEIGHT);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_SOLIDITY_LOW, DEF_FILTER_CONTOURS_SOLIDITY_LOW);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_SOLIDITY_HIGH, DEF_FILTER_CONTOURS_SOLIDITY_HIGH);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MIN_VERTICES, DEF_FILTER_CONTOURS_MIN_VERTICES);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MAX_VERTICES, DEF_FILTER_CONTOURS_MAX_VERTICES);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MIN_RATIO, DEF_FILTER_CONTOURS_MIN_RATIO);
+		 this.table.putNumber(DEFAULTS+"/"+FILTER_CONTOURS_MAX_RATIO, DEF_FILTER_CONTOURS_MAX_RATIO);
+		 
+		 
+		
 		this.table.putString(OUTPUT_CONTROL+"/"+SELECTION, "1");
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+SOURCE, true);
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+HSV_THRESHOLD, false);
@@ -116,12 +183,12 @@ public class GeneralDetectionPipeline {
 		this.table.putBoolean(OUTPUT_CONTROL+"/"+FILTER_CONTOURS, false);
 		
 		
-		this.table.putNumber(HSV_THRESHOLD_HUE_LOW, hsvThresholdHueLow=this.table.getNumber(HSV_THRESHOLD_HUE_LOW, 0.0));
-		this.table.putNumber(HSV_THRESHOLD_HUE_HIGH, hsvThresholdHueHigh=this.table.getNumber(HSV_THRESHOLD_HUE_HIGH, 180.0));
-		this.table.putNumber(HSV_THRESHOLD_SATURATION_LOW,hsvThresholdSaturationLow= this.table.getNumber(HSV_THRESHOLD_SATURATION_LOW, 0.0));
-		this.table.putNumber(HSV_THRESHOLD_SATURATION_HIGH, hsvThresholdSaturationHigh=this.table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, 255.0));
-		this.table.putNumber(HSV_THRESHOLD_VALUE_LOW, hsvThresholdValueLow=this.table.getNumber(HSV_THRESHOLD_VALUE_LOW, 0.0));
-		this.table.putNumber(HSV_THRESHOLD_VALUE_HIGH, hsvThresholdValueHigh=this.table.getNumber(HSV_THRESHOLD_VALUE_HIGH, 255.0));
+		this.table.putNumber(HSV_THRESHOLD_HUE_LOW, hsvThresholdHueLow=this.table.getNumber(HSV_THRESHOLD_HUE_LOW,DEF_HSV_THRESHOLD_HUE_LOW));
+		this.table.putNumber(HSV_THRESHOLD_HUE_HIGH, hsvThresholdHueHigh=this.table.getNumber(HSV_THRESHOLD_HUE_HIGH, DEF_HSV_THRESHOLD_HUE_HIGH));
+		this.table.putNumber(HSV_THRESHOLD_SATURATION_LOW,hsvThresholdSaturationLow= this.table.getNumber(HSV_THRESHOLD_SATURATION_LOW, DEF_HSV_THRESHOLD_SATURATION_LOW));
+		this.table.putNumber(HSV_THRESHOLD_SATURATION_HIGH, hsvThresholdSaturationHigh=this.table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, DEF_HSV_THRESHOLD_SATURATION_HIGH));
+		this.table.putNumber(HSV_THRESHOLD_VALUE_LOW, hsvThresholdValueLow=this.table.getNumber(HSV_THRESHOLD_VALUE_LOW, DEF_HSV_THRESHOLD_VALUE_LOW));
+		this.table.putNumber(HSV_THRESHOLD_VALUE_HIGH, hsvThresholdValueHigh=this.table.getNumber(HSV_THRESHOLD_VALUE_HIGH, DEF_HSV_THRESHOLD_VALUE_HIGH));
 
 		this.table.setPersistent(HSV_THRESHOLD_HUE_LOW);
 		this.table.setPersistent(HSV_THRESHOLD_HUE_HIGH);
@@ -134,10 +201,10 @@ public class GeneralDetectionPipeline {
 		this.table.putString(ALLOWED_BOARDER_TYPES, "{ "+BOARDER_CONSTANT+", "+BOARDER_REPLECATE+", "+BOARDER_REPLECATE+", "+
 														BOARDER_REFLECT+", "+BOARDER_WRAP+", "+BOARDER_REFLECT_101+", "+
 														BOARDER_TRANSPARENT+", "+BOARDER_REFLECT101+", "+BOARDER_DEFAULT+", "+BOARDER_ISOLATED);
-		this.table.putString(ERODE_BOARDER,erodeBoarder= this.table.getString(ERODE_BOARDER, BOARDER_CONSTANT));
-		this.table.putNumber(ERODE_ITERATIONS, erodeIterations=this.table.getNumber(ERODE_ITERATIONS, 1));
-		this.table.putString(DILATE_BOARDER, dilateBoarder=this.table.getString(DILATE_BOARDER, BOARDER_CONSTANT));
-		this.table.putNumber(DILATE_ITERATIONS,dilateIterations= this.table.getNumber(ERODE_ITERATIONS, 1));
+		this.table.putString(ERODE_BOARDER,erodeBoarder= this.table.getString(ERODE_BOARDER, DEF_ERODE_BOARDER));
+		this.table.putNumber(ERODE_ITERATIONS, erodeIterations=this.table.getNumber(ERODE_ITERATIONS, DEF_ERODE_ITERATIONS));
+		this.table.putString(DILATE_BOARDER, dilateBoarder=this.table.getString(DILATE_BOARDER, DEF_DILATE_BOARDER));
+		this.table.putNumber(DILATE_ITERATIONS,dilateIterations= this.table.getNumber(DILATE_ITERATIONS, DEF_DILATE_ITERATIONS));
 		
 
 		this.table.setPersistent(ERODE_BOARDER);
@@ -145,18 +212,18 @@ public class GeneralDetectionPipeline {
 		this.table.setPersistent(DILATE_BOARDER);
 		this.table.setPersistent(DILATE_ITERATIONS);
 
-		this.table.putNumber(FILTER_CONTOURS_MIN_AREA,filterContoursMinArea= this.table.getNumber(FILTER_CONTOURS_MIN_AREA, 0));
-		this.table.putNumber(FILTER_CONTOURS_MIN_PERIMETER,filterContoursMinPerimeter= this.table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, 0));
-		this.table.putNumber(FILTER_CONTOURS_MIN_WIDTH,filterContoursMinWidth= this.table.getNumber(FILTER_CONTOURS_MIN_WIDTH, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_WIDTH, filterContoursMaxWidth=this.table.getNumber(FILTER_CONTOURS_MAX_WIDTH, 1000));
-		this.table.putNumber(FILTER_CONTOURS_MIN_HEIGHT,filterContoursMinHeight= this.table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_HEIGHT, filterContoursMaxHeight=this.table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, 1000));
-		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_LOW,filterContoursSolidityLow= this.table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, 0));
-		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_HIGH,filterContoursSolidityHight= this.table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, 100));
-		this.table.putNumber(FILTER_CONTOURS_MIN_VERTICES,filterContoursMinVertices= this.table.getNumber(FILTER_CONTOURS_MIN_VERTICES, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_VERTICES,filterContoursMaxVertices= this.table.getNumber(FILTER_CONTOURS_MAX_VERTICES, 1000000));
-		this.table.putNumber(FILTER_CONTOURS_MIN_RATIO,filterContoursMinRatio= this.table.getNumber(FILTER_CONTOURS_MIN_RATIO, 0));
-		this.table.putNumber(FILTER_CONTOURS_MAX_RATIO,filterContoursMaxRatio= this.table.getNumber(FILTER_CONTOURS_MAX_RATIO, 1000));
+		this.table.putNumber(FILTER_CONTOURS_MIN_AREA,filterContoursMinArea= this.table.getNumber(FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA));
+		this.table.putNumber(FILTER_CONTOURS_MIN_PERIMETER,filterContoursMinPerimeter= this.table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER));
+		this.table.putNumber(FILTER_CONTOURS_MIN_WIDTH,filterContoursMinWidth= this.table.getNumber(FILTER_CONTOURS_MIN_WIDTH, DEF_FILTER_CONTOURS_MIN_WIDTH));
+		this.table.putNumber(FILTER_CONTOURS_MAX_WIDTH, filterContoursMaxWidth=this.table.getNumber(FILTER_CONTOURS_MAX_WIDTH, DEF_FILTER_CONTOURS_MAX_WIDTH));
+		this.table.putNumber(FILTER_CONTOURS_MIN_HEIGHT,filterContoursMinHeight= this.table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, DEF_FILTER_CONTOURS_MIN_HEIGHT));
+		this.table.putNumber(FILTER_CONTOURS_MAX_HEIGHT, filterContoursMaxHeight=this.table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, DEF_FILTER_CONTOURS_MAX_HEIGHT));
+		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_LOW,filterContoursSolidityLow= this.table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, DEF_FILTER_CONTOURS_SOLIDITY_LOW));
+		this.table.putNumber(FILTER_CONTOURS_SOLIDITY_HIGH,filterContoursSolidityHight= this.table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, DEF_FILTER_CONTOURS_SOLIDITY_HIGH));
+		this.table.putNumber(FILTER_CONTOURS_MIN_VERTICES,filterContoursMinVertices= this.table.getNumber(FILTER_CONTOURS_MIN_VERTICES, DEF_FILTER_CONTOURS_MIN_VERTICES));
+		this.table.putNumber(FILTER_CONTOURS_MAX_VERTICES,filterContoursMaxVertices= this.table.getNumber(FILTER_CONTOURS_MAX_VERTICES, DEF_FILTER_CONTOURS_MAX_VERTICES));
+		this.table.putNumber(FILTER_CONTOURS_MIN_RATIO,filterContoursMinRatio= this.table.getNumber(FILTER_CONTOURS_MIN_RATIO, DEF_FILTER_CONTOURS_MIN_RATIO));
+		this.table.putNumber(FILTER_CONTOURS_MAX_RATIO,filterContoursMaxRatio= this.table.getNumber(FILTER_CONTOURS_MAX_RATIO, DEF_FILTER_CONTOURS_MAX_RATIO));
 		
 
 		this.table.setPersistent(FILTER_CONTOURS_MIN_AREA);
@@ -193,13 +260,43 @@ public class GeneralDetectionPipeline {
 		// Step HSV_Threshold0:
 		hsvThresholdInput = source0;
 
+		
+		if(DriverStation.getInstance().isDisabled()&&table.getBoolean(DEFAULTS+"/"+RESET_TO_DEFAULTS, false)){
+			
+
+			table.putNumber(HSV_THRESHOLD_HUE_LOW, DEF_HSV_THRESHOLD_HUE_LOW);
+			table.putNumber(HSV_THRESHOLD_HUE_HIGH, DEF_HSV_THRESHOLD_HUE_HIGH);
+			table.putNumber(HSV_THRESHOLD_SATURATION_LOW, DEF_HSV_THRESHOLD_SATURATION_LOW);
+			table.putNumber(HSV_THRESHOLD_SATURATION_HIGH, DEF_HSV_THRESHOLD_SATURATION_HIGH);
+			table.putNumber(HSV_THRESHOLD_VALUE_LOW, DEF_HSV_THRESHOLD_VALUE_LOW);
+			table.putNumber(HSV_THRESHOLD_VALUE_HIGH, DEF_HSV_THRESHOLD_VALUE_HIGH);
+			
+
+			table.putString(ERODE_BOARDER, DEF_ERODE_BOARDER);
+			table.putNumber(ERODE_ITERATIONS, DEF_ERODE_ITERATIONS);
+			table.getString(DILATE_BOARDER, DEF_DILATE_BOARDER);
+			table.putNumber(DILATE_ITERATIONS, DEF_DILATE_ITERATIONS);
+			
+			 table.putNumber(FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA);
+			 table.putNumber(FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER);
+			 table.putNumber(FILTER_CONTOURS_MIN_WIDTH, DEF_FILTER_CONTOURS_MIN_WIDTH);
+			 table.putNumber(FILTER_CONTOURS_MAX_WIDTH, DEF_FILTER_CONTOURS_MAX_WIDTH);
+			 table.putNumber(FILTER_CONTOURS_MIN_HEIGHT, DEF_FILTER_CONTOURS_MIN_HEIGHT);
+			 table.putNumber(FILTER_CONTOURS_MAX_HEIGHT, DEF_FILTER_CONTOURS_MAX_HEIGHT);
+			 table.putNumber(FILTER_CONTOURS_SOLIDITY_LOW, DEF_FILTER_CONTOURS_SOLIDITY_LOW);
+			 table.putNumber(FILTER_CONTOURS_SOLIDITY_HIGH, DEF_FILTER_CONTOURS_SOLIDITY_HIGH);
+			 table.putNumber(FILTER_CONTOURS_MIN_VERTICES, DEF_FILTER_CONTOURS_MIN_VERTICES);
+			 table.putNumber(FILTER_CONTOURS_MAX_VERTICES, DEF_FILTER_CONTOURS_MAX_VERTICES);
+			 table.putNumber(FILTER_CONTOURS_MIN_RATIO, DEF_FILTER_CONTOURS_MIN_RATIO);
+			 table.putNumber(FILTER_CONTOURS_MAX_RATIO, DEF_FILTER_CONTOURS_MAX_RATIO);
+		}
 		if(DriverStation.getInstance().isDisabled()){
-		hsvThresholdHueLow=table.getNumber(HSV_THRESHOLD_HUE_LOW, 0);
-		hsvThresholdHueHigh=table.getNumber(HSV_THRESHOLD_HUE_HIGH, 180);
-		hsvThresholdSaturationLow=table.getNumber(HSV_THRESHOLD_SATURATION_LOW, 0);
-		hsvThresholdSaturationHigh=table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, 255);
-		hsvThresholdValueLow=table.getNumber(HSV_THRESHOLD_VALUE_LOW, 0);
-		hsvThresholdValueHigh=table.getNumber(HSV_THRESHOLD_VALUE_HIGH, 255);
+		hsvThresholdHueLow=table.getNumber(HSV_THRESHOLD_HUE_LOW, DEF_HSV_THRESHOLD_HUE_LOW);
+		hsvThresholdHueHigh=table.getNumber(HSV_THRESHOLD_HUE_HIGH, DEF_HSV_THRESHOLD_HUE_HIGH);
+		hsvThresholdSaturationLow=table.getNumber(HSV_THRESHOLD_SATURATION_LOW, DEF_HSV_THRESHOLD_SATURATION_LOW);
+		hsvThresholdSaturationHigh=table.getNumber(HSV_THRESHOLD_SATURATION_HIGH, DEF_HSV_THRESHOLD_SATURATION_HIGH);
+		hsvThresholdValueLow=table.getNumber(HSV_THRESHOLD_VALUE_LOW, DEF_HSV_THRESHOLD_VALUE_LOW);
+		hsvThresholdValueHigh=table.getNumber(HSV_THRESHOLD_VALUE_HIGH, DEF_HSV_THRESHOLD_VALUE_HIGH);
 		}
 		
 		double[] hsvThresholdHue = {hsvThresholdHueLow,hsvThresholdHueHigh};
@@ -215,10 +312,10 @@ public class GeneralDetectionPipeline {
 		hsvThreshold(hsvThresholdInput,hsvThresholdHueBlank,hsvThresholdSaturationBlank,hsvThresholdValueBlank,blankFrame);
 
 		if(DriverStation.getInstance().isDisabled()){
-			erodeBoarder=table.getString(ERODE_BOARDER, BOARDER_CONSTANT);
-			erodeIterations=table.getNumber(ERODE_ITERATIONS, 1);
-			dilateBoarder=table.getString(DILATE_BOARDER, BOARDER_CONSTANT);
-			dilateIterations=table.getNumber(DILATE_ITERATIONS, 1);
+			erodeBoarder=table.getString(ERODE_BOARDER, DEF_ERODE_BOARDER);
+			erodeIterations=table.getNumber(ERODE_ITERATIONS, DEF_ERODE_ITERATIONS);
+			dilateBoarder=table.getString(DILATE_BOARDER, DEF_DILATE_BOARDER);
+			dilateIterations=table.getNumber(DILATE_ITERATIONS, DEF_DILATE_ITERATIONS);
 		}
 		
 		// Step CV_erode0:
@@ -247,18 +344,18 @@ public class GeneralDetectionPipeline {
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
 		
 		if(DriverStation.getInstance().isDisabled()){
-			 filterContoursMinArea=table.getNumber(FILTER_CONTOURS_MIN_AREA, 0);
-			 filterContoursMinPerimeter= table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, 0);
-			 filterContoursMinWidth=table.getNumber(FILTER_CONTOURS_MIN_WIDTH, 0);
-			 filterContoursMaxWidth=table.getNumber(FILTER_CONTOURS_MAX_WIDTH, 1000);
-			 filterContoursMinHeight=table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, 0);
-			 filterContoursMaxHeight=table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, 1000);
-			 filterContoursSolidityLow=table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, 0);
-			 filterContoursSolidityHight=table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, 100);
-			 filterContoursMinVertices= table.getNumber(FILTER_CONTOURS_MIN_VERTICES, 0);
-			 filterContoursMaxVertices=table.getNumber(FILTER_CONTOURS_MAX_VERTICES, 1000000);
-			 filterContoursMinRatio=table.getNumber(FILTER_CONTOURS_MIN_RATIO, 0);
-			 filterContoursMaxRatio=table.getNumber(FILTER_CONTOURS_MAX_RATIO, 1000);
+			 filterContoursMinArea=table.getNumber(FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA);
+			 filterContoursMinPerimeter= table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER);
+			 filterContoursMinWidth=table.getNumber(FILTER_CONTOURS_MIN_WIDTH, DEF_FILTER_CONTOURS_MIN_WIDTH);
+			 filterContoursMaxWidth=table.getNumber(FILTER_CONTOURS_MAX_WIDTH, DEF_FILTER_CONTOURS_MAX_WIDTH);
+			 filterContoursMinHeight=table.getNumber(FILTER_CONTOURS_MIN_HEIGHT, DEF_FILTER_CONTOURS_MIN_HEIGHT);
+			 filterContoursMaxHeight=table.getNumber(FILTER_CONTOURS_MAX_HEIGHT, DEF_FILTER_CONTOURS_MAX_HEIGHT);
+			 filterContoursSolidityLow=table.getNumber(FILTER_CONTOURS_SOLIDITY_LOW, DEF_FILTER_CONTOURS_SOLIDITY_LOW);
+			 filterContoursSolidityHight=table.getNumber(FILTER_CONTOURS_SOLIDITY_HIGH, DEF_FILTER_CONTOURS_SOLIDITY_HIGH);
+			 filterContoursMinVertices= table.getNumber(FILTER_CONTOURS_MIN_VERTICES, DEF_FILTER_CONTOURS_MIN_VERTICES);
+			 filterContoursMaxVertices=table.getNumber(FILTER_CONTOURS_MAX_VERTICES, DEF_FILTER_CONTOURS_MAX_VERTICES);
+			 filterContoursMinRatio=table.getNumber(FILTER_CONTOURS_MIN_RATIO, DEF_FILTER_CONTOURS_MIN_RATIO);
+			 filterContoursMaxRatio=table.getNumber(FILTER_CONTOURS_MAX_RATIO, DEF_FILTER_CONTOURS_MAX_RATIO);
 		}
 		
 		// Step Filter_Contours0:

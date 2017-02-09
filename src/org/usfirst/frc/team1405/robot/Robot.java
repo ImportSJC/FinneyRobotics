@@ -51,7 +51,7 @@ public class Robot extends IterativeRobot {
     	AutoOutputs.setDriveBrake(true);
  //   	templates.GRIP3Cameras2Switched.robotInit();
  //   	cpi.SimpleTwoCamera.init(0);
-    	Vision2017.robotInit();
+    	Vision2017.robotInit(2);
   //  	templates.GRIP3X1v2.robotInit();
   //  	templates.GRIPIntermediate3.robotInit();
  //   	templates.GRIPIntermediate2.robotInit();
