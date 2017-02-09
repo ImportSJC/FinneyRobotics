@@ -3,6 +3,8 @@ package cpi.auto;
 
 public class AutoInputs {
 	
+	private static final boolean useMagEncoders = true;
+	
 	//Encoders
 	private static EncoderControl leftEnc;
 	private static EncoderControl rightEnc;
@@ -40,10 +42,17 @@ public class AutoInputs {
 	}
 	
 	public static void initEncoders(){
-		if(leftEnc == null)
-			leftEnc = new EncoderControl(0, 1);
-		if(rightEnc == null)
-			rightEnc = new EncoderControl(2, 3, true);
+		if(useMagEncoders){
+			if(leftEnc == null)
+				leftEnc = new EncoderControl(4, true);
+			if(rightEnc == null)
+				rightEnc = new EncoderControl(1);
+		}else{
+			if(leftEnc == null)
+				leftEnc = new EncoderControl(0, 1);
+			if(rightEnc == null)
+				rightEnc = new EncoderControl(2, 3, true);
+		}
 	}
 	
 	public static void initGyros(){
@@ -68,6 +77,11 @@ public class AutoInputs {
 			onboardGyro.resetAll();
 		}
 		System.out.println("end reset");
+	}
+	
+	public static void updateEncoderRates(){
+		leftEnc.updateRate();
+		rightEnc.updateRate();
 	}
 	
 //	public static double getLeftEncoderCount(){
@@ -131,6 +145,12 @@ public class AutoInputs {
 		}
 		
 		return 0;
+	}
+	
+	public static double getLeftEncoderRate(){
+		System.out.println("get left rate called");
+		double tmp = leftEnc.getRate();
+		return Math.abs(tmp);
 	}
 	
 	public static double getSummedEncoderRate(){

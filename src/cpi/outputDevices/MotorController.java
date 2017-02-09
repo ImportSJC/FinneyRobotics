@@ -32,18 +32,28 @@ public class MotorController {
 	
 	public double getPosition(){
 		if(useTalon){
-			return talon.getPosition();
+//			return talon.getPosition();
+			return talon.getEncPosition();
 		}else{
 			return jaguar.getPosition();
 		}
 	}
 	
-	public void setPosition(double position){
+	public void setPosition(int position){
 		if(useTalon){
-			talon.setPosition(position);
+			talon.setEncPosition(position);
 		}else{
 			jaguar.setPosition(position);
 		}
+	}
+	
+	public double  getVelocity(){
+		System.out.println("Get Velocity called");
+		if(useTalon){
+			return talon.getEncVelocity();
+		}
+		
+		return 0;
 	}
 	
 	public void enableBrakeMode(boolean value){

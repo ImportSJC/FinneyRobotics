@@ -61,7 +61,10 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
+    	AutoInputs.updateEncoderRates();
+    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount() + " Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+    	System.out.println("About to call left rate");
+    	System.out.println("Left Rate: " + AutoInputs.getLeftEncoderRate() + " Drive direction: " + AutoInputs.getEncoderDriveDirection());
 //    	System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle() + " Rate: " + AutoInputs.getGyroRate());
 //    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
     	Autonomous.autonomousPeriodic();
@@ -76,11 +79,12 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	AutoInputs.updateEncoderRates();
     	drive.TeleopPeriodic();
     	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
-    	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
-    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount());
-    	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
+    	System.out.println("Summed Count: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
+    	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
     }
     
     /**

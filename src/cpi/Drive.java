@@ -23,18 +23,18 @@ public class Drive {
 	System.out.println("INSTANTIATE THE MOTOR CONTROLLERS");
 	
 	//old base
-	right1 =  new MotorController(3);
-	right2 =  new MotorController(4);
-	left1 =  new MotorController(1);
-	left2 =  new MotorController(2);
-	
-	//new base
-//	right1 =  new MotorController(4);
-//	right2 =  new MotorController(5);
-//	right3 =  new MotorController(6);
+//	right1 =  new MotorController(3);
+//	right2 =  new MotorController(4);
 //	left1 =  new MotorController(1);
 //	left2 =  new MotorController(2);
-//	left3 =  new MotorController(3);
+	
+	//new base
+	right1 =  new MotorController(4);
+	right2 =  new MotorController(5);
+	right3 =  new MotorController(6);
+	left1 =  new MotorController(1);
+	left2 =  new MotorController(2);
+	left3 =  new MotorController(3);
 	
 //	centerHTalon1 =  new CANTalon(5);
 //	centerHTalon2 =  new CANTalon(6);
@@ -77,12 +77,12 @@ public class Drive {
 	
 	private void arcadeDrive(){
 		//old base
-		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
-		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+//		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+//		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		
 		//new base
-//		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
-//		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		rightMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) + (Robot.pilot.rightStickXaxis() * MAX_SPEED);
+		leftMotor = (-Robot.pilot.leftStickYaxis() * MAX_SPEED) - (Robot.pilot.rightStickXaxis() * MAX_SPEED);
 		leftMotor = -leftMotor;
 	}
 	
@@ -102,10 +102,10 @@ public class Drive {
 	public void tankMotors(double right,double left){
 		  right1.set(right);
 		  right2.set(right);
-//		  right3.set(right);
+		  right3.set(right);
 		  left1.set(left);
 		  left2.set(left);
-//		  left3.set(left);
+		  left3.set(left);
 	}
 	
 //	public void hdriveMotors(double right,double left,double center){
