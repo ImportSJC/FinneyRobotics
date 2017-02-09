@@ -66,7 +66,9 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit(){
+    	AutoInputs.AutoInit();
     	Autonomous.autonomousInit();
+    	AutoOutputs.ResetValues();
     }
 
     /**
