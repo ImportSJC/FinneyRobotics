@@ -13,15 +13,12 @@ public class Drive {
 	 * Max speed of the drive system
 	 */
 	public static final double MAX_SPEED = 1.0;
+	
 	public static final String DIRECT_MECANUM="Direct Mecanum";
 	public static final String DIRECT_TANK="Direct Tank";
 	public static final String DIRECT_HDRIVE="Direct H Drive";
-	public static final String FRC_ARCADE="FRC Arcade";
-	public static final String FRC_MECANUM="FRC Mecanum";
-	public static final String FRC_HDRIVE="FRC H Drive";
-	public static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
-	public static ControlMode controlStates = null;
 	
+	public static ControlMode controlStates = null;
 	private static boolean bButtonDown = false;
 	
 	public Drive(String name){
@@ -122,9 +119,6 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
-//		tankDrive();
-//		arcadeDrive();
-//		singlestickarcadeDrive();
 		controlStates.run();
 		
 		switch(mode){
