@@ -4,13 +4,15 @@ import java.util.concurrent.Callable;
 
 import org.usfirst.frc.team1405.robot.Robot;
 
+import cpi.ConrolModes.LeftSSAD;
+import cpi.ConrolModes.TankDrive;
 import cpi.outputDevices.MotorController;
 
 public class Drive {
 	/**
 	 * Max speed of the drive system
 	 */
-	static final double MAX_SPEED = 1.0;
+	public static final double MAX_SPEED = 1.0;
 	public static final String DIRECT_MECANUM="Direct Mecanum";
 	public static final String DIRECT_TANK="Direct Tank";
 	public static final String DIRECT_HDRIVE="Direct H Drive";
@@ -67,7 +69,7 @@ public class Drive {
 	}
 	
 	public static void createControlModes(){
-		Callable<Void> tankDrive = CallableControlModes.tankDrive();
+		Callable<Void> tankDrive = new TankDrive();
 //		Callable<Void> arcadeDrive = new
 //		Callable<Void> rightSingleStickArcadeDrive = new 
 //		Callable<Void> leftSingleStickArcadeDrive = new 
@@ -170,11 +172,11 @@ public class Drive {
 //  CANTalon centerHTalon2;
   
   
-  static double rightFrontMotor;
-  static double leftFrontMotor;
-  static double rightRearMotor;
-  static double leftRearMotor;
-  static double rightMotor;
-  static double leftMotor;
-  static double centerMotor;
+  public static double rightFrontMotor;
+  public static double leftFrontMotor;
+  public static double rightRearMotor;
+  public static double leftRearMotor;
+  public static double rightMotor;
+  public static double leftMotor;
+  public static double centerMotor;
  }

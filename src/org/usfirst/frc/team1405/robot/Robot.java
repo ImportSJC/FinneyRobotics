@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * directory.
  */
 public class Robot extends IterativeRobot {
-    
 
    Drive drive;
    static public XBox360 pilot;
