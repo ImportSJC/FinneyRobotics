@@ -23,8 +23,8 @@ public class ArcadeDrive extends ControlMode{
 //		leftMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
 		
 		//new base
-		Drive.rightMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
-		Drive.leftMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) - (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
+		Drive.rightMotor = (Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
+		Drive.leftMotor = (Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) - (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
 		Drive.leftMotor = -Drive.leftMotor;
 	}
 }

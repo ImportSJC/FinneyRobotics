@@ -18,7 +18,7 @@ public class TankDrive extends ControlMode {
 
 	@Override
 	public void run(){
-		Drive.rightMotor = -(Robot.pilot.rightStickYaxis() * Drive.MAX_SPEED);
-		Drive.leftMotor = (Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED);
+		Drive.rightMotor = (Robot.pilot.rightStickYaxis() * Drive.MAX_SPEED);
+		Drive.leftMotor = -(Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED);
 	}
 }

@@ -18,8 +18,8 @@ public class RightSSAD extends ControlMode{
 
 	@Override
 	public void run(){
-		Drive.rightMotor = (-Robot.pilot.rightStickYaxis() * Drive.MAX_SPEED) - (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
-		Drive.leftMotor = (-Robot.pilot.rightStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
+		Drive.rightMotor = (Robot.pilot.rightStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
+		Drive.leftMotor = (Robot.pilot.rightStickYaxis() * Drive.MAX_SPEED) - (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
 		
 		Drive.leftMotor= -Drive.leftMotor;
 	}

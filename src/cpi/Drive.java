@@ -37,12 +37,12 @@ public class Drive {
 	//	left2 =  new MotorController(2);
 		
 		//new base
-		right1 =  new MotorController(4);
-		right2 =  new MotorController(5);
-		right3 =  new MotorController(6);
-		left1 =  new MotorController(1);
-		left2 =  new MotorController(2);
-		left3 =  new MotorController(3);
+		right1 =  new MotorController(1);
+		right2 =  new MotorController(2);
+		right3 =  new MotorController(3);
+		left1 =  new MotorController(4);
+		left2 =  new MotorController(5);
+		left3 =  new MotorController(6);
 		
 	//	centerHTalon1 =  new CANTalon(5);
 	//	centerHTalon2 =  new CANTalon(6);
