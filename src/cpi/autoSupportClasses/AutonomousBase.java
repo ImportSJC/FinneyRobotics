@@ -21,7 +21,7 @@ public class AutonomousBase {
 	}
 	
 	public static boolean allChecksPassed(){
-		//has all the checks passed?
+		//have all the checks passed?
 		for (int i=0; i<autoStates[columnIndex].length; i++){
 			if (!autoStates[columnIndex][i].check()){return false;}
 		}

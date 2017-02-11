@@ -9,7 +9,6 @@ public class Drive {
 	 * Max speed of the drive system
 	 */
 	static final double MAX_SPEED = 1.0;
-	//comment here
 	static final String DIRECT_MECANUM="Direct Mecanum";
 	static final String DIRECT_TANK="Direct Tank";
 	static final String DIRECT_HDRIVE="Direct H Drive";

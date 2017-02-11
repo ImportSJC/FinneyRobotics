@@ -5,13 +5,13 @@ import java.util.Vector;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class Set {
-	static final String NONE="<none>";
-	static boolean changeMode = false;
-	static boolean oldChangeMode=false;
-	static Vector<String> modeNames= new Vector<String>();
-	static int modeNumber=0;
-	static int defaultModeNumber=0;
-	static String currentAutoMode = "";
+	private static final String NONE="<none>";
+	private static boolean changeMode = false;
+	private static boolean oldChangeMode=false;
+	private static Vector<String> modeNames= new Vector<String>();
+	private static int modeNumber=0;
+	private static int defaultModeNumber=0;
+	private static String currentAutoMode = "";
 	
 	static boolean isFirst=true;
 
