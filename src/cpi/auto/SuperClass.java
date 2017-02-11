@@ -1,12 +1,6 @@
 package cpi.auto;
 
-import cpi.autoSupportClasses.Set;
-
 public class SuperClass {
-	
-	public static void addModeName(String modeName){
-		Set.addName(modeName);
-	}
 	
 	public void start(){
 		

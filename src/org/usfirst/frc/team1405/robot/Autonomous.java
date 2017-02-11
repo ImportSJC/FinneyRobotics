@@ -11,79 +11,54 @@ import cpi.auto.conditions.And;
 import cpi.auto.inputDevices.Encoder;
 import cpi.auto.inputDevices.Gyroscope;
 import cpi.autoSupportClasses.AutonomousBase;
-import cpi.autoSupportClasses.Set;
 
 public class Autonomous extends AutonomousBase{
-	static final String TEST_AUTO_MODE = "test_mode";
-	static final String TEST_DRIVING = "test_driving";
-	static final String SIDE_AIRSHIP_GEAR = "side_airship_gear";
+	private static boolean aButtonDown = false;
 	
 	public static void robotInit(){
 		AutoInputs.robotInit();
 		AutoOutputs.robotInit();
 		AutoInputs.resetGyros();
-		Set.setDefault(SIDE_AIRSHIP_GEAR);
-		Set.addName(SIDE_AIRSHIP_GEAR);
-		Set.addName(TEST_AUTO_MODE);
-		Set.addName(TEST_DRIVING);
 		
 		createAutoModes();
 	}
 	
 	public static void createAutoModes(){
 		
-		SuperClass[][] tmpMatrix = new SuperClass[][]{
+		SuperClass[][] sideAirshipGear = new SuperClass[][]{
+			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_centerOfBot_to_centerAirShip, false))},
+			{ new And(new Auto_Drive(0, 0), new Gyroscope(-AutoValues.angle_turnToSideGear))},
+			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_turn_centerOfBot_to_sideAirShip, false))} };
+		
+		SuperClass[][] centerAirshipGear = new SuperClass[][]{
 			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_centerAirShip, false))}};
-			
-		MySet.addAutoMode(new AutoMode(tmpMatrix, "someID", "drive forward"));
+		
+		SuperClass[][] turn90 = new SuperClass[][]{
+				{ new And(new Auto_Drive(0, 0), new Encoder(90, 0, false, true))}};
+		
+		SuperClass[][] driveFwd77 = new SuperClass[][]{
+				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_centerOfBot_to_centerAirShip, false))}};
+		
+		SuperClass[][] driveFwd10 = new SuperClass[][]{
+				{ new And(new Auto_Drive(0), new Encoder(10, false))}};
+		
+		MySet.addAutoMode(new AutoMode(driveFwd10, "Drive fwd 77in."));
+		MySet.addAutoMode(new AutoMode(turn90, "Turn 90 degrees."));
+		MySet.addAutoMode(new AutoMode(centerAirshipGear, "Drop off the center airship gear."));
+		MySet.addAutoMode(new AutoMode(sideAirshipGear, "Drop off the side airship gear."));
 		
 		MySet.assignAutoMode(0);
 	}
 	
+	public static void disabledPeriodic(){
+		if(Robot.pilot.aButton() && !aButtonDown){
+			MySet.assignNextAutoMode();
+		}
+		
+		aButtonDown = Robot.pilot.aButton();
+	}
+	
 	public static void autonomousInit(){
 		AutonomousInit();
-		//selectAutoMode(autoMode);
-	}
-	
-	
-	 public static void selectAutoMode(String mode){
-		switch(mode){
-		case(TEST_AUTO_MODE):
-			Autonomous.testAutoMode();
-			break;
-		case(TEST_DRIVING):
-			Autonomous.testDrive();
-			break;
-		case(SIDE_AIRSHIP_GEAR):
-			Autonomous.sideAirshipGear();
-			break;
-		}
-	}
-
-
-	
-	/////////////////*			FULL AUTONOMOUS MODES			*////////////////////
-	public static void testAutoMode(){
-		autoStates = new SuperClass[][]{
-			{ /*new And( , )*/ }};
-	}
-	
-	public static void testDrive(){
-		autoStates = new SuperClass[][]{
-//			{ new And(new Auto_Drive(0, 0), new Encoder(90, 10, true, true)) }};
-			{ new And(new Auto_Drive(0, 0), new Gyroscope(90)) }};
-//			{ new And(new Auto_Drive(0.35), new Encoder(63.6, false)) }};
-	}
-	
-	public static void wallToAirshipGear(){
-		autoStates = new SuperClass[][]{
-				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_centerAirShip, false))}};
-	}
-	
-	public static void sideAirshipGear(){
-		autoStates = new SuperClass[][]{
-				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_turn, false))}};//,
-//				{ new And(new Auto_Drive(0, 0), new Gyroscope(-AutoValues.angle_turnToSideGear))},
-//				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_turn_to_sideAirShip, false))} };
 	}
 }
