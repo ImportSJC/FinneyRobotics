@@ -114,8 +114,7 @@ public class Drive {
 //		  leftTalon1.set(left);
 //		  leftTalon2.set(left);
 //		  centerHTalon1.set(center);
-//		  centerHTalon2.set( center);
-//		
+//		  centerHTalon2.set(center);
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.

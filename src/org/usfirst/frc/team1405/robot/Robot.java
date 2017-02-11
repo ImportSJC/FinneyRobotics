@@ -4,16 +4,11 @@ package org.usfirst.frc.team1405.robot;
 import org.usfirst.frc.team1405.robot.Vision.Vision2017;
 
 import cpi.Drive;
-import cpi.SimpleCamera;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
-import cpi.testBeds.TestSimpleEncoder;
-import cpi.testBeds.TestSimpleMultiMotorPWM;
-import cpi.testBeds.TestSimpleSpikeRelay;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -40,11 +35,10 @@ public class Robot extends IterativeRobot {
     	initialize();
     }
     void initialize(){
-    	
+    	pilot=new XBox360(0);
     	Autonomous.robotInit();
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
-    	pilot=new XBox360(0);
     	GearControl.robotInit();
     	AutoOutputs.robotInit();
     	AutoInputs.robotInit();
