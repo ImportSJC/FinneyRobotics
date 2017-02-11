@@ -1,10 +1,7 @@
 package cpi;
 
-import java.util.concurrent.Callable;
-
 import org.usfirst.frc.team1405.robot.Robot;
 
-import cpi.ConrolModes.LeftSSAD;
 import cpi.ConrolModes.TankDrive;
 import cpi.outputDevices.MotorController;
 
@@ -20,7 +17,7 @@ public class Drive {
 	public static final String FRC_MECANUM="FRC Mecanum";
 	public static final String FRC_HDRIVE="FRC H Drive";
 	public static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
-	public static Callable<Void> controlStates = null;
+	public static ControlMode controlStates = null;
 	
 	public Drive(String name){
 		
@@ -69,25 +66,20 @@ public class Drive {
 	}
 	
 	public static void createControlModes(){
-		Callable<Void> tankDrive = new TankDrive();
+		TankDrive tankDrive = new TankDrive();
 //		Callable<Void> arcadeDrive = new
 //		Callable<Void> rightSingleStickArcadeDrive = new 
 //		Callable<Void> leftSingleStickArcadeDrive = new 
 		
 		
 		
-		MySet.addControlMode(new ControlMode(tankDrive, "Tank Drive"));
+		MySet.addControlMode(tankDrive);
 //		MySet.addControlMode(new ControlMode(arcadeDrive, "Turn 90 degrees."));
 //		MySet.addControlMode(new ControlMode(rightSingleStickArcadeDrive, "Drop off the center airship gear."));
 //		MySet.addControlMode(new ControlMode(leftSingleStickArcadeDrive, "Drop off the side airship gear."));
 		
 		MySet.assignControlMode(0);
 	}
-	
-	
-	
-	
-	
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){
 //		  rightFrontTalon1.set(rightFront);
@@ -123,12 +115,7 @@ public class Drive {
 //		tankDrive();
 //		arcadeDrive();
 //		singlestickarcadeDrive();
-		try {
-			controlStates.call();
-		} catch (Exception e) {
-			System.out.println("The Call BROKE!!!");
-			e.printStackTrace();
-		}
+		controlStates.run();
 		
 		switch(mode){
 		case DIRECT_MECANUM:

@@ -1,9 +1,8 @@
 package cpi.ConrolModes;
 
-import java.util.concurrent.Callable;
-
 import org.usfirst.frc.team1405.robot.Robot;
 
+import cpi.ControlMode;
 import cpi.Drive;
 
 /**
@@ -11,8 +10,14 @@ import cpi.Drive;
  * @author ImportSJC
  *
  */
-public class ArcadeDrive implements Callable<Void>{
-	public ArcadeDrive(){
+public class ArcadeDrive extends ControlMode{
+	
+	public ArcadeDrive() {
+		super("Arcade Drive");
+	}
+
+	@Override
+	public void run(){
 		//old base
 //		rightMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) - (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
 //		leftMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
@@ -21,9 +26,5 @@ public class ArcadeDrive implements Callable<Void>{
 		Drive.rightMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) + (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
 		Drive.leftMotor = (-Robot.pilot.leftStickYaxis() * Drive.MAX_SPEED) - (Robot.pilot.rightStickXaxis() * Drive.MAX_SPEED);
 		Drive.leftMotor = -Drive.leftMotor;
-	}
-	
-	public Void call(){
-		return null;
 	}
 }
