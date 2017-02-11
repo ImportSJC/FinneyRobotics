@@ -85,7 +85,7 @@ public class Drive {
 	
 	public static void DisabledPeriodic(){
 		if(Robot.pilot.bButton() && !bButtonDown){
-			MySet.assignNextAutoMode();
+			MySet.assignNextControlMode();
 		}
 		
 		bButtonDown = Robot.pilot.bButton();
