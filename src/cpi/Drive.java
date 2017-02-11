@@ -2,6 +2,9 @@ package cpi;
 
 import org.usfirst.frc.team1405.robot.Robot;
 
+import cpi.ConrolModes.ArcadeDrive;
+import cpi.ConrolModes.LeftSSAD;
+import cpi.ConrolModes.RightSSAD;
 import cpi.ConrolModes.TankDrive;
 import cpi.outputDevices.MotorController;
 
@@ -18,6 +21,8 @@ public class Drive {
 	public static final String FRC_HDRIVE="FRC H Drive";
 	public static final String CUSTOM_TANK_HDRIVE="Custom Tank H Drive";
 	public static ControlMode controlStates = null;
+	
+	private static boolean bButtonDown = false;
 	
 	public Drive(String name){
 		
@@ -62,23 +67,28 @@ public class Drive {
 //			left3.setCurrentLimit(35);
 		
 		createControlModes();
-		
 	}
 	
 	public static void createControlModes(){
 		TankDrive tankDrive = new TankDrive();
-//		Callable<Void> arcadeDrive = new
-//		Callable<Void> rightSingleStickArcadeDrive = new 
-//		Callable<Void> leftSingleStickArcadeDrive = new 
-		
-		
+		ArcadeDrive arcadeDrive = new ArcadeDrive();
+		LeftSSAD leftSSAD = new LeftSSAD();
+		RightSSAD rightSSAD = new RightSSAD();
 		
 		MySet.addControlMode(tankDrive);
-//		MySet.addControlMode(new ControlMode(arcadeDrive, "Turn 90 degrees."));
-//		MySet.addControlMode(new ControlMode(rightSingleStickArcadeDrive, "Drop off the center airship gear."));
-//		MySet.addControlMode(new ControlMode(leftSingleStickArcadeDrive, "Drop off the side airship gear."));
+		MySet.addControlMode(arcadeDrive);
+		MySet.addControlMode(leftSSAD);
+		MySet.addControlMode(rightSSAD);
 		
 		MySet.assignControlMode(0);
+	}
+	
+	public static void DisabledPeriodic(){
+		if(Robot.pilot.bButton() && !bButtonDown){
+			MySet.assignNextAutoMode();
+		}
+		
+		bButtonDown = Robot.pilot.bButton();
 	}
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){

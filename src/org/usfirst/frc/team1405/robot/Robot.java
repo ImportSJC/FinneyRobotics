@@ -132,6 +132,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic(){
     	//System.out.println(timer.get());
  //   	cpi.autoSupportClasses.Set.disabledPeriodic();
-	Autonomous.disabledPeriodic();
+    	Autonomous.disabledPeriodic();
+    	Drive.DisabledPeriodic();
     }
 }
