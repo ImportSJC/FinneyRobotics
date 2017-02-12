@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class Robot extends IterativeRobot {
 
-   Drive drive;
-   static public XBox360 pilot;
+	Drive drive;
+	static public XBox360 pilot;
 	GRIP imageProcessor;
-   
+	
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -56,6 +56,7 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleSpikeRelay.robotInit();
     	ShooterControl.setInstance();
     	ShooterControl.robotInit();
+    	LiveWindow.run();
     }
     
     public void autonomousInit(){
@@ -78,8 +79,9 @@ public class Robot extends IterativeRobot {
     }
     
     @Override		    
-    public void teleopInit(){		   
-	AutoInputs.TeleInit();		
+    public void teleopInit(){
+    	AutoInputs.TeleInit();
+    	drive.TeleopInit();
     }		
 
    

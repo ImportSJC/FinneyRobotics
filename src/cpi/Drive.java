@@ -1,5 +1,9 @@
 package cpi;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.usfirst.frc.team1405.robot.Robot;
 
 import cpi.ConrolModes.ArcadeDrive;
@@ -7,8 +11,11 @@ import cpi.ConrolModes.LeftSSAD;
 import cpi.ConrolModes.RightSSAD;
 import cpi.ConrolModes.TankDrive;
 import cpi.outputDevices.MotorController;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class Drive {
+	private static boolean logMotorCurrent = true;
+	
 	/**
 	 * Max speed of the drive system
 	 */
@@ -20,6 +27,13 @@ public class Drive {
 	
 	public static ControlMode controlStates = null;
 	private static boolean bButtonDown = false;
+	
+	NetworkTable settings;
+	
+	private static int driveMotorCurrentArrayIndex = 0;
+	private static double[] driveMotorCurrentArray = new double[1000];
+	
+	private static boolean writeToFile = false;
 	
 	public Drive(String name){
 		
@@ -64,6 +78,9 @@ public class Drive {
 //			left3.setCurrentLimit(35);
 		
 		createControlModes();
+		
+		settings = NetworkTable.getTable("Motor_Current_Output");
+		settings.putString("leftMotorCurrent", "");
 	}
 	
 	public static void createControlModes(){
@@ -84,7 +101,6 @@ public class Drive {
 		if(Robot.pilot.bButton() && !bButtonDown){
 			MySet.assignNextControlMode();
 		}
-		
 		bButtonDown = Robot.pilot.bButton();
 	}
 	
@@ -101,12 +117,18 @@ public class Drive {
 //	}
 	
 	public void tankMotors(double right,double left){
-		  right1.set(right);
-		  right2.set(right);
-		  right3.set(right);
-		  left1.set(left);
-		  left2.set(left);
-		  left3.set(left);
+		//slow down the drive system
+		if(Robot.pilot.leftBumper()){
+			right = right/2;
+			left = left/2;
+		}
+		
+		right1.set(right);
+		right2.set(right);
+		right3.set(right);
+		left1.set(left);
+		left2.set(left);
+		left3.set(left);
 	}
 	
 //	public void hdriveMotors(double right,double left,double center){
@@ -117,6 +139,10 @@ public class Drive {
 //		  centerHTalon1.set(center);
 //		  centerHTalon2.set(center);
 //	}
+	
+	public void TeleopInit(){
+		driveMotorCurrentArrayIndex = 0;
+	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
 		controlStates.run();
@@ -134,10 +160,44 @@ public class Drive {
 //			hdriveMotors(rightMotor,leftMotor,centerMotor);
 	  break;
 		}
+		
+//		driveMotorCurrentSFX();
+	}
+	
+	private void driveMotorCurrentSFX(){
+		System.out.println("index: " + driveMotorCurrentArrayIndex + " length: "  + driveMotorCurrentArray.length);
+		if(driveMotorCurrentArrayIndex < driveMotorCurrentArray.length){
+			driveMotorCurrentArray[driveMotorCurrentArrayIndex] = left1.getOutputCurrent();
+			driveMotorCurrentArrayIndex++;
+		}else if (!writeToFile){
+			String tmp = "";
+			for(int i = 0; i<driveMotorCurrentArray.length; i++){
+				tmp+=driveMotorCurrentArray[i]+",";
+			}
+			settings.putString("leftMotorCurrent", tmp);
+			writeToFile = true;
+		}
+		
+		//output to a file, .csv
 	}
 	
 	public void TestPeriodic(){
 		TeleopPeriodic();
+		
+		//old base
+//		right1.driveMotorCurrentUpdate();
+//		right2.driveMotorCurrentUpdate();
+//		left1.driveMotorCurrentUpdate();
+//		left2.driveMotorCurrentUpdate();
+		
+		//new base
+		right1.driveMotorCurrentUpdate();
+		right2.driveMotorCurrentUpdate();
+		right3.driveMotorCurrentUpdate();
+		left1.driveMotorCurrentUpdate();
+		left2.driveMotorCurrentUpdate();
+		left3.driveMotorCurrentUpdate();
+		
 		System.out.println("RightMotor: " + rightMotor);
 		System.out.println("LeftMotor: " + leftMotor);
 		System.out.println("Left Joystick ( " + -Robot.pilot.leftStickYaxis() + " , " + Robot.pilot.leftStickXaxis() + " )");
