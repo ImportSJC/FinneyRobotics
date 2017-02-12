@@ -26,8 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 *
 * @author GRIP
 */
-public class GeneralDetectionPipeline {
-	
+public class BaseDetectionPipeline {	
 	
 	// Default values
 	
@@ -44,37 +43,38 @@ public class GeneralDetectionPipeline {
 	static final String BOARDER_ISOLATED="BOARDER_ISOLATED";
 
 
-	static final double DEF_HSV_THRESHOLD_HUE_LOW=0;
-	static final double DEF_HSV_THRESHOLD_HUE_HIGH=180;
-	static final double DEF_HSV_THRESHOLD_SATURATION_LOW=0;
-	static final double DEF_HSV_THRESHOLD_SATURATION_HIGH=255;
-	static final double DEF_HSV_THRESHOLD_VALUE_LOW=0;
-	static final double DEF_HSV_THRESHOLD_VALUE_HIGH=255;
+	double DEF_HSV_THRESHOLD_HUE_LOW=0;
+	double DEF_HSV_THRESHOLD_HUE_HIGH=180;
+	double DEF_HSV_THRESHOLD_SATURATION_LOW=0;
+	double DEF_HSV_THRESHOLD_SATURATION_HIGH=255;
+	double DEF_HSV_THRESHOLD_VALUE_LOW=0;
+	double DEF_HSV_THRESHOLD_VALUE_HIGH=255;
 	
 
-	static final String DEF_ERODE_BOARDER=BOARDER_CONSTANT;		
-	static final double DEF_ERODE_ITERATIONS=1;	
-	static final String DEF_DILATE_BOARDER=BOARDER_CONSTANT;		
-	static final double DEF_DILATE_ITERATIONS=1;
+	String DEF_ERODE_BOARDER=BOARDER_CONSTANT;		
+	double DEF_ERODE_ITERATIONS=1;	
+	String DEF_DILATE_BOARDER=BOARDER_CONSTANT;		
+	double DEF_DILATE_ITERATIONS=1;
 	
 
-	static final double DEF_FILTER_CONTOURS_MIN_AREA=0;	
-	static final double DEF_FILTER_CONTOURS_MIN_PERIMETER=0;
-	static final double DEF_FILTER_CONTOURS_MIN_WIDTH=0;
-	static final double DEF_FILTER_CONTOURS_MAX_WIDTH=1000;
-	static final double DEF_FILTER_CONTOURS_MIN_HEIGHT=0;
-	static final double DEF_FILTER_CONTOURS_MAX_HEIGHT=1000;
-	static final double DEF_FILTER_CONTOURS_SOLIDITY_LOW=0;
-	static final double DEF_FILTER_CONTOURS_SOLIDITY_HIGH=100;
-	static final double DEF_FILTER_CONTOURS_MIN_VERTICES=0;
-	static final double DEF_FILTER_CONTOURS_MAX_VERTICES=1000000;
-	static final double DEF_FILTER_CONTOURS_MIN_RATIO=0;
-	static final double DEF_FILTER_CONTOURS_MAX_RATIO=1000;
+	double DEF_FILTER_CONTOURS_MIN_AREA=0;	
+	double DEF_FILTER_CONTOURS_MIN_PERIMETER=0;
+	double DEF_FILTER_CONTOURS_MIN_WIDTH=0;
+	double DEF_FILTER_CONTOURS_MAX_WIDTH=1000;
+	double DEF_FILTER_CONTOURS_MIN_HEIGHT=0;
+	double DEF_FILTER_CONTOURS_MAX_HEIGHT=1000;
+	double DEF_FILTER_CONTOURS_SOLIDITY_LOW=0;
+	double DEF_FILTER_CONTOURS_SOLIDITY_HIGH=100;
+	double DEF_FILTER_CONTOURS_MIN_VERTICES=0;
+	double DEF_FILTER_CONTOURS_MAX_VERTICES=1000000;
+	double DEF_FILTER_CONTOURS_MIN_RATIO=0;
+	double DEF_FILTER_CONTOURS_MAX_RATIO=1000;
 	
 	// END Default values
 	
 	static final String SELECTION="Selection";
-	static final String OUTPUT_CONTROL="Select view";	
+	static final String OUTPUT_CONTROL="Select view";
+	
 	static final String SOURCE="1 - Source";	
 	static final String HSV_THRESHOLD="2 - HSV Threshold";	
 	static final String ERODE="3 - Erode";	
@@ -112,7 +112,6 @@ public class GeneralDetectionPipeline {
 	double dilateIterations;
 
 
-
 	static final String FILTER_CONTOURS_MIN_AREA="Filter Contours/Min Area";	
 	static final String FILTER_CONTOURS_MIN_PERIMETER="Filter Contours/Min Perimeter";
 	static final String FILTER_CONTOURS_MIN_WIDTH="Filter Contours/Min Width";
@@ -125,6 +124,10 @@ public class GeneralDetectionPipeline {
 	static final String FILTER_CONTOURS_MAX_VERTICES="Filter Contours/Max Vertices";
 	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours/Min Ratio";
 	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours/Max Ratio";
+	static final String FIND_FILTERS_COUNT="Filter Contours/Find Contours Count";
+	static final String FILTER_CONTOURS_COUNT="Filter Contours/Filters Contours Count";
+	static final String FILTER_CONTOURS_CENTER_X="Filter Contours/Filters Contours X Center";
+	static final String FILTER_CONTOURS_CENTER_Y="Filter Contours/Filters Contours Y Center";
 
 	double filterContoursMinArea;
 	double filterContoursMinPerimeter;
@@ -138,10 +141,12 @@ public class GeneralDetectionPipeline {
 	double filterContoursMaxVertices;
 	double filterContoursMinRatio;
 	double filterContoursMaxRatio;
-	String outputID="1";
+	String outputID="0";
 	Mat hsvThresholdInput;
+	double[]centerX;
+	double[]centerY;
 	
-	public GeneralDetectionPipeline(String table){
+	public BaseDetectionPipeline(String table){
 		this.table=NetworkTable.getTable(table);
 		
 		this.table.putBoolean(DEFAULTS+"/"+RESET_TO_DEFAULTS, false);
@@ -246,6 +251,7 @@ public class GeneralDetectionPipeline {
 	private Mat selectedOutput = new Mat();
 	private Mat cvDilateOutput = new Mat();
 	Mat blankFrame= new Mat();
+	boolean isFirst=true;
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 	
@@ -257,7 +263,6 @@ public class GeneralDetectionPipeline {
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
 	public void process(Mat source0) {
-		// Step HSV_Threshold0:
 		hsvThresholdInput = source0;
 
 		
@@ -289,6 +294,8 @@ public class GeneralDetectionPipeline {
 			 table.putNumber(FILTER_CONTOURS_MAX_VERTICES, DEF_FILTER_CONTOURS_MAX_VERTICES);
 			 table.putNumber(FILTER_CONTOURS_MIN_RATIO, DEF_FILTER_CONTOURS_MIN_RATIO);
 			 table.putNumber(FILTER_CONTOURS_MAX_RATIO, DEF_FILTER_CONTOURS_MAX_RATIO);
+			 
+			 table.putBoolean(DEFAULTS+"/"+RESET_TO_DEFAULTS, false);
 		}
 		if(DriverStation.getInstance().isDisabled()){
 		hsvThresholdHueLow=table.getNumber(HSV_THRESHOLD_HUE_LOW, DEF_HSV_THRESHOLD_HUE_LOW);
@@ -298,18 +305,20 @@ public class GeneralDetectionPipeline {
 		hsvThresholdValueLow=table.getNumber(HSV_THRESHOLD_VALUE_LOW, DEF_HSV_THRESHOLD_VALUE_LOW);
 		hsvThresholdValueHigh=table.getNumber(HSV_THRESHOLD_VALUE_HIGH, DEF_HSV_THRESHOLD_VALUE_HIGH);
 		}
-		
+
+		// Step HSV_Threshold0:
 		double[] hsvThresholdHue = {hsvThresholdHueLow,hsvThresholdHueHigh};
 		double[] hsvThresholdSaturation ={ hsvThresholdSaturationLow,hsvThresholdSaturationHigh};
 		double[] hsvThresholdValue = {hsvThresholdValueLow,hsvThresholdValueHigh};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
 		
-	//  Create a blank (black) Mat		
+	//  Create a blank (black) Mat	
+		
 		double[] hsvThresholdHueBlank = {hsvThresholdHueLow,hsvThresholdHueHigh};
 		double[] hsvThresholdSaturationBlank ={ hsvThresholdSaturationLow,hsvThresholdSaturationHigh};
-		double[] hsvThresholdValueBlank = {hsvThresholdValueLow,hsvThresholdValueHigh};
-
+		double[] hsvThresholdValueBlank = {0,0};
 		hsvThreshold(hsvThresholdInput,hsvThresholdHueBlank,hsvThresholdSaturationBlank,hsvThresholdValueBlank,blankFrame);
+		
 
 		if(DriverStation.getInstance().isDisabled()){
 			erodeBoarder=table.getString(ERODE_BOARDER, DEF_ERODE_BOARDER);
@@ -339,10 +348,10 @@ public class GeneralDetectionPipeline {
 		cvDilate(cvDilateSrc, cvDilateKernel, cvDilateAnchor, cvDilateIterations, cvDilateBordertype, cvDilateBordervalue, cvDilateOutput);
 
 		// Step Find_Contours0:
-		Mat findContoursInput = cvDilateOutput;
+		Mat findContoursInput = cvDilateOutput.clone();
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
-		
+		table.putNumber(FIND_FILTERS_COUNT, findContoursOutput.size());
 		if(DriverStation.getInstance().isDisabled()){
 			 filterContoursMinArea=table.getNumber(FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA);
 			 filterContoursMinPerimeter= table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER);
@@ -362,6 +371,7 @@ public class GeneralDetectionPipeline {
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
 		double[] filterContoursSolidity = {filterContoursSolidityLow, filterContoursSolidityHight};
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
+		table.putNumber(FILTER_CONTOURS_COUNT, filterContoursOutput.size());
 
 	}
 
@@ -395,7 +405,7 @@ public class GeneralDetectionPipeline {
 	 */
 	public Mat findContoursOutput() {
 		Mat mat=blankFrame;
-		Imgproc.drawContours(mat, findContoursOutput, 0, new Scalar(255,0,255));
+		Imgproc.drawContours(mat, findContoursOutput, -1, new Scalar(255,255,255));
 		
 		return mat;
 	}
@@ -406,8 +416,16 @@ public class GeneralDetectionPipeline {
 	 */
 	public Mat filterContoursOutput() {
 		Mat mat=blankFrame;
-		Imgproc.drawContours(mat, findContoursOutput, 0, new Scalar(0,255,255));
+		Imgproc.drawContours(mat, filterContoursOutput, -1, new Scalar(255,255,255));
 		return mat;
+	}
+	
+	public double[] getCenterX(){
+		return centerX;
+	}
+	
+	public double[] getCenterY(){
+		return centerY;
 	}
 
 
@@ -464,6 +482,7 @@ public class GeneralDetectionPipeline {
 	 */
 	private void cvDilate(Mat src, Mat kernel, Point anchor, double iterations,
 	int borderType, Scalar borderValue, Mat dst) {
+		
 		if (kernel == null) {
 			kernel = new Mat();
 		}
@@ -474,6 +493,7 @@ public class GeneralDetectionPipeline {
 			borderValue = new Scalar(-1);
 		}
 		Imgproc.dilate(src, dst, kernel, anchor, (int)iterations, borderType, borderValue);
+		
 	}
 
 	/**
@@ -508,7 +528,7 @@ public class GeneralDetectionPipeline {
 	 * @param minWidth minimum width of a contour
 	 * @param maxWidth maximum width
 	 * @param minHeight minimum height
-	 * @param maxHeight maximimum height
+	 * @param maxHeight maximum height
 	 * @param Solidity the minimum and maximum solidity of a contour
 	 * @param minVertexCount minimum vertex Count of the contours
 	 * @param maxVertexCount maximum vertex Count
@@ -520,6 +540,8 @@ public class GeneralDetectionPipeline {
 		maxHeight, double[] solidity, double maxVertexCount, double minVertexCount, double
 		minRatio, double maxRatio, List<MatOfPoint> output) {
 		final MatOfInt hull = new MatOfInt();
+		double[] tmpX=new double[inputContours.size()];
+		double[] tmpY=new double[inputContours.size()];
 		output.clear();
 		//operation
 		for (int i = 0; i < inputContours.size(); i++) {
@@ -543,7 +565,19 @@ public class GeneralDetectionPipeline {
 			if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)	continue;
 			final double ratio = bb.width / (double)bb.height;
 			if (ratio < minRatio || ratio > maxRatio) continue;
+			tmpX[i]= bb.x;
+			tmpY[i]= bb.y;
 			output.add(contour);
+			
+			centerX=new double[output.size()];
+			centerY=new double[output.size()];
+			for(i=0;i<output.size();i++){
+				
+				centerX[i]=tmpX[i];
+				centerY[i]=tmpY[i];
+			}
+			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);
+			table.putNumberArray(FILTER_CONTOURS_CENTER_Y, centerY);
 		}
 	}
 	
@@ -618,6 +652,7 @@ public class GeneralDetectionPipeline {
 		}
 		return selectedOutput;
 	}
+
 
 	int getBoarder(String boarder){
 		int intBoarder=0;
