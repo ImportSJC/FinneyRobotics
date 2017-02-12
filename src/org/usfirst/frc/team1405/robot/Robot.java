@@ -81,7 +81,6 @@ public class Robot extends IterativeRobot {
     @Override		    
     public void teleopInit(){
     	AutoInputs.TeleInit();
-    	drive.TeleopInit();
     }		
 
    
@@ -95,7 +94,7 @@ public class Robot extends IterativeRobot {
     	System.out.println("Summed Count: " + AutoInputs.getSummedEncoderCount());
     	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
     	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
-    	GearControl.TeleopPeriodic(pilot.aButton());
+    	GearControl.TeleopPeriodic(pilot.rightBumper());
     }
     
       
