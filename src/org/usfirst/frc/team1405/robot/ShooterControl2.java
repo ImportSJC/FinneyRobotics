@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import cpi.*;
 
-public class ShooterControl {
+public class ShooterControl2 {
 	
 	static String THIS_TABLE_NAME;
 	
@@ -28,6 +28,7 @@ public class ShooterControl {
 
 	static String ENABLE="Enable";
 	static String TOLLERANCE="Motor set speed tollerance";
+	static double TOLLERANCE_VALUE=-50;
 	static String SHOOTER_THRESHOLD="Shooter threshold";
 	static String GATE_THRESHOLD="Gate threshold";
 	static double SHOOTER_THRESHOLD_VALUE=-600;
@@ -39,12 +40,13 @@ public class ShooterControl {
 	static String SHOOTER_SPEED_EQUALS="Shooter speed = ";
 	static Encoder shooterEncoder ;
 	static boolean setGateOn;
+	static double DELTA_V=0.01;
 	
 	class Mode{
 		public static final String PWM="PWM";
 		public static final String TALON_SRX="Talon SRX";
 	}
-	ShooterControl(){
+	ShooterControl2(){
 		
 	}
 	static public void setInstance(String mode, int shooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int gateID,int mixerRelayID){
@@ -56,11 +58,11 @@ public class ShooterControl {
     	settings.putNumber(GATE_SPEED, GATE_SPEED_VALUE);
     	settings.putNumber(SHOOTER_SPEED,SHOOTER_SPEED_VALUE);
     	settings.putBoolean(ENABLE,false);
-    	ShooterControl.ShooterEncoderChanelA=ShooterEncoderChanelA;
-    	ShooterControl.ShooterEncoderChanelB=ShooterEncoderChanelB;
-    	ShooterControl.mixerRelayID=mixerRelayID;
-    	ShooterControl.gateID=gateID;
-    	ShooterControl.shooterID=shooterID;
+    	ShooterControl2.ShooterEncoderChanelA=ShooterEncoderChanelA;
+    	ShooterControl2.ShooterEncoderChanelB=ShooterEncoderChanelB;
+    	ShooterControl2.mixerRelayID=mixerRelayID;
+    	ShooterControl2.gateID=gateID;
+    	ShooterControl2.shooterID=shooterID;
     	
     	
 	}
@@ -116,9 +118,22 @@ public class ShooterControl {
 
 	static public void process(){
 		settings.putNumber("Shooter speed = ",shooterEncoder.getRate() );
-		if(shooterEncoder.getRate()>settings.getNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE)){
+		double tmp=shooterEncoder.getRate();
+		if(tmp>0)tmp=-tmp;
+		double tmp2=settings.getNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
+		if(tmp2>0)tmp2=-tmp2;
+		double tmp3=1.0;
+		double shooterSpeed=0.5;
+		if(tmp<0){
+			tmp3=-1;
+			DELTA_V=-DELTA_V;
+			shooterSpeed=-shooterSpeed;
+		}
+		if(tmp>tmp2){
 			settings.putString("Process", "Below threshold");
-			shooterMotor.set(-1.0);
+			shooterSpeed=shooterSpeed+DELTA_V;
+	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
+			shooterMotor.set(shooterSpeed);
 			if(shooterEncoder.getRate()>settings.getNumber(GATE_THRESHOLD, GATE_THRESHOLD_VALUE)){
 				gateMotor.set(0.0);
 			}else{
@@ -127,7 +142,9 @@ public class ShooterControl {
 			
 		}else if(shooterEncoder.getRate()<(settings.getNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE)+settings.getNumber(TOLLERANCE, 50.0))){
 			settings.putString("Process", "Above  threshold + tollerance");
-			shooterMotor.set(settings.getNumber(SHOOTER_SPEED, SHOOTER_SPEED_VALUE)/2);
+			shooterSpeed=shooterSpeed-DELTA_V;
+	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
+			shooterMotor.set(shooterSpeed);
 			gateMotor.set(settings.getNumber(GATE_SPEED,GATE_SPEED_VALUE));
 			
 		}
@@ -135,7 +152,8 @@ public class ShooterControl {
 		
 		else{
 			settings.putString("Process", "At threshold");
-			shooterMotor.set(settings.getNumber(SHOOTER_SPEED,SHOOTER_SPEED_VALUE));
+	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
+			shooterMotor.set(shooterSpeed);
 			gateMotor.set(settings.getNumber(GATE_SPEED,GATE_SPEED_VALUE));
 			
 		}

@@ -122,8 +122,8 @@ public class BaseDetectionPipeline {
 	static final String FILTER_CONTOURS_SOLIDITY_HIGH="Filter Contours/Solidity (High)";
 	static final String FILTER_CONTOURS_MIN_VERTICES="Filter Contours/Min Vertices";
 	static final String FILTER_CONTOURS_MAX_VERTICES="Filter Contours/Max Vertices";
-	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours/Min Ratio";
-	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours/Max Ratio";
+	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours/Min Ratio(width/height)";
+	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours/Max Ratio(width/height)";
 	static final String FIND_FILTERS_COUNT="Filter Contours/Find Contours Count";
 	static final String FILTER_CONTOURS_COUNT="Filter Contours/Filters Contours Count";
 	static final String FILTER_CONTOURS_CENTER_X="Filter Contours/Filters Contours X Center";
@@ -351,8 +351,8 @@ public class BaseDetectionPipeline {
 		Mat findContoursInput = cvDilateOutput.clone();
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
-		table.putNumber(FIND_FILTERS_COUNT, findContoursOutput.size());
 		if(DriverStation.getInstance().isDisabled()){
+		table.putNumber(FIND_FILTERS_COUNT, findContoursOutput.size());
 			 filterContoursMinArea=table.getNumber(FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA);
 			 filterContoursMinPerimeter= table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER);
 			 filterContoursMinWidth=table.getNumber(FILTER_CONTOURS_MIN_WIDTH, DEF_FILTER_CONTOURS_MIN_WIDTH);
@@ -371,8 +371,9 @@ public class BaseDetectionPipeline {
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
 		double[] filterContoursSolidity = {filterContoursSolidityLow, filterContoursSolidityHight};
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
+		if(DriverStation.getInstance().isDisabled()){
 		table.putNumber(FILTER_CONTOURS_COUNT, filterContoursOutput.size());
-
+		}
 	}
 
 	/**
@@ -543,6 +544,7 @@ public class BaseDetectionPipeline {
 		double[] tmpX=new double[inputContours.size()];
 		double[] tmpY=new double[inputContours.size()];
 		output.clear();
+		int k=0;
 		//operation
 		for (int i = 0; i < inputContours.size(); i++) {
 			final MatOfPoint contour = inputContours.get(i);
@@ -565,20 +567,24 @@ public class BaseDetectionPipeline {
 			if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)	continue;
 			final double ratio = bb.width / (double)bb.height;
 			if (ratio < minRatio || ratio > maxRatio) continue;
-			tmpX[i]= bb.x;
-			tmpY[i]= bb.y;
+			tmpX[k]= bb.x;
+			tmpY[k]= bb.y;
+			k++;
 			output.add(contour);
-			
+
+		}			
+		int i;
 			centerX=new double[output.size()];
 			centerY=new double[output.size()];
+			System.out.println();
 			for(i=0;i<output.size();i++){
-				
 				centerX[i]=tmpX[i];
 				centerY[i]=tmpY[i];
 			}
+			if(DriverStation.getInstance().isDisabled()){
 			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);
 			table.putNumberArray(FILTER_CONTOURS_CENTER_Y, centerY);
-		}
+			}
 	}
 	
 	public Mat selectedOutput(){

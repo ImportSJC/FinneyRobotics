@@ -27,7 +27,7 @@ public class Robot extends IterativeRobot {
 
    Drive drive;
    static public Control pilot;
-	GRIP imageProcessor;
+//	GRIP imageProcessor;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -41,14 +41,14 @@ public class Robot extends IterativeRobot {
     }
     void initialize(){
     	
-    	Autonomous.robotInit();
-    	drive= new Drive(cpi.Drive.DIRECT_TANK);
-    	drive.robotInit();
-    	pilot=new Control(0);
+//    	Autonomous.robotInit();
+//    	drive= new Drive(cpi.Drive.DIRECT_TANK);
+//    	drive.robotInit();
+//    	pilot=new Control(0);
     	GearControl.robotInit();
-    	AutoOutputs.robotInit();
-    	AutoInputs.robotInit();
-    	AutoOutputs.setDriveBrake(true);
+ //   	AutoOutputs.robotInit();
+ //   	AutoInputs.robotInit();
+ //   	AutoOutputs.setDriveBrake(true);
  //   	templates.GRIP3Cameras2Switched.robotInit();
  //   	cpi.SimpleTwoCamera.init(0);
     	Vision2017.robotInit(2);
@@ -59,21 +59,21 @@ public class Robot extends IterativeRobot {
  //   	imageProcessor=new GRIP(0,1,2);
  //   	SimpleCamera.init(0);
  //   	TestSimpleEncoder.robotInit();
- //'   	TestSimpleMultiMotorPWM.robotInit();
+  //  	TestSimpleMultiMotorPWM.robotInit();
  //   	TestSimpleSpikeRelay.robotInit();
-    	ShooterControl.setInstance();
-    	ShooterControl.robotInit();
+    	ShooterControl2.setInstance();
+    	ShooterControl2.robotInit();
     }
     
     public void autonomousInit(){
-    	Autonomous.autonomousInit();
+ //   	Autonomous.autonomousInit();
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	Autonomous.autonomousPeriodic();
+//    	Autonomous.autonomousPeriodic();
     }
     
     
@@ -82,7 +82,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	drive.TeleopPeriodic();
+//    	drive.TeleopPeriodic();
     	GearControl.TeleopPeriodic(pilot.aButton());
 //    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
  //   	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
@@ -99,8 +99,8 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleSpikeRelay.disabledInit();
   //  	TestSimpleMultiMotorPWM.disabledInit();
  //   	TestSimpleEncoder.disabledInit();
-    	AutoInputs.freeEncoders();
-    	ShooterControl.disabledInit();
+ //   	AutoInputs.freeEncoders();
+    	ShooterControl2.disabledInit();
     	
     }
     public void testInit(){
@@ -108,17 +108,17 @@ public class Robot extends IterativeRobot {
   //  	TestSimpleMultiMotorPWM.testInit();
  //   	TestSimpleSpikeRelay.testInit();
  //   	TestSimpleEncoder.testInit();
-    	ShooterControl.testInit();
+    	ShooterControl2.testInit();
     }
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
- //   	TestSimpleMultiMotorPWM.testPeriodic();
+  //  	TestSimpleMultiMotorPWM.testPeriodic();
 //    	TestSimpleSpikeRelay.testPeriodic();
 //    	TestSimpleEncoder.testPeriodic();
-    	drive.TestPeriodic();
-    	ShooterControl.testPeriodic();
+ //   	drive.TestPeriodic();
+    	ShooterControl2.testPeriodic();
     }
 
     /**

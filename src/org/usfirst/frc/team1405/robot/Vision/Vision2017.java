@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.opencv.core.Mat;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import org.usfirst.frc.team1405.robot.Vision.pipelines.BaseDetectionPipeline;
+import org.usfirst.frc.team1405.robot.Vision.pipelines.GearPipeline;
 
 public class Vision2017 {
 	static final String GEAR_PLACEMENT_TABLE_NAME="Robot/Vision/Pipelines/Gear Placement";
 	static Thread visionThread;
-	static BaseDetectionPipeline boilerPipeline=new BaseDetectionPipeline(GEAR_PLACEMENT_TABLE_NAME);
+	static GearPipeline gearPipeline=new GearPipeline(GEAR_PLACEMENT_TABLE_NAME);
 	static NetworkTable table;
 	static String CAMERA_ID_KEY3="Pipelines/Gear Placement/"+"Select Gear camera ID (0, 1, 2)";
 	static String CAMERA_ID_KEY2="Pipelines/Gear Placement/"+"Select gear camera ID (0, 1)";
@@ -41,6 +41,7 @@ public class Vision2017 {
 	static boolean enableCameraSwitch=true;
 	
 	static String cameraID="0";
+
 	
 	public static void robotInit(int numberOfCameras){
 		
@@ -58,7 +59,12 @@ public class Vision2017 {
 		}
 		robotInit();
 	}
-	
+	public double[] getX(){
+		return gearPipeline.getCenterX();
+	}
+	public double[] getY(){
+		return gearPipeline.getCenterY();
+	}
 	static public void robotInit(){
 		table=NetworkTable.getTable("Robot/Vision");
 		if(enableCameraSwitch){
@@ -144,8 +150,8 @@ public class Vision2017 {
 				
 				// Put a rectangle on the image
 				if(!mat.empty()){
-				boilerPipeline.process(mat);
-					outputStream.putFrame(boilerPipeline.selectedOutput());
+				gearPipeline.process(mat);
+					outputStream.putFrame(gearPipeline.selectedOutput());
 //					outputStream.putFrame(mat);
 				}
 			}

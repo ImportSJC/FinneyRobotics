@@ -26,8 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 *
 * @author GRIP
 */
-public class GearPlacementPipeline {
-	
+public class GearPipeline {	
 	
 	// Default values
 	
@@ -123,8 +122,12 @@ public class GearPlacementPipeline {
 	static final String FILTER_CONTOURS_SOLIDITY_HIGH="Filter Contours/Solidity (High)";
 	static final String FILTER_CONTOURS_MIN_VERTICES="Filter Contours/Min Vertices";
 	static final String FILTER_CONTOURS_MAX_VERTICES="Filter Contours/Max Vertices";
-	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours/Min Ratio";
-	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours/Max Ratio";
+	static final String FILTER_CONTOURS_MIN_RATIO="Filter Contours/Min Ratio(width/height)";
+	static final String FILTER_CONTOURS_MAX_RATIO="Filter Contours/Max Ratio(width/height)";
+	static final String FIND_FILTERS_COUNT="Filter Contours/Find Contours Count";
+	static final String FILTER_CONTOURS_COUNT="Filter Contours/Filters Contours Count";
+	static final String FILTER_CONTOURS_CENTER_X="Filter Contours/Filters Contours X Center";
+	static final String FILTER_CONTOURS_CENTER_Y="Filter Contours/Filters Contours Y Center";
 
 	double filterContoursMinArea;
 	double filterContoursMinPerimeter;
@@ -140,8 +143,10 @@ public class GearPlacementPipeline {
 	double filterContoursMaxRatio;
 	String outputID="0";
 	Mat hsvThresholdInput;
+	double[]centerX;
+	double[]centerY;
 	
-	public GearPlacementPipeline(String table){
+	public GearPipeline(String table){
 		this.table=NetworkTable.getTable(table);
 		
 		this.table.putBoolean(DEFAULTS+"/"+RESET_TO_DEFAULTS, false);
@@ -346,8 +351,8 @@ public class GearPlacementPipeline {
 		Mat findContoursInput = cvDilateOutput.clone();
 		boolean findContoursExternalOnly = false;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
-		
 		if(DriverStation.getInstance().isDisabled()){
+		table.putNumber(FIND_FILTERS_COUNT, findContoursOutput.size());
 			 filterContoursMinArea=table.getNumber(FILTER_CONTOURS_MIN_AREA, DEF_FILTER_CONTOURS_MIN_AREA);
 			 filterContoursMinPerimeter= table.getNumber(FILTER_CONTOURS_MIN_PERIMETER, DEF_FILTER_CONTOURS_MIN_PERIMETER);
 			 filterContoursMinWidth=table.getNumber(FILTER_CONTOURS_MIN_WIDTH, DEF_FILTER_CONTOURS_MIN_WIDTH);
@@ -366,7 +371,9 @@ public class GearPlacementPipeline {
 		ArrayList<MatOfPoint> filterContoursContours = findContoursOutput;
 		double[] filterContoursSolidity = {filterContoursSolidityLow, filterContoursSolidityHight};
 		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
-
+		if(DriverStation.getInstance().isDisabled()){
+		table.putNumber(FILTER_CONTOURS_COUNT, filterContoursOutput.size());
+		}
 	}
 
 	/**
@@ -399,7 +406,7 @@ public class GearPlacementPipeline {
 	 */
 	public Mat findContoursOutput() {
 		Mat mat=blankFrame;
-		Imgproc.drawContours(mat, findContoursOutput, 0, new Scalar(255,255,255));
+		Imgproc.drawContours(mat, findContoursOutput, -1, new Scalar(255,255,255));
 		
 		return mat;
 	}
@@ -410,8 +417,16 @@ public class GearPlacementPipeline {
 	 */
 	public Mat filterContoursOutput() {
 		Mat mat=blankFrame;
-		Imgproc.drawContours(mat, findContoursOutput, 0, new Scalar(255,255,255));
+		Imgproc.drawContours(mat, filterContoursOutput, -1, new Scalar(255,255,255));
 		return mat;
+	}
+	
+	public double[] getCenterX(){
+		return centerX;
+	}
+	
+	public double[] getCenterY(){
+		return centerY;
 	}
 
 
@@ -514,7 +529,7 @@ public class GearPlacementPipeline {
 	 * @param minWidth minimum width of a contour
 	 * @param maxWidth maximum width
 	 * @param minHeight minimum height
-	 * @param maxHeight maximimum height
+	 * @param maxHeight maximum height
 	 * @param Solidity the minimum and maximum solidity of a contour
 	 * @param minVertexCount minimum vertex Count of the contours
 	 * @param maxVertexCount maximum vertex Count
@@ -526,7 +541,10 @@ public class GearPlacementPipeline {
 		maxHeight, double[] solidity, double maxVertexCount, double minVertexCount, double
 		minRatio, double maxRatio, List<MatOfPoint> output) {
 		final MatOfInt hull = new MatOfInt();
+		double[] tmpX=new double[inputContours.size()];
+		double[] tmpY=new double[inputContours.size()];
 		output.clear();
+		int k=0;
 		//operation
 		for (int i = 0; i < inputContours.size(); i++) {
 			final MatOfPoint contour = inputContours.get(i);
@@ -549,8 +567,24 @@ public class GearPlacementPipeline {
 			if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)	continue;
 			final double ratio = bb.width / (double)bb.height;
 			if (ratio < minRatio || ratio > maxRatio) continue;
+			tmpX[k]= bb.x;
+			tmpY[k]= bb.y;
+			k++;
 			output.add(contour);
-		}
+
+		}			
+		int i;
+			centerX=new double[output.size()];
+			centerY=new double[output.size()];
+			System.out.println();
+			for(i=0;i<output.size();i++){
+				centerX[i]=tmpX[i];
+				centerY[i]=tmpY[i];
+			}
+			if(DriverStation.getInstance().isDisabled()){
+			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);
+			table.putNumberArray(FILTER_CONTOURS_CENTER_Y, centerY);
+			}
 	}
 	
 	public Mat selectedOutput(){
