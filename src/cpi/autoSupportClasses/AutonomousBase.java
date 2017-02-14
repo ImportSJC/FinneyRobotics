@@ -7,9 +7,7 @@ import cpi.auto.inputDevices.Time;
 
 public class AutonomousBase {
 	private static int columnIndex = 0;
-	private static int rowIndex = 0;
 	private static boolean columnInit = false; //has all the modes in the column been started yet?
-//	public static boolean[] checks; //an array storing the boolean values of all mode checks in the current row
 	public static SuperClass[][] autoStates = null;
 	public static String autoMode = "";//this should be set to "" or "default"
 	
@@ -31,7 +29,6 @@ public class AutonomousBase {
 	
 	public static final void AutonomousInit(){
 		columnIndex = 0;
-		rowIndex = 0;
 		columnInit = false;
 		AutoOutputs.setDriveBrake(true);
 		AutoInputs.resetGyros();

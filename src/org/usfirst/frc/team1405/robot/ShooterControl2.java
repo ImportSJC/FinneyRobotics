@@ -30,9 +30,9 @@ public class ShooterControl2 {
 	static String TOLLERANCE="Motor set speed tollerance";
 	static double TOLLERANCE_VALUE=-50;
 	static String SHOOTER_THRESHOLD="Shooter threshold";
-	static String GATE_THRESHOLD="Gate threshold";
+	static String GATE_THRESHOLD="Delta Gate threshold";
 	static double SHOOTER_THRESHOLD_VALUE=-600;
-	static double GATE_THRESHOLD_VALUE=-500;
+	static double GATE_THRESHOLD_VALUE=-100;
 	static String GATE_SPEED="Gate speed";
 	static double GATE_SPEED_VALUE=-1;
 	static String SHOOTER_SPEED="Shooter speed";
@@ -41,6 +41,7 @@ public class ShooterControl2 {
 	static Encoder shooterEncoder ;
 	static boolean setGateOn;
 	static double DELTA_V=0.01;
+	static double shooterSpeed=0.5;
 	
 	class Mode{
 		public static final String PWM="PWM";
@@ -74,7 +75,7 @@ public class ShooterControl2 {
 	static public void setInstance(){
 		THIS_TABLE_NAME= "Robot"+"/Test Beds/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
-		settings.putNumber(TOLLERANCE, -50.0);
+		settings.putNumber(TOLLERANCE,-100.0);
     	settings.putNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
     	settings.putNumber(GATE_THRESHOLD, GATE_THRESHOLD_VALUE);
     	settings.putNumber(GATE_SPEED, GATE_SPEED_VALUE);
@@ -122,25 +123,28 @@ public class ShooterControl2 {
 		if(tmp>0)tmp=-tmp;
 		double tmp2=settings.getNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
 		if(tmp2>0)tmp2=-tmp2;
-		double tmp3=1.0;
-		double shooterSpeed=0.5;
+		double tmp3=settings.getNumber(GATE_THRESHOLD, SHOOTER_THRESHOLD_VALUE+GATE_THRESHOLD_VALUE);
+		if(tmp3>0)tmp3=-tmp3;
+		double tmp4=settings.getNumber(TOLLERANCE, TOLLERANCE_VALUE);
+		if(tmp4>0)tmp4=-tmp4;
 		if(tmp<0){
 			tmp3=-1;
 			DELTA_V=-DELTA_V;
 			shooterSpeed=-shooterSpeed;
+			
 		}
 		if(tmp>tmp2){
 			settings.putString("Process", "Below threshold");
 			shooterSpeed=shooterSpeed+DELTA_V;
 	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
 			shooterMotor.set(shooterSpeed);
-			if(shooterEncoder.getRate()>settings.getNumber(GATE_THRESHOLD, GATE_THRESHOLD_VALUE)){
+			if(shooterEncoder.getRate()>tmp3){
 				gateMotor.set(0.0);
 			}else{
 				gateMotor.set(settings.getNumber(GATE_SPEED,GATE_SPEED_VALUE));
 			}
 			
-		}else if(shooterEncoder.getRate()<(settings.getNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE)+settings.getNumber(TOLLERANCE, 50.0))){
+		}else if(shooterEncoder.getRate()<(tmp2+tmp4)){
 			settings.putString("Process", "Above  threshold + tollerance");
 			shooterSpeed=shooterSpeed-DELTA_V;
 	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);

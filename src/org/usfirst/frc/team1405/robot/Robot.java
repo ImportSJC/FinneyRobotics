@@ -26,8 +26,7 @@ public class Robot extends IterativeRobot {
     
 
    Drive drive;
-   static public Control pilot;
-//	GRIP imageProcessor;
+   static public XBox360 pilot;
    
     /**
      * This function is run when the robot is first started up and should be
@@ -41,10 +40,11 @@ public class Robot extends IterativeRobot {
     }
     void initialize(){
     	
-//    	Autonomous.robotInit();
-//    	drive= new Drive(cpi.Drive.DIRECT_TANK);
-//    	drive.robotInit();
-//    	pilot=new Control(0);
+
+    	Autonomous.robotInit();
+    	drive= new Drive(cpi.Drive.DIRECT_TANK);
+    	drive.robotInit();
+    	pilot=new XBox360(0);
     	GearControl.robotInit();
  //   	AutoOutputs.robotInit();
  //   	AutoInputs.robotInit();
@@ -66,17 +66,26 @@ public class Robot extends IterativeRobot {
     }
     
     public void autonomousInit(){
- //   	Autonomous.autonomousInit();
+    	AutoInputs.AutoInit();
+    	Autonomous.autonomousInit();
+    	AutoOutputs.ResetValues();
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-//    	Autonomous.autonomousPeriodic();
+    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
+//    	System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle() + " Rate: " + AutoInputs.getGyroRate());
+//    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+    	Autonomous.autonomousPeriodic();
     }
     
-    
+    @Override		    
+    public void teleopInit(){		   
+	AutoInputs.TeleInit();		
+    }		
+
    
     /**
      * This function is called periodically during operator control
@@ -127,5 +136,6 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic(){
     	//System.out.println(timer.get());
  //   	cpi.autoSupportClasses.Set.disabledPeriodic();
+	Autonomous.disabledPeriodic();
     }
 }
