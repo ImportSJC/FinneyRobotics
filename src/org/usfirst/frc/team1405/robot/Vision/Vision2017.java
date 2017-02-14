@@ -160,5 +160,15 @@ public class Vision2017 {
 		visionThread.start();
 		
 	}
+	
+	public void selectCamera(boolean cameraID){
+	if(enableCameraSwitch)if(DriverStation.getInstance().isDisabled()){
+		if(cameraID){
+			table.putString(CAMERA_ID_KEY,"0");
+		}else{
+			table.putString(CAMERA_ID_KEY,"1");
+		}
+	}
+	}
 
 }
