@@ -588,7 +588,6 @@ public class BaseDetectionPipeline {
 			centerY=new double[output.size()];
 			width=new double[output.size()];
 			height=new double[output.size()];
-			System.out.println();
 			for(i=0;i<output.size();i++){
 				centerX[i]=tmpX[i];
 				centerY[i]=tmpY[i];

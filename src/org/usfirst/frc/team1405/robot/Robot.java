@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 	final static public String header="2016 Competition ver. 1.0"; // This is required
 	
     public void robotInit() {
+    	System.out.println("Robot Init");
     	initialize();
     }
     void initialize(){
@@ -91,6 +92,14 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	System.out.println();
+    	System.out.println();
+    	if(Vision2017.getHeight().length!=0){
+        System.out.println(Vision2017.getHeight()[0]);
+        System.out.println(Vision2017.getWidth()[0]);
+        System.out.println(Vision2017.getX()[0]);
+        System.out.println(Vision2017.getY()[0]);
+    	}
 //    	drive.TeleopPeriodic();
     	GearControl.TeleopPeriodic(pilot.aButton());
 //    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
