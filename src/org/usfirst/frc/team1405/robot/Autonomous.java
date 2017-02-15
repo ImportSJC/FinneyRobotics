@@ -36,6 +36,13 @@ public class Autonomous extends AutonomousBase{
 		SuperClass[][] turn90 = new SuperClass[][]{
 				{ new And(new Auto_Drive(0, 0), new Encoder(90, 0, false, true))}};
 		
+		SuperClass[][] driveFwd77 = new SuperClass[][]{
+				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_centerOfBot_to_centerAirShip, false))}};
+		
+		SuperClass[][] driveFwd10 = new SuperClass[][]{
+				{ new And(new Auto_Drive(0), new Encoder(10, false))}};
+		
+		MySet.addAutoMode(new AutoMode(driveFwd10, "Drive fwd 77in."));
 		MySet.addAutoMode(new AutoMode(turn90, "Turn 90 degrees."));
 		MySet.addAutoMode(new AutoMode(centerAirshipGear, "Drop off the center airship gear."));
 		MySet.addAutoMode(new AutoMode(sideAirshipGear, "Drop off the side airship gear."));

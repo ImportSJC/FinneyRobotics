@@ -26,7 +26,7 @@ public class AutoOutputs {
 	private static double leftEnc_driveFwd_zero = 0;
 	private static double rightEnc_driveFwd_zero = 0;
 	private static double driveFwd_margin = 1; //number of counts the right encoder can be off the left encoder while driving fwd
-	private static double driveFwd_adjustment = .15;
+	private static double driveFwd_adjustment = -0.1;
 	
 	public static void robotInit(){
 		leftMotor1 = Drive.left1;
@@ -39,8 +39,8 @@ public class AutoOutputs {
 		adjustment = .05;
 		perfectRateTurn_Gyro = 70;
 		perfectRateTurn_Encoder = 1200;
-//		perfectRateDrive_Encoder = 2500; //this is a fast option
-		perfectRateDrive_Encoder = 1500;
+//		perfectRateDrive_Encoder = 1500; //old drive base option
+		perfectRateDrive_Encoder = 200; //new drive base option
 	}
 	
 	public void AutonomousPeriodic(){
@@ -123,8 +123,8 @@ public class AutoOutputs {
 //		System.out.println("Drive Motors are assigned the speed: " + speed);
 		System.out.println("Left Enc: " + AutoInputs.getLeftEncoderCount() + " Right enc: " + AutoInputs.getRightEncoderCount());
 		System.out.println("left change: " + leftChange + " right change: " + rightChange);
-		leftEnc_driveFwd_zero = AutoInputs.getLeftEncoderCount();
-		rightEnc_driveFwd_zero = AutoInputs.getRightEncoderCount();
+		leftEnc_driveFwd_zero = Math.abs(AutoInputs.getLeftEncoderCount());
+		rightEnc_driveFwd_zero = Math.abs(AutoInputs.getRightEncoderCount());
 	}
 	
 	public static void setDriveTurn(double speed){
@@ -176,31 +176,31 @@ public class AutoOutputs {
 			perfectRateDrive_Encoder/=2;
 		}
 		
-		if(AutoInputs.getEncoderDriveDirection() == -1 && perfectRateDrive_Encoder > 0){
+		if(AutoInputs.getEncoderDriveDirection() == -1 && perfectRateDrive_Encoder > 0 && tmpDrive<1){
 			tmpDrive = tmpDrive + adjustment;
-		}else if(AutoInputs.getEncoderDriveDirection() == 1 && perfectRateDrive_Encoder < 0){
+		}else if(AutoInputs.getEncoderDriveDirection() == 1 && perfectRateDrive_Encoder < 0 && tmpDrive>-1){
 			tmpDrive = tmpDrive - adjustment;
 		}else{
 			if(remainingDistance > 0){
-				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder)){
+				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder) && tmpDrive>-1){
 					System.out.print("Case 3 - ");
 					tmpDrive = tmpDrive - adjustment;
-				}else{
+				}else if(tmpDrive<1){
 					System.out.print("Case 4 - ");
 					tmpDrive = tmpDrive + adjustment;
 				}
 			}else{
-				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder)){
+				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder) && tmpDrive<1){
 					System.out.print("Case 5 - ");
 					tmpDrive = tmpDrive + adjustment;
-				}else{
+				}else if(tmpDrive>-1){
 					System.out.print("Case 6 - ");
 					tmpDrive = tmpDrive - adjustment;
 				}
 			}
 		}
 		
-		System.out.println("Perfect Rate: " + perfectRateDrive_Encoder);
+		System.out.println("Perfect Rate: " + perfectRateDrive_Encoder + " Summed Rate: " + AutoInputs.getSummedEncoderRate());
 		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining distance: " + remainingDistance + " drive Speed: " + tmpDrive);
 		setDriveFwd(tmpDrive);
 	}

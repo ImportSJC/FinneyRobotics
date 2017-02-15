@@ -3,6 +3,7 @@ package cpi.outputDevices;
 import com.ctre.CANTalon;
 
 import edu.wpi.first.wpilibj.Jaguar;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 //import edu.wpi.first.wpilibj.CANJaguar;
 
@@ -12,12 +13,24 @@ public class MotorController {
 	private CANTalon talon;
 	private Jaguar jaguar;
 	
+	//Current logging
+	NetworkTable settings;
+	private int driveMotorCurrentArrayIndex = 0;
+	private double[] driveMotorCurrentArray = new double[1000];
+	private boolean writeToFile = false;
+	private int myID = 0;
+	
 	public MotorController(int id){
+		myID = id;
 		if(useTalon){
 			talon = new CANTalon(id);
 		}else{
 			jaguar = new Jaguar(id);
 		}
+		
+		settings = NetworkTable.getTable("Motor_Current_Output");
+		settings.putString("MotorCurrent"+myID, "");
+		driveMotorCurrentArrayIndex = 0;
 	}
 	
 	public void set(double speed){
@@ -30,18 +43,36 @@ public class MotorController {
 	
 	public double getPosition(){
 		if(useTalon){
-			return talon.getPosition();
+//			return talon.getPosition();
+			return talon.getEncPosition();
 		}else{
 			return jaguar.getPosition();
 		}
 	}
 	
-	public void setPosition(double position){
+	public void setPosition(int position){
 		if(useTalon){
-			talon.setPosition(position);
+			talon.setEncPosition(position);
 		}else{
 			jaguar.setPosition(position);
 		}
+	}
+	
+	public double  getVelocity(){
+		System.out.println("Get Velocity called");
+		if(useTalon){
+			return talon.getEncVelocity();
+		}
+		
+		return 0;
+	}
+	
+	public double getOutputCurrent(){
+		if(useTalon){
+			return talon.getOutputCurrent();
+		}
+		
+		return 0;
 	}
 	
 	public void enableBrakeMode(boolean value){
@@ -60,6 +91,23 @@ public class MotorController {
 	  if(useTalon){
 			talon.setCurrentLimit(amps);
 		}
+	}
+	
+	public void driveMotorCurrentUpdate(){
+		System.out.println("index: " + driveMotorCurrentArrayIndex + " length: "  + driveMotorCurrentArray.length);
+		if(driveMotorCurrentArrayIndex < driveMotorCurrentArray.length){
+			driveMotorCurrentArray[driveMotorCurrentArrayIndex] = getOutputCurrent();
+			driveMotorCurrentArrayIndex++;
+		}else if (!writeToFile){
+			String tmp = "";
+			for(int i = 0; i<driveMotorCurrentArray.length; i++){
+				tmp+=driveMotorCurrentArray[i]+",";
+			}
+			settings.putString("MotorCurrent"+myID, tmp);
+			writeToFile = true;
+		}
+		
+		//output to a file, .csv
 	}
 	    
 }

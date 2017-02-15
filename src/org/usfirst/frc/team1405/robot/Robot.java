@@ -4,16 +4,11 @@ package org.usfirst.frc.team1405.robot;
 import org.usfirst.frc.team1405.robot.Vision.Vision2017;
 
 import cpi.Drive;
-import cpi.SimpleCamera;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
-import cpi.testBeds.TestSimpleEncoder;
-import cpi.testBeds.TestSimpleMultiMotorPWM;
-import cpi.testBeds.TestSimpleSpikeRelay;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,11 +18,11 @@ import edu.wpi.first.wpilibj.Timer;
  * directory.
  */
 public class Robot extends IterativeRobot {
-    
 
    Drive drive;
    static public XBox360 pilot;
-   
+ 
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -40,12 +35,10 @@ public class Robot extends IterativeRobot {
     	initialize();
     }
     void initialize(){
-    	
-
+    	pilot=new XBox360(0);
     	Autonomous.robotInit();
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
-    	pilot=new XBox360(0);
     	GearControl.robotInit();
  //   	AutoOutputs.robotInit();
  //   	AutoInputs.robotInit();
@@ -76,15 +69,18 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount());
+    	AutoInputs.updateEncoderRates();
+    	System.out.println("Summed Encoder Count: " + AutoInputs.getSummedEncoderCount() + " Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+    	System.out.println("About to call left rate");
+    	System.out.println("Left Rate: " + AutoInputs.getLeftEncoderRate() + " Drive direction: " + AutoInputs.getEncoderDriveDirection());
 //    	System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle() + " Rate: " + AutoInputs.getGyroRate());
 //    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
     	Autonomous.autonomousPeriodic();
     }
     
     @Override		    
-    public void teleopInit(){		   
-	AutoInputs.TeleInit();		
+    public void teleopInit(){
+    	AutoInputs.TeleInit();
     }		
 
    
@@ -92,21 +88,13 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	System.out.println();
-    	System.out.println();
-    	if(Vision2017.getHeight().length!=0){
-        System.out.println(Vision2017.getHeight()[0]);
-        System.out.println(Vision2017.getWidth()[0]);
-        System.out.println(Vision2017.getX()[0]);
-        System.out.println(Vision2017.getY()[0]);
-    	}
-//    	drive.TeleopPeriodic();
-    	GearControl.TeleopPeriodic(pilot.aButton());
-//    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
- //   	System.out.println("Summed: " + AutoInputs.getSummedEncoderCount());
- //   	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount());
- //   	System.out.println("Right Encoder: " + AutoInputs.getRightEncoderCount());
-    	
+    	AutoInputs.updateEncoderRates();
+    	drive.TeleopPeriodic();
+    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+    	System.out.println("Summed Count: " + AutoInputs.getSummedEncoderCount());
+    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
+    	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
+    	GearControl.TeleopPeriodic(pilot.rightBumper());
     }
     
       
@@ -145,6 +133,7 @@ public class Robot extends IterativeRobot {
     public void disabledPeriodic(){
     	//System.out.println(timer.get());
  //   	cpi.autoSupportClasses.Set.disabledPeriodic();
-	Autonomous.disabledPeriodic();
+    	Autonomous.disabledPeriodic();
+    	Drive.DisabledPeriodic();
     }
 }
