@@ -59,12 +59,20 @@ public class Vision2017 {
 		}
 		robotInit();
 	}
-	public double[] getX(){
+	static public double[] getX(){
 		return gearPipeline.getCenterX();
 	}
-	public double[] getY(){
+	static public double[] getY(){
 		return gearPipeline.getCenterY();
 	}
+	static public double[] getWidth(){
+		return gearPipeline.getWidth();
+	}
+	static public double[] getHeight(){
+		return gearPipeline.getHeight();
+	}
+	
+	
 	static public void robotInit(){
 		table=NetworkTable.getTable("Robot/Vision");
 		if(enableCameraSwitch){

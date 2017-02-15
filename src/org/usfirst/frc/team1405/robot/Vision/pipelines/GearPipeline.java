@@ -145,6 +145,8 @@ public class GearPipeline {
 	Mat hsvThresholdInput;
 	double[]centerX;
 	double[]centerY;
+	double[]width;
+	double[]height;
 	
 	public GearPipeline(String table){
 		this.table=NetworkTable.getTable(table);
@@ -428,6 +430,12 @@ public class GearPipeline {
 	public double[] getCenterY(){
 		return centerY;
 	}
+	public double[] getWidth(){
+		return width;
+	}
+	public double[] getHeight(){
+		return height;
+	}
 
 
 
@@ -543,6 +551,8 @@ public class GearPipeline {
 		final MatOfInt hull = new MatOfInt();
 		double[] tmpX=new double[inputContours.size()];
 		double[] tmpY=new double[inputContours.size()];
+		double[] tmpWidth=new double[inputContours.size()];
+		double[] tmpHeight=new double[inputContours.size()];
 		output.clear();
 		int k=0;
 		//operation
@@ -569,17 +579,23 @@ public class GearPipeline {
 			if (ratio < minRatio || ratio > maxRatio) continue;
 			tmpX[k]= bb.x;
 			tmpY[k]= bb.y;
+			tmpWidth[k]=bb.width;
+			tmpHeight[k]=bb.height;
 			k++;
 			output.add(contour);
 
 		}			
 		int i;
-			centerX=new double[output.size()];
-			centerY=new double[output.size()];
+		centerX=new double[output.size()];
+		centerY=new double[output.size()];
+		width=new double[output.size()];
+		height=new double[output.size()];
 			System.out.println();
 			for(i=0;i<output.size();i++){
 				centerX[i]=tmpX[i];
 				centerY[i]=tmpY[i];
+				width[i]=tmpWidth[i];
+				height[i]=tmpHeight[i];
 			}
 			if(DriverStation.getInstance().isDisabled()){
 			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);

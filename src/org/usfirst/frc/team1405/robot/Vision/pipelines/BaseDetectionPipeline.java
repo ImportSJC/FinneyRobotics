@@ -145,6 +145,8 @@ public class BaseDetectionPipeline {
 	Mat hsvThresholdInput;
 	double[]centerX;
 	double[]centerY;
+	double[]width;
+	double[]height;
 	
 	public BaseDetectionPipeline(String table){
 		this.table=NetworkTable.getTable(table);
@@ -429,6 +431,12 @@ public class BaseDetectionPipeline {
 		return centerY;
 	}
 
+	public double[] getWidth(){
+		return width;
+	}
+	public double[] getHeight(){
+		return height;
+	}
 
 
 	/**
@@ -543,6 +551,8 @@ public class BaseDetectionPipeline {
 		final MatOfInt hull = new MatOfInt();
 		double[] tmpX=new double[inputContours.size()];
 		double[] tmpY=new double[inputContours.size()];
+		double[] tmpWidth=new double[inputContours.size()];
+		double[] tmpHeight=new double[inputContours.size()];
 		output.clear();
 		int k=0;
 		//operation
@@ -576,10 +586,14 @@ public class BaseDetectionPipeline {
 		int i;
 			centerX=new double[output.size()];
 			centerY=new double[output.size()];
+			width=new double[output.size()];
+			height=new double[output.size()];
 			System.out.println();
 			for(i=0;i<output.size();i++){
 				centerX[i]=tmpX[i];
 				centerY[i]=tmpY[i];
+				width[i]=tmpWidth[i];
+				height[i]=tmpHeight[i];
 			}
 			if(DriverStation.getInstance().isDisabled()){
 			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);
