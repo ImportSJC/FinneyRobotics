@@ -114,7 +114,6 @@ public class Robot extends IterativeRobot {
   //  	TestSimpleMultiMotorPWM.testInit();
  //   	TestSimpleSpikeRelay.testInit();
  //   	TestSimpleEncoder.testInit();
-    	ShooterControl2.testInit();
     }
     /**
      * This function is called periodically during test mode
@@ -124,7 +123,6 @@ public class Robot extends IterativeRobot {
 //    	TestSimpleSpikeRelay.testPeriodic();
 //    	TestSimpleEncoder.testPeriodic();
  //   	drive.TestPeriodic();
-    	ShooterControl2.testPeriodic();
     }
 
     /**

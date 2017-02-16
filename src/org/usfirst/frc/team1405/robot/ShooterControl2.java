@@ -6,14 +6,15 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import cpi.*;
+import cpi.outputDevices.MotorController;
 
-public class ShooterControl2 {
+public class ShooterControl2  {
 	
 	static String THIS_TABLE_NAME;
 	
 	static NetworkTable settings;
-	static Jaguar shooterMotor ;
-	static Jaguar gateMotor ;
+	static MotorController shooterMotor ;
+	static MotorController gateMotor ;
 	static double speed0;
 	static double speed1;
 	static int shooterID;
@@ -24,24 +25,36 @@ public class ShooterControl2 {
 	
 	static boolean isNotFirstInit;
 	static Timer timer=new Timer();
+	static String mode;
 	
+	//Defaults
+	
+	static double DEF_SHOOTER_HIGH_TOLLERANCE_VALUE=50;
+	static double DEF_SHOOTER_LOW_THRESHOLD_VALUE=600;
+	static double DEF_GATE_DIFFERENCE_THRESHOLD_VALUE=100;
+	static double DEF_GATE_SPEED_VALUE=1;
+	static double DEF_SHOOTER_INITIAL_VOLTAGE_VALUE=.5;
+	static boolean DEF_isGateOn=false;
+	static double DEF_spedAdjustIncrement=10;
+	static boolean DEF_NEGATE_SPEED_SWITCH=false;
+	static boolean DEF_REVERSE_SHOOTER_MOTOR_SWITCH=false;
+	static boolean DEF_REVERSE_GATE_MOTOR_SWITCH=false;
+	// End Defaults
 
 	static String ENABLE="Enable";
-	static String TOLLERANCE="Motor set speed tollerance";
-	static double TOLLERANCE_VALUE=-50;
-	static String SHOOTER_THRESHOLD="Shooter threshold";
-	static String GATE_THRESHOLD="Delta Gate threshold";
-	static double SHOOTER_THRESHOLD_VALUE=-600;
-	static double GATE_THRESHOLD_VALUE=-100;
+	static String SHOOTER_HIGH_TOLLERANCE="Motor high speed tollerance";
+	static String SHOOTER_LOW_THRESHOLD="Shooter low threshold";
+	static String GATE_DIFFERENCE_THRESHOLD="Gate threshold difference(shooter threshold-this)";
 	static String GATE_SPEED="Gate speed";
-	static double GATE_SPEED_VALUE=-1;
-	static String SHOOTER_SPEED="Shooter speed";
-	static double SHOOTER_SPEED_VALUE=-.47;
 	static String SHOOTER_SPEED_EQUALS="Shooter speed = ";
 	static Encoder shooterEncoder ;
-	static boolean setGateOn;
-	static double DELTA_V=0.01;
-	static double shooterSpeed=0.5;
+	
+	static String NEGATE_SPEED="Negate speed";
+	static String REVERSE_SHOOTER_MOTOR="Reverse shooter motor";
+	static String REVERSE_GATE_MOTOR="Reverse gate motor";
+
+	static String SET_TO_DEFAULTS="Set settings to default";
+	static String DEFAULTS="Defaults/";
 	
 	class Mode{
 		public static final String PWM="PWM";
@@ -50,126 +63,105 @@ public class ShooterControl2 {
 	ShooterControl2(){
 		
 	}
-	static public void setInstance(String mode, int shooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int gateID,int mixerRelayID){
-	if(mode == Mode.PWM){
+	static public void setInstance(String mode, int talonshooterID,int jagshooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int talonGateID,int jagGateID,int mixerRelayID){
+		boolean useTalon=false;
+		if(mode==Mode.TALON_SRX) useTalon=true;
+		shooterMotor=new MotorController(talonshooterID,jagshooterID,useTalon);
+		gateMotor=new MotorController(talonGateID,jagGateID,useTalon) ;
+    	shooterEncoder = new Encoder(ShooterEncoderChanelA,ShooterEncoderChanelB);
 		THIS_TABLE_NAME= "Robot"+"/Test Beds/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
-    	settings.putNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
-    	settings.putNumber(GATE_THRESHOLD, GATE_THRESHOLD_VALUE);
-    	settings.putNumber(GATE_SPEED, GATE_SPEED_VALUE);
-    	settings.putNumber(SHOOTER_SPEED,SHOOTER_SPEED_VALUE);
-    	settings.putBoolean(ENABLE,false);
+		settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
+		settings.putBoolean(NEGATE_SPEED, settings.getBoolean(NEGATE_SPEED,DEF_NEGATE_SPEED_SWITCH));
+		settings.setPersistent(NEGATE_SPEED);
+		settings.putBoolean(REVERSE_SHOOTER_MOTOR, settings.getBoolean(REVERSE_SHOOTER_MOTOR,DEF_REVERSE_SHOOTER_MOTOR_SWITCH));
+		settings.setPersistent(REVERSE_SHOOTER_MOTOR);
+		settings.putBoolean(REVERSE_GATE_MOTOR, settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH));
+    	settings.putNumber(SHOOTER_LOW_THRESHOLD,settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE));
+		settings.setPersistent(SHOOTER_LOW_THRESHOLD);
+		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE));
+		settings.setPersistent(SHOOTER_HIGH_TOLLERANCE);
+    	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE));
+		settings.setPersistent(GATE_DIFFERENCE_THRESHOLD);
     	ShooterControl2.ShooterEncoderChanelA=ShooterEncoderChanelA;
     	ShooterControl2.ShooterEncoderChanelB=ShooterEncoderChanelB;
     	ShooterControl2.mixerRelayID=mixerRelayID;
-    	ShooterControl2.gateID=gateID;
-    	ShooterControl2.shooterID=shooterID;
+    	ShooterControl2.mode=mode;
+	}
     	
-    	
-	}
-
-	if(mode == Mode.TALON_SRX){
-	}
-		
-	}
-	static public void setInstance(){
-		THIS_TABLE_NAME= "Robot"+"/Test Beds/Shooter";
-		settings=NetworkTable.getTable(THIS_TABLE_NAME);
-		settings.putNumber(TOLLERANCE,-100.0);
-    	settings.putNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
-    	settings.putNumber(GATE_THRESHOLD, GATE_THRESHOLD_VALUE);
-    	settings.putNumber(GATE_SPEED, GATE_SPEED_VALUE);
-    	settings.putNumber(SHOOTER_SPEED,SHOOTER_SPEED_VALUE);
-    	settings.putBoolean(ENABLE,false);
-    	settings.putNumber("Shooter speed = ", 0.0);
-    	shooterID=8;
-    	ShooterEncoderChanelA=8;
-    	ShooterEncoderChanelB=9;
-    	gateID=9;
-		
-	}
 	
+	
+		
 	static public void robotInit(){
-		
 	}
+	
+	static public void disabledPeriodic(){
+		setToDefaults();	
 		
-	static public void testInit(){
-		if(!settings.getBoolean(ENABLE, false))return;
-    	if(isNotFirstInit)return;
-    	shooterMotor=new Jaguar(shooterID);
-    	gateMotor=new Jaguar(gateID);
-    	isNotFirstInit=true;
-
-    	shooterEncoder = new Encoder(ShooterEncoderChanelA,ShooterEncoderChanelB);
-    	//shooterEncoder.Init();
-		
-	}
-
-	static public void testPeriodic(){
-	    	if(!settings.getBoolean(ENABLE, false)){
-	    		if(!isNotFirstInit)return;
-	    		shooterMotor.set(0);
-	    		gateMotor.set(0);
-	    		return;
-	    	}
-	    	testInit();
-	    	process();
-		
-	}	
-
-	static public void process(){
-		settings.putNumber("Shooter speed = ",shooterEncoder.getRate() );
-		double tmp=shooterEncoder.getRate();
-		if(tmp>0)tmp=-tmp;
-		double tmp2=settings.getNumber(SHOOTER_THRESHOLD, SHOOTER_THRESHOLD_VALUE);
-		if(tmp2>0)tmp2=-tmp2;
-		double tmp3=settings.getNumber(GATE_THRESHOLD, SHOOTER_THRESHOLD_VALUE+GATE_THRESHOLD_VALUE);
-		if(tmp3>0)tmp3=-tmp3;
-		double tmp4=settings.getNumber(TOLLERANCE, TOLLERANCE_VALUE);
-		if(tmp4>0)tmp4=-tmp4;
-		if(tmp<0){
-			tmp3=-1;
-			DELTA_V=-DELTA_V;
-			shooterSpeed=-shooterSpeed;
-			
-		}
-		if(tmp>tmp2){
-			settings.putString("Process", "Below threshold");
-			shooterSpeed=shooterSpeed+DELTA_V;
-	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
-			shooterMotor.set(shooterSpeed);
-			if(shooterEncoder.getRate()>tmp3){
-				gateMotor.set(0.0);
-			}else{
-				gateMotor.set(settings.getNumber(GATE_SPEED,GATE_SPEED_VALUE));
-			}
-			
-		}else if(shooterEncoder.getRate()<(tmp2+tmp4)){
-			settings.putString("Process", "Above  threshold + tollerance");
-			shooterSpeed=shooterSpeed-DELTA_V;
-	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
-			shooterMotor.set(shooterSpeed);
-			gateMotor.set(settings.getNumber(GATE_SPEED,GATE_SPEED_VALUE));
-			
-		}
-		
-		
-		else{
-			settings.putString("Process", "At threshold");
-	    	settings.putNumber(SHOOTER_SPEED,shooterSpeed);
-			shooterMotor.set(shooterSpeed);
-			gateMotor.set(settings.getNumber(GATE_SPEED,GATE_SPEED_VALUE));
-			
-		}
 		
 	}
 	
+	static void showDefaults(){
+		settings.putBoolean(DEFAULTS+DEFAULTS+NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
+		settings.putBoolean(DEFAULTS+REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
+		settings.putBoolean(DEFAULTS+REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+    	settings.putNumber(DEFAULTS+SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
+		settings.putNumber(DEFAULTS+SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
+    	settings.putNumber(DEFAULTS+GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
+	}
+	
+	static void setToDefaults(){
+		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
+		settings.putBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
+		settings.putBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
+		settings.putBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+    	settings.putNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
+		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
+    	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
+    	settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
+	}
+
 	static public void disabledInit(){
 		settings.putBoolean(ENABLE,false);
-		if(!isNotFirstInit)return;
-		shooterMotor.free();
-		gateMotor.free();
-		shooterEncoder.free();
-		isNotFirstInit=false;
+	    		shooterMotor.set(0);
+	    		gateMotor.set(0);
+	}	
+	
+	static public void teleopInit(){
+		
+	}
+
+	static public void teleopPeriodic(boolean start, boolean stop, double adjustSpeed){
+		boolean isProcess=false;
+		if(start)isProcess=true;
+		if(stop)isProcess=false;
+		if(isProcess){
+		process();
+		}else{
+    		shooterMotor.set(0);
+    		gateMotor.set(0);
+		}
+	}
+	
+	static void process(){
+		
+		if(true){
+			
+		}
+		else if(true){
+			
+		}
+		else if(true){
+			
+		}
+		else if(true){
+			
+		}
+		else if(true){
+			
+		}
+		else if(true){
+			
+		}
 	}
 }
