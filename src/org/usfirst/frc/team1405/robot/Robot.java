@@ -3,6 +3,7 @@ package org.usfirst.frc.team1405.robot;
 
 import org.usfirst.frc.team1405.robot.Vision.Vision2017;
 
+import cpi.Arduino_LightControl;
 import cpi.Drive;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
@@ -40,6 +41,7 @@ public class Robot extends IterativeRobot {
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
     	GearControl.robotInit();
+    	Arduino_LightControl.robotInit(2, 3);
  //   	AutoOutputs.robotInit();
  //   	AutoInputs.robotInit();
  //   	AutoOutputs.setDriveBrake(true);

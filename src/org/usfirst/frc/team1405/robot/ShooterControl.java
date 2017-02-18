@@ -5,10 +5,13 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import cpi.outputDevices.MotorController;
 import edu.wpi.first.wpilibj.DriverStation;
+import cpi.Arduino_LightControl;
 
 public class ShooterControl  {
 	
 	static String THIS_TABLE_NAME;
+	
+	
 	
 	static NetworkTable settings;
 	static MotorController shooterMotor ;
@@ -18,6 +21,13 @@ public class ShooterControl  {
 	static int mixerRelayID;
 	static int ShooterEncoderChanelA;
 	static int ShooterEncoderChanelB;
+	
+	
+	//light control
+	static final int LIGHT_CONTROL_OFF_STATE=0;
+	static final int THIS_LIGHT_CONTROL_INDICATION=1;
+	//end light control
+	 
 	
 	//Process States
 	static final String SPEED_IN_BOUNDS="Speed between low threshold and low threshold + high tollerance values";
@@ -172,13 +182,14 @@ public class ShooterControl  {
 	}
 
 	static public void disabledInit(){
+		Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
 		settings.putBoolean(ENABLE,false);
 	    		shooterMotor.set(0);
 	    		gateMotor.set(0);
 	    		processState=SPEED_STARTUP;
 	}	
 	static public void disabledPeriodic(){
-
+		
 		if(!settings.getBoolean(ENABLE,false))return;
 		setToDefaults();
 		teleopPeriodic(true,false,false,false);
@@ -191,9 +202,11 @@ public class ShooterControl  {
 		if(start)isProcess=true;
 		if(stop)isProcess=false;
 		if(isProcess){
+			Arduino_LightControl.Periodic(THIS_LIGHT_CONTROL_INDICATION);;
 		adjustSpeed(increaseSpeed,decreaseSpeed);
 		process();
 		}else{
+			Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
     		shooterMotor.set(0);
     		gateMotor.set(0);
     		processState=SPEED_STARTUP;
