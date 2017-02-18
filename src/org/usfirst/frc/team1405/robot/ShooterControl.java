@@ -90,7 +90,7 @@ public class ShooterControl  {
 		shooterMotor=new MotorController(talonshooterID,jagshooterID,useTalon);
 		gateMotor=new MotorController(talonGateID,jagGateID,useTalon) ;
     	shooterEncoder = new Encoder(ShooterEncoderChanelA,ShooterEncoderChanelB);
-		THIS_TABLE_NAME= "Robot"+"/Test Beds/Shooter";
+		THIS_TABLE_NAME= "Robot"+"/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
 		settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
 		settings.putBoolean(NEGATE_SPEED, settings.getBoolean(NEGATE_SPEED,DEF_NEGATE_SPEED_SWITCH));
@@ -108,6 +108,7 @@ public class ShooterControl  {
     	ShooterControl.ShooterEncoderChanelB=ShooterEncoderChanelB;
     	ShooterControl.mixerRelayID=mixerRelayID;
     	ShooterControl.mode=mode;
+    	showDefaults();
 	}
     	
 	
@@ -116,10 +117,7 @@ public class ShooterControl  {
 	static public void robotInit(){
 	}
 	
-	static public void testPeriodic(){
-		if(!settings.getBoolean(ENABLE,false))return;
-		setToDefaults();
-		teleopPeriodic(true,false,false,false);
+	static public void testPeriodic(){;
 		
 		
 	}
@@ -134,7 +132,7 @@ public class ShooterControl  {
 	}
 	
 	static void setToDefaults(){
-		if(!DriverStation.getInstance().isTest())return;
+		if(!DriverStation.getInstance().isDisabled())return;
 		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
 		settings.putBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
 		settings.putBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
@@ -146,7 +144,7 @@ public class ShooterControl  {
 	}
 	
 	static void setToNetValues(){
-		if(!DriverStation.getInstance().isTest())return;
+		if(!DriverStation.getInstance().isDisabled())return;
 		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
 		negateSpeed=settings.getBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
 		reverseShooterMotor=settings.getBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
@@ -179,7 +177,12 @@ public class ShooterControl  {
 	    		gateMotor.set(0);
 	    		processState=SPEED_STARTUP;
 	}	
-	
+	static public void disabledPeriodic(){
+
+		if(!settings.getBoolean(ENABLE,false))return;
+		setToDefaults();
+		teleopPeriodic(true,false,false,false);
+	}
 	static public void teleopInit(){
 	}
 
@@ -211,6 +214,9 @@ public class ShooterControl  {
 		 */
 		
 			currentSpeed=shooterEncoder.getRate();
+			if(!negateSpeed){
+				currentSpeed=-currentSpeed;	
+			}
 		switch(processState){
 		
 		default:
@@ -219,10 +225,14 @@ public class ShooterControl  {
 			break;
 			
 		case SPEED_IN_BOUNDS:
-    		shooterMotor.set(shooterVoltage);
-    		gateMotor.set(DEF_GATE_VOLTAGE_VALUE);
 			if(currentSpeed<lowThreshold)processState=SPEED_LOW;
 			if(currentSpeed>lowThreshold)processState=SPEED_HIGH;
+			double ms=shooterVoltage;
+			if(reverseGateMotor)ms=-ms;
+			double gs=DEF_GATE_VOLTAGE_VALUE;
+			if(reverseGateMotor)gs=-gs;
+    		shooterMotor.set(ms);
+    		gateMotor.set(gs);
 			break;
 			
 		case SPEED_LOW:
@@ -235,6 +245,8 @@ public class ShooterControl  {
 			break;
 			
 		case SPEED_SHOOTING:
+			double ms2=1.0;
+			if(reverseGateMotor)ms2=-ms2;
     		shooterMotor.set(1);
     		gateMotor.set(0);
     		if(currentSpeed>=lowThreshold)processState=SPEED_IN_BOUNDS;
