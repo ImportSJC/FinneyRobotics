@@ -55,8 +55,16 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleEncoder.robotInit();
   //  	TestSimpleMultiMotorPWM.robotInit();
  //   	TestSimpleSpikeRelay.robotInit();
-    	ShooterControl2.setInstance();
-    	ShooterControl2.robotInit();
+    	String MODE=ShooterControl.Mode.PWM;
+    	int shooterTalonID=10;
+    	int shooterJagID=8;
+    	int encoderA=5;
+    	int encoderB=6;
+    	int gateTalonID=11;
+    	int gateJagID=9;
+    	int mixerRelay=2;
+    	ShooterControl.setInstance( MODE,  shooterTalonID, shooterJagID, encoderA, encoderB, gateTalonID, gateJagID, mixerRelay);
+    	ShooterControl.robotInit();
     }
     
     public void autonomousInit(){
@@ -95,6 +103,7 @@ public class Robot extends IterativeRobot {
     	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
     	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
     	GearControl.TeleopPeriodic(pilot.rightBumper());
+    	ShooterControl.teleopPeriodic(true, false, false, false);
     }
     
       
@@ -106,7 +115,7 @@ public class Robot extends IterativeRobot {
   //  	TestSimpleMultiMotorPWM.disabledInit();
  //   	TestSimpleEncoder.disabledInit();
  //   	AutoInputs.freeEncoders();
-    	ShooterControl2.disabledInit();
+    	ShooterControl.disabledInit();
     	
     }
     public void testInit(){
@@ -123,6 +132,7 @@ public class Robot extends IterativeRobot {
 //    	TestSimpleSpikeRelay.testPeriodic();
 //    	TestSimpleEncoder.testPeriodic();
  //   	drive.TestPeriodic();
+    	ShooterControl.testPeriodic();
     }
 
     /**
