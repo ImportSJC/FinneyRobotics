@@ -1,40 +1,36 @@
 # FinneyRobotics
 Code for Finney Robotics Team
 
-<h2>Steps for pulling the auto code down into a eclipse project:</h2>
-
-- Create a new "Robot Java" Project in eclipse
-- Give it a name and make it an iterative robot
-- Now "cd" into the project folder in Git Bash
-- Create your git repository here.
-	- git init
-	- git remote add origin \<url\>
-- Delete the local files/folders that are already in the git repo
-	- src/
-	- build.properties
-	- build.xml
-- Pull the remote files onto the local machine
-	- git pull origin
-	- git pull origin \<branch\>
-- You can double check that everything worked by performing a "git status" on
-  your local repo and you should have a clean working directory.
-- Refresh your eclipse project.
-
-
-
-<h2>Steps for pulling the auto code down into a eclipse project via Eclipse:</h2>
-
-- Create a new "Robot Java" Project in eclipse
-- Give it a name and make it an iterative robot (eg. Test)
-- Open the GIT perspective (Window->Perspective->other,  Select Git)
-- Clone the desired project code from github.com (search Finney Robotics) (eg. Development Code)
-- Remove just created repository from view
-
-
-- Select Java EE perspective
-- Import File system from created project( eg. Test)
-- Click next
-- Select the repository name(eg. Development Code) for the from Directory
-- Select the entire directory by clicking in the box next to the repository name (will be checked)
+<h2>Steps for pulling the GitHub code into Eclipse</h2>
+- Create a new project by right clicking in the Package Explorer and selecting New > Project > Robot Java Project
+- Give the project a name and select "Iterative Robot"
+- Open the GIT Perspective by clicking window > Perspective > Open Perspective > Other and select Git
+- Click the Link "Clone a Git Repository"
+- Paste in the Git URI and hit next
+- only select the desired branch and hit next
+- Create a new directory to put the Git workspace in and remember the directory
+- Finish saving that git repository
+- Right click on your previously created Eclipse Project and select Import > File System
+- Browse to your previously created GIT repository
 - Click Finish
-- Right click on project name ->Team->share Project-> Finish
+- When it is overwriting files DO NOT click "Yes to all"
+- Instead click "No" when asked to replace the .project file and "Yes" to all the rest
+- You should now have all of the source code in the project
+- You should also now be able to right click on the project > Run As > WPILib Java Desploy
+- Right click on the project and click Teams > Share Project > Finish
+- You should now be able to right click on the project > teams > commit
+
+<h2>Steps for updating Eclipse Plugins for the 2017 season</h2>
+- In eclispe click help > install new software
+- Under the dropdown select "Frc Plugins ..."
+- Select "WPILib Robot Development" and hit next
+- Hit next again and agree to the terms
+- After the plugins are done installing restart eclipse when prompted and let the workspace build fully
+
+<h2>Steps for adding CANTalon Library</h2>
+- Download and install the CTRE Toolsuite installer from here: http://www.ctr-electronics.com/control-system/hro.html#product_tabs_technical_resources
+- Right click on your project and click build path > configure build path > Libraries tab > add external jars
+- Browse to the wpilib folder and then to user > java > lib > CTRLib.jar
+- Click open and OK
+- Project Erros should be gone after the workspace finishes building
+- Warnings are OK
