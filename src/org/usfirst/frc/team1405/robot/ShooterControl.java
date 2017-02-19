@@ -124,10 +124,10 @@ public class ShooterControl  {
 		settings.setPersistent(SHOOTER_HIGH_TOLLERANCE);
     	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE));
 		settings.setPersistent(GATE_DIFFERENCE_THRESHOLD);
-    	ShooterControl.ShooterEncoderChanelA=ShooterEncoderChanelA;
-    	ShooterControl.ShooterEncoderChanelB=ShooterEncoderChanelB;
-    	ShooterControl.talonMixerID=talonMixerID;
-    	ShooterControl.jagMixerID=jagMixerID;
+    	ShooterControl.ShooterEncoderChanelA=ID_Assignments.SHOOTER_ENCODER_1A;
+    	ShooterControl.ShooterEncoderChanelB=ID_Assignments.SHOOTER_ENCODER_1B;
+    	ShooterControl.talonMixerID=ID_Assignments.SHOOTER_TALON_MIXER_MOTOR;
+    	ShooterControl.jagMixerID=ID_Assignments.SHOOTER_JAGUAR_MIXER_MOTOR;
     	ShooterControl.mode=mode;
     	showDefaults();
 	}
