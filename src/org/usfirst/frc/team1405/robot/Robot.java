@@ -57,16 +57,16 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleEncoder.robotInit();
   //  	TestSimpleMultiMotorPWM.robotInit();
  //   	TestSimpleSpikeRelay.robotInit();
-    	String MODE=ShooterControl.Mode.PWM;
+    	String MODE=ShooterControl.Mode.TALON_SRX;
     	int shooterTalonID=10;
     	int shooterJagID=8;
     	int encoderA=5;
     	int encoderB=6;
     	int gateTalonID=11;
     	int gateJagID=9;
-    	int mixerRelay=2;
-    	ShooterControl.setInstance( MODE,  shooterTalonID, shooterJagID, encoderA, encoderB, gateTalonID, gateJagID, mixerRelay);
-    	ShooterControl.robotInit();
+    	int mixerTalon=12;
+    	int mixerJag=7;
+    	ShooterControl.robotInit( MODE,  shooterTalonID, shooterJagID, encoderA, encoderB, gateTalonID, gateJagID, mixerTalon,mixerJag);
     }
     
     public void autonomousInit(){

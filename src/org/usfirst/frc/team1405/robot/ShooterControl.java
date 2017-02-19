@@ -16,9 +16,11 @@ public class ShooterControl  {
 	static NetworkTable settings;
 	static MotorController shooterMotor ;
 	static MotorController gateMotor ;
+	static MotorController mixer ;
 	static int shooterID;
 	static int gateID;
-	static int mixerRelayID;
+	static int talonMixerID;
+	static int jagMixerID;
 	static int ShooterEncoderChanelA;
 	static int ShooterEncoderChanelB;
 	
@@ -51,18 +53,21 @@ public class ShooterControl  {
 	static double DEF_SHOOTER_LOW_THRESHOLD_VALUE=600;
 	static double DEF_GATE_DIFFERENCE_THRESHOLD_VALUE=100;
 	static double DEF_GATE_VOLTAGE_VALUE=1;
+	static double DEF_MIXER_VOLTAGE_VALUE=.5;
 	static double DEF_SHOOTER_INITIAL_VOLTAGE_VALUE=.5;
 	static double DEF_SPEED_ADJUST_INCREMENT=10;
 	static double DEF_VOLTAGE_ADJUST_INCREMENT=0.01;
 	static boolean DEF_NEGATE_SPEED_SWITCH=false;
 	static boolean DEF_REVERSE_SHOOTER_MOTOR_SWITCH=false;
 	static boolean DEF_REVERSE_GATE_MOTOR_SWITCH=false;
+	static boolean DEF_REVERSE_MIXER_MOTOR_SWITCH=false;
 	// End Defaults
 	
 
 	static boolean negateSpeed=DEF_NEGATE_SPEED_SWITCH;
 	static boolean reverseShooterMotor=DEF_REVERSE_SHOOTER_MOTOR_SWITCH;
 	static boolean reverseGateMotor=DEF_REVERSE_GATE_MOTOR_SWITCH;
+	static boolean reverseMixerMotor=DEF_REVERSE_MIXER_MOTOR_SWITCH;
 	static double lowThreshold=DEF_SHOOTER_LOW_THRESHOLD_VALUE;
 	static double shooterVoltage=0;
 	static double gateVoltage=0;
@@ -83,6 +88,7 @@ public class ShooterControl  {
 	static String NEGATE_SPEED="Negate speed";
 	static String REVERSE_SHOOTER_MOTOR="Reverse shooter motor";
 	static String REVERSE_GATE_MOTOR="Reverse gate motor";
+	static String REVERSE_MIXER_MOTOR="Reverse mixer motor";
 
 	static String SET_TO_DEFAULTS="Set settings to default";
 	static String DEFAULTS="Defaults/";
@@ -94,11 +100,12 @@ public class ShooterControl  {
 	ShooterControl(){
 		
 	}
-	static public void setInstance(String mode, int talonshooterID,int jagshooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int talonGateID,int jagGateID,int mixerRelayID){
+	static public void robotInit(String mode, int talonshooterID,int jagshooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int talonGateID,int jagGateID,int talonMixerID,int jagMixerID){
 		boolean useTalon=false;
 		if(mode==Mode.TALON_SRX) useTalon=true;
 		shooterMotor=new MotorController(talonshooterID,jagshooterID,useTalon);
 		gateMotor=new MotorController(talonGateID,jagGateID,useTalon) ;
+		mixer=new MotorController(talonMixerID,jagMixerID,useTalon) ;
     	shooterEncoder = new Encoder(ShooterEncoderChanelA,ShooterEncoderChanelB);
 		THIS_TABLE_NAME= "Robot"+"/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
@@ -108,7 +115,10 @@ public class ShooterControl  {
 		settings.putBoolean(REVERSE_SHOOTER_MOTOR, settings.getBoolean(REVERSE_SHOOTER_MOTOR,DEF_REVERSE_SHOOTER_MOTOR_SWITCH));
 		settings.setPersistent(REVERSE_SHOOTER_MOTOR);
 		settings.putBoolean(REVERSE_GATE_MOTOR, settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH));
-    	settings.putNumber(SHOOTER_LOW_THRESHOLD,settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE));
+		settings.setPersistent(REVERSE_GATE_MOTOR);
+		settings.putBoolean(REVERSE_MIXER_MOTOR, settings.getBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH));
+		settings.setPersistent(REVERSE_MIXER_MOTOR);
+		settings.putNumber(SHOOTER_LOW_THRESHOLD,settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE));
 		settings.setPersistent(SHOOTER_LOW_THRESHOLD);
 		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE));
 		settings.setPersistent(SHOOTER_HIGH_TOLLERANCE);
@@ -116,16 +126,14 @@ public class ShooterControl  {
 		settings.setPersistent(GATE_DIFFERENCE_THRESHOLD);
     	ShooterControl.ShooterEncoderChanelA=ShooterEncoderChanelA;
     	ShooterControl.ShooterEncoderChanelB=ShooterEncoderChanelB;
-    	ShooterControl.mixerRelayID=mixerRelayID;
+    	ShooterControl.talonMixerID=talonMixerID;
+    	ShooterControl.jagMixerID=jagMixerID;
     	ShooterControl.mode=mode;
     	showDefaults();
 	}
     	
 	
-	
-		
-	static public void robotInit(){
-	}
+
 	
 	static public void testPeriodic(){;
 		
@@ -136,6 +144,7 @@ public class ShooterControl  {
 		settings.putBoolean(DEFAULTS+DEFAULTS+NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
 		settings.putBoolean(DEFAULTS+REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
 		settings.putBoolean(DEFAULTS+REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+		settings.putBoolean(DEFAULTS+REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
     	settings.putNumber(DEFAULTS+SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
 		settings.putNumber(DEFAULTS+SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
     	settings.putNumber(DEFAULTS+GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
@@ -147,6 +156,7 @@ public class ShooterControl  {
 		settings.putBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
 		settings.putBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
 		settings.putBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+		settings.putBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
     	settings.putNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
 		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
     	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
@@ -159,6 +169,7 @@ public class ShooterControl  {
 		negateSpeed=settings.getBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
 		reverseShooterMotor=settings.getBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
 		reverseGateMotor=settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+		reverseMixerMotor=settings.getBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
     	lowThreshold=settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
     	highSpeed=lowThreshold+settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
     	lowSpeed=lowThreshold-settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
@@ -186,6 +197,7 @@ public class ShooterControl  {
 		settings.putBoolean(ENABLE,false);
 	    		shooterMotor.set(0);
 	    		gateMotor.set(0);
+	    		mixer.set(0);
 	    		processState=SPEED_STARTUP;
 	}	
 	static public void disabledPeriodic(){
@@ -209,6 +221,7 @@ public class ShooterControl  {
 			Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
     		shooterMotor.set(0);
     		gateMotor.set(0);
+    		mixer.set(0);
     		processState=SPEED_STARTUP;
 		}
 	}
@@ -244,8 +257,11 @@ public class ShooterControl  {
 			if(reverseGateMotor)ms=-ms;
 			double gs=DEF_GATE_VOLTAGE_VALUE;
 			if(reverseGateMotor)gs=-gs;
-    		shooterMotor.set(ms);
+			double xs=DEF_MIXER_VOLTAGE_VALUE;
+			if(reverseMixerMotor)xs=-xs;
+    		shooterMotor.set(xs);
     		gateMotor.set(gs);
+    		mixer.set(xs);
 			break;
 			
 		case SPEED_LOW:
