@@ -3,6 +3,7 @@ package org.usfirst.frc.team1405.robot;
 
 import org.usfirst.frc.team1405.robot.Vision.Vision2017;
 
+import cpi.Arduino_LightControl;
 import cpi.Drive;
 import cpi.XBox360;
 import cpi.auto.AutoInputs;
@@ -19,10 +20,10 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class Robot extends IterativeRobot {
 
-	Drive drive;
-	static public XBox360 pilot;
-	GRIP imageProcessor;
-	
+   Drive drive;
+   static public XBox360 pilot;
+ 
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -31,6 +32,7 @@ public class Robot extends IterativeRobot {
 	final static public String header="2016 Competition ver. 1.0"; // This is required
 	
     public void robotInit() {
+    	System.out.println("Robot Init");
     	initialize();
     }
     void initialize(){
@@ -39,15 +41,14 @@ public class Robot extends IterativeRobot {
     	drive= new Drive(cpi.Drive.DIRECT_TANK);
     	drive.robotInit();
     	GearControl.robotInit();
-    	BallIntakeControl.robotInit();
+    	Arduino_LightControl.robotInit(2, 3);
+    	Ball_Intake.robotInit();
     	AutoOutputs.robotInit();
-    	AutoInputs.robotInit();
+     	AutoInputs.robotInit();
     	AutoOutputs.setDriveBrake(true);
  //   	templates.GRIP3Cameras2Switched.robotInit();
  //   	cpi.SimpleTwoCamera.init(0);
-    	
-//    	Vision2017.robotInit();
-    	
+    	Vision2017.robotInit(2);
   //  	templates.GRIP3X1v2.robotInit();
   //  	templates.GRIPIntermediate3.robotInit();
  //   	templates.GRIPIntermediate2.robotInit();
@@ -55,11 +56,18 @@ public class Robot extends IterativeRobot {
  //   	imageProcessor=new GRIP(0,1,2);
  //   	SimpleCamera.init(0);
  //   	TestSimpleEncoder.robotInit();
- //'   	TestSimpleMultiMotorPWM.robotInit();
+  //  	TestSimpleMultiMotorPWM.robotInit();
  //   	TestSimpleSpikeRelay.robotInit();
-    	ShooterControl.setInstance();
-    	ShooterControl.robotInit();
-    	LiveWindow.run();
+    	String MODE=ShooterControl.Mode.TALON_SRX;
+    	int shooterTalonID=10;
+    	int shooterJagID=8;
+    	int encoderA=5;
+    	int encoderB=6;
+    	int gateTalonID=11;
+    	int gateJagID=9;
+    	int mixerTalon=12;
+    	int mixerJag=7;
+    	ShooterControl.robotInit( MODE);
     }
     
     public void autonomousInit(){
@@ -98,7 +106,8 @@ public class Robot extends IterativeRobot {
 //    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
 //    	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
     	GearControl.TeleopPeriodic(pilot.rightBumper());
-    	BallIntakeControl.TeleopPeriodic(pilot.leftBumper());
+    	ShooterControl.teleopPeriodic(true, false, false, false);
+    	Ball_Intake.teleopPeriodic(pilot.leftBumper());
     }
     
       
@@ -109,7 +118,7 @@ public class Robot extends IterativeRobot {
  //   	TestSimpleSpikeRelay.disabledInit();
   //  	TestSimpleMultiMotorPWM.disabledInit();
  //   	TestSimpleEncoder.disabledInit();
-    	AutoInputs.freeEncoders();
+ //   	AutoInputs.freeEncoders();
     	ShooterControl.disabledInit();
     	
     }
@@ -118,16 +127,15 @@ public class Robot extends IterativeRobot {
   //  	TestSimpleMultiMotorPWM.testInit();
  //   	TestSimpleSpikeRelay.testInit();
  //   	TestSimpleEncoder.testInit();
-    	ShooterControl.testInit();
     }
     /**
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
- //   	TestSimpleMultiMotorPWM.testPeriodic();
+  //  	TestSimpleMultiMotorPWM.testPeriodic();
 //    	TestSimpleSpikeRelay.testPeriodic();
 //    	TestSimpleEncoder.testPeriodic();
-    	drive.TestPeriodic();
+ //   	drive.TestPeriodic();
     	ShooterControl.testPeriodic();
     }
 
