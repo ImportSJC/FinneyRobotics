@@ -4,7 +4,7 @@ import cpi.outputDevices.MotorController;
 
 public class GearControl {
 	static MotorController gearFeedMotor;
-	static double  INTAKE_SPEED= 1.0;
+	static double  INTAKE_SPEED= -1.0;
 	static double  EJECT_SPEED= 1.0;
 	
 	private static int intakeState = 0; //0=below threshold, 1=initial high current, 2=running constant current, 3=high current from gear loading
@@ -12,7 +12,7 @@ public class GearControl {
 	private static double GEAR_IN_BOT_CURRENT_THRESHOLD = 15;
 	
 	public static void robotInit(){
-		gearFeedMotor=new MotorController(7);
+		gearFeedMotor=new MotorController(1);
 	}
 	
 	public static void teleopInit(){
@@ -20,7 +20,7 @@ public class GearControl {
 	}
 	
 	public static void TeleopPeriodic(boolean feedControl){
-		System.out.println("Gear Motor Current: " + gearFeedMotor.getOutputCurrent());
+//		System.out.println("Gear Motor Current: " + gearFeedMotor.getOutputCurrent());
 		
 		if(!feedControl){
 			intakeState = 0;
@@ -34,11 +34,15 @@ public class GearControl {
 			intakeState++;
 		}
 		
-		if(feedControl && intakeState != 3){
+		if(feedControl){
 			gearFeedMotor.set(INTAKE_SPEED);
-		}else{
-			gearFeedMotor.set(0.0);
 		}
+		
+//		if(feedControl && intakeState != 3){
+//			gearFeedMotor.set(INTAKE_SPEED);
+//		}else{
+//			gearFeedMotor.set(0.0);
+//		}
 		
 	}
 

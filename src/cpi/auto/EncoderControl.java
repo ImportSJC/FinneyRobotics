@@ -42,10 +42,10 @@ public class EncoderControl {
 	public EncoderControl(int talonID, boolean reversed)//TODO make this work
 	{
 		this.reversed = reversed;
-		if(talonID == 1){
-			myTalon = Drive.left1;
-		}else if(talonID == 4){
-			myTalon = Drive.right1;
+		if(talonID == 4){
+			myTalon = Drive.right3;
+		}else if(talonID == 7){
+			myTalon = Drive.left3;
 		}
 	}
 	
