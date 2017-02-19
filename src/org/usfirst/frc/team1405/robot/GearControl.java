@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class GearControl {
 	static MotorController gearFeedMotor;
-	static double  INTAKE_SPEED= 1.0;
+	static double  INTAKE_SPEED= -1.0;
 	static double  EJECT_SPEED= 1.0;
 	static final boolean REVERSE_PNEUMATIC_1_STATE=false;
 	static DoubleSolenoid solenoid1;
@@ -44,7 +44,7 @@ public class GearControl {
 	}
 	
 	public static void TeleopPeriodic(boolean feedControl){
-		System.out.println("Gear Motor Current: " + gearFeedMotor.getOutputCurrent());
+//		System.out.println("Gear Motor Current: " + gearFeedMotor.getOutputCurrent());
 		
 		if(!feedControl){
 			intakeState = 0;
@@ -58,7 +58,7 @@ public class GearControl {
 			intakeState++;
 		}
 		
-		if(feedControl && intakeState != 3){
+		if(feedControl){
 			gearFeedMotor.set(INTAKE_SPEED);
 			Arduino_LightControl.Periodic(THIS_LIGHT_CONTROL_INDICATION);
 			solenoid1.set(DoubleSolenoid.Value.kForward);
@@ -69,6 +69,12 @@ public class GearControl {
 			solenoid1.set(DoubleSolenoid.Value.kReverse);
 			solenoid2.set(DoubleSolenoid.Value.kReverse);
 		}
+		
+//		if(feedControl && intakeState != 3){
+//			gearFeedMotor.set(INTAKE_SPEED);
+//		}else{
+//			gearFeedMotor.set(0.0);
+//		}
 		
 	}
 

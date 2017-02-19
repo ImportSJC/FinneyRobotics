@@ -43,9 +43,9 @@ public class Robot extends IterativeRobot {
     	GearControl.robotInit();
     	Arduino_LightControl.robotInit(2, 3);
     	Ball_Intake.robotInit();
- //   	AutoOutputs.robotInit();
- //   	AutoInputs.robotInit();
- //   	AutoOutputs.setDriveBrake(true);
+    	AutoOutputs.robotInit();
+     	AutoInputs.robotInit();
+    	AutoOutputs.setDriveBrake(true);
  //   	templates.GRIP3Cameras2Switched.robotInit();
  //   	cpi.SimpleTwoCamera.init(0);
     	Vision2017.robotInit(2);
@@ -99,15 +99,15 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	AutoInputs.updateEncoderRates();
+//    	AutoInputs.updateEncoderRates();
     	drive.TeleopPeriodic();
-    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
-    	System.out.println("Summed Count: " + AutoInputs.getSummedEncoderCount());
-    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
-    	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
+//    	System.out.println("Avg Distance: " + AutoInputs.getEncoderDistanceAvg());
+//    	System.out.println("Summed Count: " + AutoInputs.getSummedEncoderCount());
+//    	System.out.println("Left Encoder: " + AutoInputs.getLeftEncoderCount() + " Right Encoder: " + AutoInputs.getRightEncoderCount());
+//    	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
     	GearControl.TeleopPeriodic(pilot.rightBumper());
     	ShooterControl.teleopPeriodic(true, false, false, false);
-    	Ball_Intake.teleopPeriodic(false);
+    	Ball_Intake.teleopPeriodic(pilot.leftBumper());
     }
     
       
