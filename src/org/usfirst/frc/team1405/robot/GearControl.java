@@ -26,7 +26,7 @@ public class GearControl {
 	private static double GEAR_IN_BOT_CURRENT_THRESHOLD = 15;
 	
 	public static void robotInit(){
-		gearFeedMotor=new MotorController(ID_Assignments.GEAR_TALON_MOTOR,true);
+		gearFeedMotor=new MotorController(ID_Assignments.GEAR_TALON_MOTOR);
 		if(REVERSE_PNEUMATIC_1_STATE){
 			solenoid1=new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_1B,ID_Assignments.GEAR_CYLINDER_1A);
 		}else{

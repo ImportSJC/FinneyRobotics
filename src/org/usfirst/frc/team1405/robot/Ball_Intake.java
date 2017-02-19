@@ -14,7 +14,7 @@ public class Ball_Intake {
 	static DoubleSolenoid solenoid;
 	
 	public static void robotInit(){
-		motor=new MotorController(ID_Assignments.BALL_INTAKE_MOTOR,true);
+		motor=new MotorController(ID_Assignments.BALL_INTAKE_MOTOR);
 		if(REVESE_SOLENOID){
 			solenoid=new DoubleSolenoid(ID_Assignments.BALL_INTAKE_CYLINDER_1B,ID_Assignments.BALL_INTAKE_CYLINDER_1A);
 		}else{

@@ -21,25 +21,12 @@ public class MotorController {
 	private int myID = 0;
 
 	public MotorController(int ID){
-		constructor(ID, ID,this.useTalon);	
-	}
-	
-	// added the following two constructors when Talon ID is not the same as Jaguar ID
-	public MotorController(int ID,boolean useTalon){
-		constructor(ID, ID,useTalon);	
-	}
-	
-	public MotorController(int talonId,int jagId,boolean useTalon){
-		constructor(talonId, jagId,useTalon);	
-	}
-	void constructor(int talonId,int jagId, boolean useTalon){
-		this.useTalon=useTalon;
+		myID = ID;
+		
 		if(this.useTalon){
-		myID = talonId;
-			talon = new CANTalon(talonId);
+			talon = new CANTalon(ID);
 		}else{
-			myID = jagId;
-			jaguar = new Jaguar(jagId);
+			jaguar = new Jaguar(ID);
 		}
 		
 		settings = NetworkTable.getTable("Motor_Current_Output");
