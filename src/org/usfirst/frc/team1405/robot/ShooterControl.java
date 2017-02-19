@@ -100,13 +100,13 @@ public class ShooterControl  {
 	ShooterControl(){
 		
 	}
-	static public void robotInit(String mode, int talonshooterID,int jagshooterID,int ShooterEncoderChanelA,int ShooterEncoderChanelB,int talonGateID,int jagGateID,int talonMixerID,int jagMixerID){
+	static public void robotInit(String mode){
 		boolean useTalon=false;
 		if(mode==Mode.TALON_SRX) useTalon=true;
-		shooterMotor=new MotorController(talonshooterID,jagshooterID,useTalon);
-		gateMotor=new MotorController(talonGateID,jagGateID,useTalon) ;
-		mixer=new MotorController(talonMixerID,jagMixerID,useTalon) ;
-    	shooterEncoder = new Encoder(ShooterEncoderChanelA,ShooterEncoderChanelB);
+		shooterMotor=new MotorController(ID_Assignments.SHOOTER_TALON_SHOOT_MOTOR,ID_Assignments.SHOOTER_JAGUAR_SHOOT_MOTOR,useTalon);
+		gateMotor=new MotorController(ID_Assignments.SHOOTER_TALON_GATE_MOTOR,ID_Assignments.SHOOTER_JAGUAR_GATE_MOTOR,useTalon) ;
+		mixer=new MotorController(ID_Assignments.SHOOTER_TALON_MIXER_MOTOR,ID_Assignments.SHOOTER_JAGUAR_MIXER_MOTOR,useTalon) ;
+    	shooterEncoder = new Encoder(ID_Assignments.SHOOTER_ENCODER_1A,ID_Assignments.SHOOTER_ENCODER_1B);
 		THIS_TABLE_NAME= "Robot"+"/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
 		settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);

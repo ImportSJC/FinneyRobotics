@@ -2,11 +2,16 @@ package org.usfirst.frc.team1405.robot;
 
 import cpi.outputDevices.MotorController;
 import cpi.Arduino_LightControl;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class GearControl {
 	static MotorController gearFeedMotor;
 	static double  INTAKE_SPEED= 1.0;
 	static double  EJECT_SPEED= 1.0;
+	static final boolean REVERSE_PNEUMATIC_1_STATE=false;
+	static DoubleSolenoid solenoid1;
+	static final boolean REVERSE_PNEUMATIC_2_STATE=false;
+	static DoubleSolenoid solenoid2;
 	
 
 	
@@ -21,7 +26,17 @@ public class GearControl {
 	private static double GEAR_IN_BOT_CURRENT_THRESHOLD = 15;
 	
 	public static void robotInit(){
-		gearFeedMotor=new MotorController(7);
+		gearFeedMotor=new MotorController(ID_Assignments.GEAR_TALON_MOTOR,true);
+		if(REVERSE_PNEUMATIC_1_STATE){
+			solenoid1=new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_1B,ID_Assignments.GEAR_CYLINDER_1A);
+		}else{
+			solenoid1=new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_1A,ID_Assignments.GEAR_CYLINDER_1B);
+		}
+		if(REVERSE_PNEUMATIC_2_STATE){
+			solenoid1=new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_2B,ID_Assignments.GEAR_CYLINDER_2A);
+		}else{
+			solenoid2=new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_2A,ID_Assignments.GEAR_CYLINDER_2B);
+		}
 	}
 	
 	public static void teleopInit(){
@@ -46,9 +61,13 @@ public class GearControl {
 		if(feedControl && intakeState != 3){
 			gearFeedMotor.set(INTAKE_SPEED);
 			Arduino_LightControl.Periodic(THIS_LIGHT_CONTROL_INDICATION);
+			solenoid1.set(DoubleSolenoid.Value.kForward);
+			solenoid2.set(DoubleSolenoid.Value.kForward);
 		}else{
 			gearFeedMotor.set(0.0);
 			Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
+			solenoid1.set(DoubleSolenoid.Value.kReverse);
+			solenoid2.set(DoubleSolenoid.Value.kReverse);
 		}
 		
 	}

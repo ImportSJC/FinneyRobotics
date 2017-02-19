@@ -42,6 +42,7 @@ public class Robot extends IterativeRobot {
     	drive.robotInit();
     	GearControl.robotInit();
     	Arduino_LightControl.robotInit(2, 3);
+    	Ball_Intake.robotInit();
  //   	AutoOutputs.robotInit();
  //   	AutoInputs.robotInit();
  //   	AutoOutputs.setDriveBrake(true);
@@ -66,7 +67,7 @@ public class Robot extends IterativeRobot {
     	int gateJagID=9;
     	int mixerTalon=12;
     	int mixerJag=7;
-    	ShooterControl.robotInit( MODE,  shooterTalonID, shooterJagID, encoderA, encoderB, gateTalonID, gateJagID, mixerTalon,mixerJag);
+    	ShooterControl.robotInit( MODE);
     }
     
     public void autonomousInit(){
@@ -106,6 +107,7 @@ public class Robot extends IterativeRobot {
     	System.out.println("Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Drive direction" + AutoInputs.getEncoderDriveDirection());
     	GearControl.TeleopPeriodic(pilot.rightBumper());
     	ShooterControl.teleopPeriodic(true, false, false, false);
+    	Ball_Intake.teleopPeriodic(false);
     }
     
       

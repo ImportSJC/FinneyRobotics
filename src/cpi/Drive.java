@@ -1,5 +1,6 @@
 package cpi;
 
+import org.usfirst.frc.team1405.robot.ID_Assignments;
 import org.usfirst.frc.team1405.robot.Robot;
 
 import cpi.ConrolModes.ArcadeDrive;
@@ -31,18 +32,18 @@ public class Drive {
 		
 		if(!sixSimDriveBase){
 			//old base
-			right1 =  new MotorController(3);
-			right2 =  new MotorController(4);
-			left1 =  new MotorController(1);
-			left2 =  new MotorController(2);
+			right1 =  new MotorController(ID_Assignments.DRIVE_RIGHT_JAGUAR_MOTOR_1);
+			right2 =  new MotorController(ID_Assignments.DRIVE_RIGHT_JAGUAR_MOTOR_2);
+			left1 =  new MotorController(ID_Assignments.DRIVE_LEFT_JAGUAR_MOTOR_1);
+			left2 =  new MotorController(ID_Assignments.DRIVE_LEFT_JAGUAR_MOTOR_2);
 		}else{
 			//new base
-			right1 =  new MotorController(1);
-			right2 =  new MotorController(2);
-			right3 =  new MotorController(3);
-			left1 =  new MotorController(4);
-			left2 =  new MotorController(5);
-			left3 =  new MotorController(6);
+			right1 =  new MotorController(ID_Assignments.DRIVE_RIGHT_TALON_MOTOR_1);
+			right2 =  new MotorController(ID_Assignments.DRIVE_RIGHT_TALON_MOTOR_2);
+			right3 =  new MotorController(ID_Assignments.DRIVE_RIGHT_TALON_MOTOR_3);
+			left1 =  new MotorController(ID_Assignments.DRIVE_LEFT_TALON_MOTOR_1);
+			left2 =  new MotorController(ID_Assignments.DRIVE_LEFT_TALON_MOTOR_2);
+			left3 =  new MotorController(ID_Assignments.DRIVE_LEFT_TALON_MOTOR_3);
 		}
 		
 	//	centerHTalon1 =  new CANTalon(5);
