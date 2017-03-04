@@ -26,7 +26,7 @@ public class AutoOutputs {
 	private static double leftEnc_driveFwd_zero = 0;
 	private static double rightEnc_driveFwd_zero = 0;
 	private static double driveFwd_margin = 1; //number of counts the right encoder can be off the left encoder while driving fwd
-	private static double driveFwd_adjustment = -0.1;
+	private static double driveFwd_adjustment = 0.01;
 	
 	public static void robotInit(){
 		leftMotor1 = Drive.left1;
@@ -45,28 +45,28 @@ public class AutoOutputs {
 	
 	public void AutonomousPeriodic(){
 		
-		if(gyroAssist){
-			if (driveSpeed>=0){
-				//Moderate gyro assist (not as fast of correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
-//				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
-				
-				//Drastic gyro assist (a faster correction)
-				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.getGyroAngle()
-						 + " Gyro angle: " + AutoInputs.getGyroAngle());
-				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.getGyroAngle());
-			}
-			else{
-				//Moderate gyro assist (not as fast of correction)
-//				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
-//				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
-				
-				//Drastic gyro assist (a faster correction)
-				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.getGyroAngle()
-						 + " Gyro angle: " + AutoInputs.getGyroAngle());
-				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.getGyroAngle());
-			}
-		}
+//		if(gyroAssist){
+//			if (driveSpeed>=0){
+//				//Moderate gyro assist (not as fast of correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
+////				setDrive(driveSpeed, -(1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
+//				
+//				//Drastic gyro assist (a faster correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + -(1.0/(50*driveSpeed))*AutoInputs.getGyroAngle()
+////						 + " Gyro angle: " + AutoInputs.getGyroAngle());
+//				setDrive(driveSpeed, -(1.0/(50*driveSpeed))*AutoInputs.getGyroAngle());
+//			}
+//			else{
+//				//Moderate gyro assist (not as fast of correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
+////				setDrive(driveSpeed, (1.0/(200*driveSpeed))*AutoInputs.getGyroAngle());
+//				
+//				//Drastic gyro assist (a faster correction)
+////				System.out.println("Gyro Assisted Driving Enabled, correction: " + (1.0/(50*driveSpeed))*AutoInputs.getGyroAngle()
+////						 + " Gyro angle: " + AutoInputs.getGyroAngle());
+//				setDrive(driveSpeed, (1.0/(50*driveSpeed))*AutoInputs.getGyroAngle());
+//			}
+//		}
 	}
 	
 	public static void setDriveBrake(boolean value){
@@ -105,30 +105,30 @@ public class AutoOutputs {
 		double leftChange = 0;
 		double rightChange = 0;
 		
-		if(leftEnc_driveFwd_zero-driveFwd_margin>rightEnc_driveFwd_zero){
-			leftChange=driveFwd_adjustment;
-		}else if(rightEnc_driveFwd_zero-driveFwd_margin>leftEnc_driveFwd_zero) {
-			rightChange=driveFwd_adjustment;
-		}
+//		if(leftEnc_driveFwd_zero-driveFwd_margin>rightEnc_driveFwd_zero){
+//			leftChange=driveFwd_adjustment;
+//		}else if(rightEnc_driveFwd_zero-driveFwd_margin>leftEnc_driveFwd_zero) {
+//			rightChange=driveFwd_adjustment;
+//		}
 		
 //		rightChange+=driveFwd_adjustment;
 		
-		leftMotor1.set(-speed+leftChange);
-		leftMotor2.set(-speed+leftChange);
-		rightMotor1.set(speed-rightChange);
-		rightMotor2.set(speed-rightChange);
+		leftMotor1.set(speed+leftChange);
+		leftMotor2.set(speed+leftChange);
+		rightMotor1.set(-speed-rightChange);
+		rightMotor2.set(-speed-rightChange);
 		
 		driveSpeed = speed;
 //		gyroAssist = true;
 //		System.out.println("Drive Motors are assigned the speed: " + speed);
-		System.out.println("Left Enc: " + AutoInputs.getLeftEncoderCount() + " Right enc: " + AutoInputs.getRightEncoderCount());
-		System.out.println("left change: " + leftChange + " right change: " + rightChange);
+//		System.out.println("Left Enc: " + AutoInputs.getLeftEncoderCount() + " Right enc: " + AutoInputs.getRightEncoderCount());
+//		System.out.println("left change: " + leftChange + " right change: " + rightChange);
 		leftEnc_driveFwd_zero = Math.abs(AutoInputs.getLeftEncoderCount());
 		rightEnc_driveFwd_zero = Math.abs(AutoInputs.getRightEncoderCount());
 	}
 	
 	public static void setDriveTurn(double speed){
-		System.out.println("Drive Motors are assigned the speed: " + speed);
+//		System.out.println("Drive Motors are assigned the speed: " + speed);
 		leftMotor1.set(speed);
 		leftMotor2.set(speed);
 		rightMotor1.set(speed);
@@ -156,7 +156,7 @@ public class AutoOutputs {
 		}
 		
 		//turn the robot slower until it reaches the target angle (remaining angle == 0)
-		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
+//		System.out.println("Gyro Rate: " + AutoInputs.getGyroRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
 		
 		setDrive(tmpDrive, tmpTurn);
 	}
@@ -166,19 +166,21 @@ public class AutoOutputs {
 		
 		double tmpDrive = driveSpeed;
 		
-		if(remainingDistance < 0 && perfectRateDrive_Encoder > 0){
-			System.out.print("Case 1 - ");
-			perfectRateDrive_Encoder/=2;
-			perfectRateDrive_Encoder = -perfectRateDrive_Encoder;
-		}else if (remainingDistance > 0 && perfectRateDrive_Encoder < 0){
-			System.out.print("Case 2 - ");
-			perfectRateDrive_Encoder = -perfectRateDrive_Encoder;
-			perfectRateDrive_Encoder/=2;
-		}
+//		if(remainingDistance < 0 && perfectRateDrive_Encoder > 0){
+//			System.out.print("Case 11 - ");
+//			perfectRateDrive_Encoder/=2;
+//			perfectRateDrive_Encoder = -perfectRateDrive_Encoder;
+//		}else if (remainingDistance > 0 && perfectRateDrive_Encoder < 0){
+//			System.out.print("Case 22 - ");
+//			perfectRateDrive_Encoder = -perfectRateDrive_Encoder;
+//			perfectRateDrive_Encoder/=2;
+//		}
 		
 		if(AutoInputs.getEncoderDriveDirection() == -1 && perfectRateDrive_Encoder > 0 && tmpDrive<1){
+			System.out.print("Case 1 - ");
 			tmpDrive = tmpDrive + adjustment;
 		}else if(AutoInputs.getEncoderDriveDirection() == 1 && perfectRateDrive_Encoder < 0 && tmpDrive>-1){
+			System.out.print("Case 2 - ");
 			tmpDrive = tmpDrive - adjustment;
 		}else{
 			if(remainingDistance > 0){
@@ -192,16 +194,35 @@ public class AutoOutputs {
 			}else{
 				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder) && tmpDrive<1){
 					System.out.print("Case 5 - ");
-					tmpDrive = tmpDrive + adjustment;
+					tmpDrive = tmpDrive - adjustment;
 				}else if(tmpDrive>-1){
 					System.out.print("Case 6 - ");
-					tmpDrive = tmpDrive - adjustment;
+					tmpDrive = tmpDrive + adjustment;
 				}
 			}
 		}
 		
+//		if(remainingDistance > 0){
+//			if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder) && tmpDrive>-1){
+//				System.out.print("Case 3 - ");
+//				tmpDrive = tmpDrive - adjustment;
+//			}else if(tmpDrive<1){
+//				System.out.print("Case 4 - ");
+//				tmpDrive = tmpDrive + adjustment;
+//			}
+//		}else{
+//			if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateDrive_Encoder) && tmpDrive<1){
+//				System.out.print("Case 5 - ");
+//				tmpDrive = tmpDrive + adjustment;
+//			}else if(tmpDrive>-1){
+//				System.out.print("Case 6 - ");
+//				tmpDrive = tmpDrive - adjustment;
+//			}
+//		}
+		
 		System.out.println("Perfect Rate: " + perfectRateDrive_Encoder + " Summed Rate: " + AutoInputs.getSummedEncoderRate());
-		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining distance: " + remainingDistance + " drive Speed: " + tmpDrive);
+		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining distance: " + remainingDistance + " drive direction: " + AutoInputs.getEncoderDriveDirection());
+		System.out.println("Drive speed: " + tmpDrive);
 		setDriveFwd(tmpDrive);
 	}
 	
@@ -212,11 +233,11 @@ public class AutoOutputs {
 		double tmpTurn = turnSpeed;
 		
 		if(remainingAngle < 0 && perfectRateTurn_Encoder > 0){
-			System.out.print("Case 1 - ");
+//			System.out.print("Case 1 - ");
 			perfectRateTurn_Encoder/=2;
 			perfectRateTurn_Encoder = -perfectRateTurn_Encoder;
 		}else if (remainingAngle > 0 && perfectRateTurn_Encoder < 0){
-			System.out.print("Case 2 - ");
+//			System.out.print("Case 2 - ");
 			perfectRateTurn_Encoder = -perfectRateTurn_Encoder;
 			perfectRateTurn_Encoder/=2;
 		}
@@ -228,18 +249,18 @@ public class AutoOutputs {
 		}else{
 			if(remainingAngle > 0){
 				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateTurn_Encoder)){
-					System.out.print("Case 3 - ");
+//					System.out.print("Case 3 - ");
 					tmpTurn = tmpTurn - adjustment;
 				}else{
-					System.out.print("Case 4 - ");
+//					System.out.print("Case 4 - ");
 					tmpTurn = tmpTurn + adjustment;
 				}
 			}else{
 				if(AutoInputs.getSummedEncoderRate() > Math.abs(perfectRateTurn_Encoder)){
-					System.out.print("Case 5 - ");
+//					System.out.print("Case 5 - ");
 					tmpTurn = tmpTurn + adjustment;
 				}else{
-					System.out.print("Case 6 - ");
+//					System.out.print("Case 6 - ");
 					tmpTurn = tmpTurn - adjustment;
 				}
 			}
@@ -264,8 +285,8 @@ public class AutoOutputs {
 //		}
 		
 		//turn the robot slower until it reaches the target angle (remaining angle == 0)
-		System.out.println("Perfect Rate: " + perfectRateTurn_Encoder);
-		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
+//		System.out.println("Perfect Rate: " + perfectRateTurn_Encoder);
+//		System.out.println("Encoder Summed Rate: " + AutoInputs.getSummedEncoderRate() + " Remaining angle: " + remainingAngle + " turn Speed: " + tmpTurn);
 		setDrive(tmpDrive, tmpTurn);
 	}
 }

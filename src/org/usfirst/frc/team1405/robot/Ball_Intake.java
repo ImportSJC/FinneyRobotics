@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 public class Ball_Intake {
 ;
 	static final boolean REVESE_SOLENOID=false;
-	static final double motorVoltage=1.0;
+	static final double motorVoltage=-1.0;
 	
 	static MotorController motor;
 	static DoubleSolenoid solenoid;

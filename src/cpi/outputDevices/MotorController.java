@@ -1,6 +1,7 @@
 package cpi.outputDevices;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.TalonControlMode;
 
 import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -60,7 +61,7 @@ public class MotorController {
 	}
 	
 	public double  getVelocity(){
-		System.out.println("Get Velocity called");
+//		System.out.println("Get Velocity called");
 		if(useTalon){
 			return talon.getEncVelocity();
 		}
@@ -74,6 +75,10 @@ public class MotorController {
 		}
 		
 		return 0;
+	}
+	
+	public double getOutputVoltage(){
+		return talon.getBusVoltage();
 	}
 	
 	public void enableBrakeMode(boolean value){
@@ -94,8 +99,12 @@ public class MotorController {
 		}
 	}
 	
+	public void setControlMode(TalonControlMode myMode){
+		talon.changeControlMode(myMode);
+	}
+	
 	public void driveMotorCurrentUpdate(){
-		System.out.println("index: " + driveMotorCurrentArrayIndex + " length: "  + driveMotorCurrentArray.length);
+//		System.out.println("index: " + driveMotorCurrentArrayIndex + " length: "  + driveMotorCurrentArray.length);
 		if(driveMotorCurrentArrayIndex < driveMotorCurrentArray.length){
 			driveMotorCurrentArray[driveMotorCurrentArrayIndex] = getOutputCurrent();
 			driveMotorCurrentArrayIndex++;

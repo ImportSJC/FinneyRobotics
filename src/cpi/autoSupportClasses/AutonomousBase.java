@@ -14,7 +14,7 @@ public class AutonomousBase {
 	private static Time autoTimer = new Time(15);
 	
 	public static void selectAutoMode(String modeName){
-		System.out.println("ModelName: " + modeName);
+//		System.out.println("ModelName: " + modeName);
 		autoMode=modeName;
 	}
 	
@@ -35,6 +35,7 @@ public class AutonomousBase {
 		
 		autoTimer.start();
 	}
+	
 	public static final void autonomousPeriodic() {
 		if(autoStates==null)return;
 		if (columnIndex<autoStates.length){
@@ -48,7 +49,7 @@ public class AutonomousBase {
 				columnInit = true;
 			}
 			else if(allChecksPassed()){
-				System.out.println("All checks passed - NEXT STATE");
+//				System.out.println("All checks passed - NEXT STATE");
 //				AutoInputs.resetGyro();
 				columnIndex++;
 				columnInit = false;
@@ -57,7 +58,7 @@ public class AutonomousBase {
 			}
 		}
 		else{
-			System.out.println("End of Autonomous Loop, Time: " + autoTimer.getStopTime());
+//			System.out.println("End of Autonomous Loop, Time: " + autoTimer.getStopTime());
 			
 			//TODO: remove this debug code for competitions
 //			try {

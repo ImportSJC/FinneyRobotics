@@ -26,7 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 *
 * @author GRIP
 */
-public class BaseDetectionPipeline {	
+public class BaseDetectionPipeline {
 	
 	// Default values
 	
@@ -101,9 +101,9 @@ public class BaseDetectionPipeline {
 	double hsvThresholdValueLow;
 	double hsvThresholdValueHigh;
 	
-	static final String ERODE_BOARDER="Erode-Dilate/Erode Boarder";		
-	static final String ERODE_ITERATIONS="Erode-Dilate/Erode Iterations";	
-	static final String DILATE_BOARDER="Erode-Dilate/Dilate Boarder";		
+	static final String ERODE_BOARDER="Erode-Dilate/Erode Boarder";
+	static final String ERODE_ITERATIONS="Erode-Dilate/Erode Iterations";
+	static final String DILATE_BOARDER="Erode-Dilate/Dilate Boarder";
 	static final String DILATE_ITERATIONS="Erode-Dilate/Dilate Iterations";
 
 	String erodeBoarder;
@@ -128,6 +128,8 @@ public class BaseDetectionPipeline {
 	static final String FILTER_CONTOURS_COUNT="Filter Contours/Filters Contours Count";
 	static final String FILTER_CONTOURS_CENTER_X="Filter Contours/Filters Contours X Center";
 	static final String FILTER_CONTOURS_CENTER_Y="Filter Contours/Filters Contours Y Center";
+	static final String FILTER_CONTOURS_WIDTH="Filter Contours/Filters Contours Width";
+	static final String FILTER_CONTOURS_HEIGHT="Filter Contours/Filters Contours Height";
 
 	double filterContoursMinArea;
 	double filterContoursMinPerimeter;
@@ -589,14 +591,16 @@ public class BaseDetectionPipeline {
 			width=new double[output.size()];
 			height=new double[output.size()];
 			for(i=0;i<output.size();i++){
-				centerX[i]=tmpX[i];
-				centerY[i]=tmpY[i];
+				centerX[i]=tmpX[i]+(tmpWidth[i]/2);
+				centerY[i]=tmpY[i]+(tmpHeight[i]/2);
 				width[i]=tmpWidth[i];
 				height[i]=tmpHeight[i];
 			}
 			if(DriverStation.getInstance().isDisabled()){
 			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);
 			table.putNumberArray(FILTER_CONTOURS_CENTER_Y, centerY);
+			table.putNumberArray(FILTER_CONTOURS_WIDTH, width);
+			table.putNumberArray(FILTER_CONTOURS_HEIGHT, height);
 			}
 	}
 	

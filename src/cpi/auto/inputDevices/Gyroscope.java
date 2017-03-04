@@ -28,7 +28,7 @@ public class Gyroscope extends SuperClass{
 	
 	@Override 
 	public boolean check(){
-		System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle());
+//		System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle());
 
 		//stop once it hits the target angle and its not moving fast
 		if(atTargetAngle(AutoInputs.getGyroAngle()) && Math.abs(AutoInputs.getGyroRate()) < END_RATE){return true;}

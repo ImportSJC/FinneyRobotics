@@ -1,5 +1,6 @@
 package cpi.auto;
 
+import cpi.Drive;
 
 public class AutoInputs {
 	
@@ -14,6 +15,7 @@ public class AutoInputs {
 	
 	public static void robotInit(){
 		initGyros();
+		initEncoders();
 	}
 	
 	public static void AutoInit(){
@@ -44,9 +46,9 @@ public class AutoInputs {
 	public static void initEncoders(){
 		if(useMagEncoders){
 			if(leftEnc == null)
-				leftEnc = new EncoderControl(4, true);
+				leftEnc = new EncoderControl(13, Drive.right3);
 			if(rightEnc == null)
-				rightEnc = new EncoderControl(1);
+				rightEnc = new EncoderControl(7, true, Drive.left3);
 		}else{
 			if(leftEnc == null)
 				leftEnc = new EncoderControl(0, 1);
@@ -56,9 +58,9 @@ public class AutoInputs {
 	}
 	
 	public static void initGyros(){
-		System.out.println("start init");
+//		System.out.println("start init");
 		onboardGyro = new GyroControl();
-		System.out.println("end init");
+//		System.out.println("end init");
 	}
 	
 	public static void resetEncoders(){
@@ -71,12 +73,12 @@ public class AutoInputs {
 	}
 	
 	public static void resetGyros(){
-		System.out.println("start reset");
+//		System.out.println("start reset");
 		if(onboardGyro != null){
-			System.out.println("reset gyros");
+//			System.out.println("reset gyros");
 			onboardGyro.resetAll();
 		}
-		System.out.println("end reset");
+//		System.out.println("end reset");
 	}
 	
 	public static void updateEncoderRates(){
@@ -148,7 +150,7 @@ public class AutoInputs {
 	}
 	
 	public static double getLeftEncoderRate(){
-		System.out.println("get left rate called");
+//		System.out.println("get left rate called");
 		double tmp = leftEnc.getRate();
 		return Math.abs(tmp);
 	}
@@ -165,7 +167,7 @@ public class AutoInputs {
 		try{
 			myDouble = onboardGyro.getRate();
 		}catch(NullPointerException e){
-			System.out.println("ERROR: Onboard Gyro is not connected");
+//			System.out.println("ERROR: Onboard Gyro is not connected");
 		}
 		
 		return myDouble;
@@ -177,7 +179,7 @@ public class AutoInputs {
 		try{
 			myDouble = onboardGyro.getAngle();
 		}catch(NullPointerException e){
-			System.out.println("ERROR: Onboard Gyro is not connected");
+//			System.out.println("ERROR: Onboard Gyro is not connected");
 		}
 		
 		return myDouble;

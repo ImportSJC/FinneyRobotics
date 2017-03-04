@@ -6,14 +6,24 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.MjpegServer;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
+
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfKeyPoint;
+import org.opencv.core.Scalar;
+import org.opencv.features2d.Features2d;
+import org.opencv.imgproc.Imgproc;
+
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
+
+import org.usfirst.frc.team1405.robot.Vision.pipelines.BlobPipeline;
 import org.usfirst.frc.team1405.robot.Vision.pipelines.GearPipeline;
 
 public class Vision2017 {
 	static final String GEAR_PLACEMENT_TABLE_NAME="Robot/Vision/Pipelines/Gear Placement";
+	static final String SHOOTING_BLOB="Robot/Vision/Pipelines/Shooting Blob";
 	static Thread visionThread;
 	static GearPipeline gearPipeline=new GearPipeline(GEAR_PLACEMENT_TABLE_NAME);
+	static BlobPipeline blobPipeline = new BlobPipeline(SHOOTING_BLOB);
 	static NetworkTable table;
 	static String CAMERA_ID_KEY3="Pipelines/Gear Placement/"+"Select Gear camera ID (0, 1, 2)";
 	static String CAMERA_ID_KEY2="Pipelines/Gear Placement/"+"Select gear camera ID (0, 1)";
@@ -42,6 +52,9 @@ public class Vision2017 {
 	
 	static String cameraID="0";
 
+	static Mat rgb = new Mat();
+	static Mat outputImage = new Mat();
+	static MatOfKeyPoint keypoints = new MatOfKeyPoint();
 	
 	public static void robotInit(int numberOfCameras){
 		
@@ -158,9 +171,14 @@ public class Vision2017 {
 				
 				// Put a rectangle on the image
 				if(!mat.empty()){
-				gearPipeline.process(mat);
-					outputStream.putFrame(gearPipeline.selectedOutput());
-//					outputStream.putFrame(mat);
+//				gearPipeline.process(mat);
+					
+				blobPipeline.process(mat);
+//					outputStream.putFrame(gearPipeline.selectedOutput());
+//					Mat myMat = gearPipeline.selectedOutput();
+//					outputStream.putFrame(blobPipeline.rgbThresholdOutput());
+				
+					outputStream.putFrame(blobPipeline.selectedOutput(mat));
 				}
 			}
 		});

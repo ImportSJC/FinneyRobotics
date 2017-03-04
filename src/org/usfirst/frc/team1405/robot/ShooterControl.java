@@ -1,16 +1,26 @@
 package org.usfirst.frc.team1405.robot;
 
+import com.ctre.CANTalon.TalonControlMode;
+
+import cpi.Arduino_LightControl;
+import cpi.outputDevices.MotorController;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 //import cpi.auto.EncoderControl;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDController.Tolerance;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
-import cpi.outputDevices.MotorController;
-import edu.wpi.first.wpilibj.DriverStation;
-import cpi.Arduino_LightControl;
 
 public class ShooterControl  {
 	
-	static String THIS_TABLE_NAME;
-	
+	static String THIS_TABLE_NAME = "Shooter Control";
+	static boolean pastState = false;
+	static DoubleSolenoid solenoid;
+	static boolean solenoidState = false;
 	
 	
 	static NetworkTable settings;
@@ -49,18 +59,19 @@ public class ShooterControl  {
 	
 	//Defaults
 	
-	static double DEF_SHOOTER_HIGH_TOLLERANCE_VALUE=50;
-	static double DEF_SHOOTER_LOW_THRESHOLD_VALUE=600;
-	static double DEF_GATE_DIFFERENCE_THRESHOLD_VALUE=100;
-	static double DEF_GATE_VOLTAGE_VALUE=1;
-	static double DEF_MIXER_VOLTAGE_VALUE=.5;
+	static double DEF_SHOOTER_HIGH_TOLLERANCE_VALUE=5;//50
+	static double DEF_SHOOTER_LOW_THRESHOLD_VALUE=720;
+	static double DEF_GATE_DIFFERENCE_THRESHOLD_VALUE=5;//100
+	static double DEF_GATE_VOLTAGE_VALUE=1;//1
+	static double DEF_MIXER_VOLTAGE_VALUE=.75;
 	static double DEF_SHOOTER_INITIAL_VOLTAGE_VALUE=.5;
-	static double DEF_SPEED_ADJUST_INCREMENT=10;
-	static double DEF_VOLTAGE_ADJUST_INCREMENT=0.01;
+	static double DEF_SPEED_ADJUST_INCREMENT=2;
+	static double DEF_VOLTAGE_ADJUST_INCREMENT=0.005;//0.0005
+//	static double DEF_VOLTAGE_ADJUST_INCREMENT=0.005;
 	static boolean DEF_NEGATE_SPEED_SWITCH=false;
 	static boolean DEF_REVERSE_SHOOTER_MOTOR_SWITCH=false;
 	static boolean DEF_REVERSE_GATE_MOTOR_SWITCH=false;
-	static boolean DEF_REVERSE_MIXER_MOTOR_SWITCH=false;
+	static boolean DEF_REVERSE_MIXER_MOTOR_SWITCH=true;
 	// End Defaults
 	
 
@@ -93,6 +104,25 @@ public class ShooterControl  {
 	static String SET_TO_DEFAULTS="Set settings to default";
 	static String DEFAULTS="Defaults/";
 	
+	static private double voltageAdjustment = DEF_VOLTAGE_ADJUST_INCREMENT;
+	static private double SPEED_MARGIN_SHOOT = 5;
+	static private double SPEED_MARGIN_SLOW_SHOOTER = 20;
+	static private double remainingSpeedCount = 0;
+	static private double remainingSpeadSum = 0;
+	
+	static private PIDController pid;
+	static private PIDSource src;
+	static private PIDOutput out;
+	static private double Ishooter = 0.0002;
+	static private double Dshooter = 0.02;
+	
+	static private double[] speedArray = new double[250];
+	static private int speedArrayIndex = 0;
+	static private boolean writeToFile = false;
+	
+	static private boolean increaseSpeedLast = false;
+	static private boolean decreaseSpeedLast = false;
+	
 	class Mode{
 		public static final String PWM="PWM";
 		public static final String TALON_SRX="Talon SRX";
@@ -101,33 +131,87 @@ public class ShooterControl  {
 		
 	}
 	static public void robotInit(String mode){
+		solenoid = new DoubleSolenoid(6,7);
 		shooterMotor=new MotorController(ID_Assignments.SHOOTER_TALON_SHOOT_MOTOR);
+		shooterMotor.setControlMode(TalonControlMode.PercentVbus);
 		gateMotor=new MotorController(ID_Assignments.SHOOTER_TALON_GATE_MOTOR) ;
 		mixer=new MotorController(ID_Assignments.SHOOTER_TALON_MIXER_MOTOR) ;
     	shooterEncoder = new Encoder(ID_Assignments.SHOOTER_ENCODER_1A,ID_Assignments.SHOOTER_ENCODER_1B);
 		THIS_TABLE_NAME= "Robot"+"/Shooter";
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
-		settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
-		settings.putBoolean(NEGATE_SPEED, settings.getBoolean(NEGATE_SPEED,DEF_NEGATE_SPEED_SWITCH));
-		settings.setPersistent(NEGATE_SPEED);
-		settings.putBoolean(REVERSE_SHOOTER_MOTOR, settings.getBoolean(REVERSE_SHOOTER_MOTOR,DEF_REVERSE_SHOOTER_MOTOR_SWITCH));
-		settings.setPersistent(REVERSE_SHOOTER_MOTOR);
-		settings.putBoolean(REVERSE_GATE_MOTOR, settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH));
-		settings.setPersistent(REVERSE_GATE_MOTOR);
-		settings.putBoolean(REVERSE_MIXER_MOTOR, settings.getBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH));
-		settings.setPersistent(REVERSE_MIXER_MOTOR);
-		settings.putNumber(SHOOTER_LOW_THRESHOLD,settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE));
-		settings.setPersistent(SHOOTER_LOW_THRESHOLD);
-		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE));
-		settings.setPersistent(SHOOTER_HIGH_TOLLERANCE);
-    	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE));
-		settings.setPersistent(GATE_DIFFERENCE_THRESHOLD);
-    	ShooterControl.ShooterEncoderChanelA=ID_Assignments.SHOOTER_ENCODER_1A;
+//		settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
+//		settings.putBoolean(NEGATE_SPEED, settings.getBoolean(NEGATE_SPEED,DEF_NEGATE_SPEED_SWITCH));
+//		settings.setPersistent(NEGATE_SPEED);
+//		settings.putBoolean(REVERSE_SHOOTER_MOTOR, settings.getBoolean(REVERSE_SHOOTER_MOTOR,DEF_REVERSE_SHOOTER_MOTOR_SWITCH));
+//		settings.setPersistent(REVERSE_SHOOTER_MOTOR);
+//		settings.putBoolean(REVERSE_GATE_MOTOR, settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH));
+//		settings.setPersistent(REVERSE_GATE_MOTOR);
+//		settings.putBoolean(REVERSE_MIXER_MOTOR, settings.getBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH));
+//		settings.setPersistent(REVERSE_MIXER_MOTOR);
+//		settings.putNumber(SHOOTER_LOW_THRESHOLD,settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE));
+//		settings.setPersistent(SHOOTER_LOW_THRESHOLD);
+//		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE));
+//		settings.setPersistent(SHOOTER_HIGH_TOLLERANCE);
+//    	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE));
+//		settings.setPersistent(GATE_DIFFERENCE_THRESHOLD);
+//		settings.putString("ShooterSpeedArray", "");
+		ShooterControl.ShooterEncoderChanelA=ID_Assignments.SHOOTER_ENCODER_1A;
     	ShooterControl.ShooterEncoderChanelB=ID_Assignments.SHOOTER_ENCODER_1B;
-    	ShooterControl.talonMixerID=ID_Assignments.SHOOTER_TALON_MIXER_MOTOR;
-    	ShooterControl.jagMixerID=ID_Assignments.SHOOTER_JAGUAR_MIXER_MOTOR;
-    	ShooterControl.mode=mode;
-    	showDefaults();
+//    	ShooterControl.talonMixerID=ID_Assignments.SHOOTER_TALON_MIXER_MOTOR;
+//    	ShooterControl.jagMixerID=ID_Assignments.SHOOTER_JAGUAR_MIXER_MOTOR;
+//    	ShooterControl.mode=mode;
+//    	showDefaults();
+    	
+    	src = new PIDSource() {
+			
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public double pidGet() {
+				//test with a joystick instead of an encoder
+//				double tmp = -Robot.pilot.leftStickYaxis();
+//				if(tmp>0){
+//					tmp=(tmp*400)+400;
+//				}else{
+//					tmp=(1-Math.abs(tmp))*400;
+//				}
+				
+				double tmp = -shooterEncoder.getRate();
+				currentSpeed = tmp;
+				System.out.println("PID input: " + tmp);
+				return tmp;
+			}
+			
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return PIDSourceType.kDisplacement;
+			}
+		};
+		
+		out = new PIDOutput() {
+			
+			@Override
+			public void pidWrite(double output) {
+				System.out.println("PID output: " + output);
+				if(output>0){
+					shooterVoltage = output;
+				}else{
+					shooterVoltage = 0;
+				}
+//				shooterVoltage+=output;
+			}
+		};
+		
+		pid = new PIDController(0, Ishooter, Dshooter, src, out);//P=0.0023
+		settings.putNumber("Ishooter", Ishooter);
+		settings.putNumber("Dshooter", Dshooter);
+//		pid.setPercentTolerance(5);
+//		pid.onTarget();
+//		pid.setOutputRange(0, 1);
+//		pid.setContinuous(true);
 	}
     	
 	
@@ -138,90 +222,116 @@ public class ShooterControl  {
 		
 	}
 	
-	static void showDefaults(){
-		settings.putBoolean(DEFAULTS+DEFAULTS+NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
-		settings.putBoolean(DEFAULTS+REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
-		settings.putBoolean(DEFAULTS+REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
-		settings.putBoolean(DEFAULTS+REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
-    	settings.putNumber(DEFAULTS+SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
-		settings.putNumber(DEFAULTS+SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
-    	settings.putNumber(DEFAULTS+GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
-	}
-	
-	static void setToDefaults(){
-		if(!DriverStation.getInstance().isDisabled())return;
-		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
-		settings.putBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
-		settings.putBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
-		settings.putBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
-		settings.putBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
-    	settings.putNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
-		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
-    	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
-    	settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
-	}
-	
-	static void setToNetValues(){
-		if(!DriverStation.getInstance().isDisabled())return;
-		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
-		negateSpeed=settings.getBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
-		reverseShooterMotor=settings.getBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
-		reverseGateMotor=settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
-		reverseMixerMotor=settings.getBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
-    	lowThreshold=settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
-    	highSpeed=lowThreshold+settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
-    	lowSpeed=lowThreshold-settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
-	}
+//	static void showDefaults(){
+//		settings.putBoolean(DEFAULTS+DEFAULTS+NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
+//		settings.putBoolean(DEFAULTS+REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
+//		settings.putBoolean(DEFAULTS+REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+//		settings.putBoolean(DEFAULTS+REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
+//    	settings.putNumber(DEFAULTS+SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
+//		settings.putNumber(DEFAULTS+SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
+//    	settings.putNumber(DEFAULTS+GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
+//	}
+//	
+//	static void setToDefaults(){
+//		if(!DriverStation.getInstance().isDisabled())return;
+//		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
+//		settings.putBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
+//		settings.putBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
+//		settings.putBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+//		settings.putBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
+//    	settings.putNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
+//		settings.putNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
+//    	settings.putNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
+//    	settings.putBoolean(DEFAULTS+SET_TO_DEFAULTS,false);
+//	}
+//	
+//	static void setToNetValues(){
+//		if(!DriverStation.getInstance().isDisabled())return;
+//		if(!settings.getBoolean(DEFAULTS+SET_TO_DEFAULTS,false))return;
+//		negateSpeed=settings.getBoolean(NEGATE_SPEED, DEF_NEGATE_SPEED_SWITCH);
+//		reverseShooterMotor=settings.getBoolean(REVERSE_SHOOTER_MOTOR, DEF_REVERSE_SHOOTER_MOTOR_SWITCH);
+//		reverseGateMotor=settings.getBoolean(REVERSE_GATE_MOTOR,DEF_REVERSE_GATE_MOTOR_SWITCH);
+//		reverseMixerMotor=settings.getBoolean(REVERSE_MIXER_MOTOR,DEF_REVERSE_MIXER_MOTOR_SWITCH);
+//    	lowThreshold=settings.getNumber(SHOOTER_LOW_THRESHOLD,DEF_SHOOTER_LOW_THRESHOLD_VALUE);
+//    	highSpeed=lowThreshold+settings.getNumber(SHOOTER_HIGH_TOLLERANCE,DEF_SHOOTER_HIGH_TOLLERANCE_VALUE);
+//    	lowSpeed=lowThreshold-settings.getNumber(GATE_DIFFERENCE_THRESHOLD,DEF_GATE_DIFFERENCE_THRESHOLD_VALUE);
+//	}
 	
 	static void adjustSpeed(boolean increaseSpeed, boolean decreaseSpeed){
-		if(increaseSpeed){
+		if(increaseSpeed && !increaseSpeedLast){
 			lowThreshold=lowThreshold+DEF_SPEED_ADJUST_INCREMENT;
 			highSpeed=highSpeed+DEF_SPEED_ADJUST_INCREMENT;
 			lowSpeed=lowSpeed+DEF_SPEED_ADJUST_INCREMENT;
-		
 		}else 
-			if(decreaseSpeed){
+			if(decreaseSpeed && !decreaseSpeedLast){
 				lowThreshold=lowThreshold-DEF_SPEED_ADJUST_INCREMENT;
 				highSpeed=highSpeed-DEF_SPEED_ADJUST_INCREMENT;
 				lowSpeed=lowSpeed-DEF_SPEED_ADJUST_INCREMENT;
-				
 			}
-    	settings.putNumber(SHOOTER_LOW_THRESHOLD,lowThreshold);
+		
+		increaseSpeedLast = increaseSpeed;
+		decreaseSpeedLast = decreaseSpeed;
+		
+//    	settings.putNumber(SHOOTER_LOW_THRESHOLD,lowThreshold);
 
 	}
 
 	static public void disabledInit(){
+		pid.disable();
 		Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
-		settings.putBoolean(ENABLE,false);
-	    		shooterMotor.set(0);
-	    		gateMotor.set(0);
-	    		mixer.set(0);
-	    		processState=SPEED_STARTUP;
-	}	
+//		settings.putBoolean(ENABLE,false);
+		shooterMotor.set(0);
+		gateMotor.set(0);
+		mixer.set(0);
+		processState=SPEED_STARTUP;
+	}
 	static public void disabledPeriodic(){
-		
-		if(!settings.getBoolean(ENABLE,false))return;
-		setToDefaults();
-		teleopPeriodic(true,false,false,false);
+//		if(!settings.getBoolean(ENABLE,false))return;
+//		setToDefaults();
+//		teleopPeriodic(true,false,false);
 	}
 	static public void teleopInit(){
+		speedArrayIndex = 0;
+		writeToFile = false;
+		lowThreshold=DEF_SHOOTER_LOW_THRESHOLD_VALUE;
+		voltageAdjustment = DEF_VOLTAGE_ADJUST_INCREMENT;
+		shooterVoltage = 0;
+		
+		Ishooter = settings.getNumber("Ishooter",0);
+		Dshooter = settings.getNumber("Dshooter",0);
+		
+		pid = new PIDController(0, Ishooter, Dshooter, src, out);
+		pid.setSetpoint(720);
+		pid.enable();
 	}
 
-	static public void teleopPeriodic(boolean start, boolean stop, boolean increaseSpeed, boolean decreaseSpeed){
-		boolean isProcess=false;
-		if(start)isProcess=true;
-		if(stop)isProcess=false;
-		if(isProcess){
-			Arduino_LightControl.Periodic(THIS_LIGHT_CONTROL_INDICATION);;
-		adjustSpeed(increaseSpeed,decreaseSpeed);
-		process();
+	static public void teleopPeriodic(boolean start, boolean increaseSpeed, boolean decreaseSpeed, boolean angleShooter){
+//		speedUpdate();
+		if(start){
+			Arduino_LightControl.Periodic(THIS_LIGHT_CONTROL_INDICATION);
+			adjustSpeed(increaseSpeed,decreaseSpeed);
+//			rampShooter(lowThreshold-currentSpeed, lowThreshold);
+			testingVoltage(lowThreshold-currentSpeed, lowThreshold);
+//			process();
 		}else{
 			Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
     		shooterMotor.set(0);
     		gateMotor.set(0);
     		mixer.set(0);
     		processState=SPEED_STARTUP;
+    		}
+		
+		if (!pastState && angleShooter){
+			solenoidState = !solenoidState;
+			if (solenoidState){
+				solenoid.set(DoubleSolenoid.Value.kForward);
+			}
+			else{
+				solenoid.set(DoubleSolenoid.Value.kReverse);
+			}
 		}
+		pastState = angleShooter;
+//		System.out.println("Changing Solenoid State To: " + solenoidState);
 	}
 	
 	static void process(){
@@ -237,10 +347,12 @@ public class ShooterControl  {
 	
 		 */
 		
-			currentSpeed=shooterEncoder.getRate();
+			currentSpeed=shooterMotor.getVelocity();
 			if(!negateSpeed){
 				currentSpeed=-currentSpeed;	
 			}
+//			System.out.println("processState: " + processState);
+			System.out.println("speed: " + currentSpeed);
 		switch(processState){
 		
 		default:
@@ -257,9 +369,12 @@ public class ShooterControl  {
 			if(reverseGateMotor)gs=-gs;
 			double xs=DEF_MIXER_VOLTAGE_VALUE;
 			if(reverseMixerMotor)xs=-xs;
-    		shooterMotor.set(xs);
+//    		shooterMotor.set(ms);
+			shooterMotor.set(0);
+//    		System.out.println("running motor: " + xs);
     		gateMotor.set(gs);
-    		mixer.set(xs);
+//    		mixer.set(xs);
+    		mixer.set(0);
 			break;
 			
 		case SPEED_LOW:
@@ -267,14 +382,15 @@ public class ShooterControl  {
 			if(currentSpeed<lowSpeed){
 	    		processState=SPEED_SHOOTING;
 			}else{
-    		processState=SPEED_IN_BOUNDS;
+				processState=SPEED_IN_BOUNDS;
 			}
 			break;
 			
 		case SPEED_SHOOTING:
 			double ms2=1.0;
 			if(reverseGateMotor)ms2=-ms2;
-    		shooterMotor.set(1);
+    		shooterMotor.set(-1);
+//    		System.out.println("running motor full speed");
     		gateMotor.set(0);
     		if(currentSpeed>=lowThreshold)processState=SPEED_IN_BOUNDS;
 			break;
@@ -285,5 +401,123 @@ public class ShooterControl  {
 			break;
 		}
 		
+	}
+	
+	private static void speedUpdate(){
+//		System.out.println("index: " + speedArrayIndex + " currentSpeed: "  + currentSpeed);
+		if(speedArrayIndex < speedArray.length){
+			speedArray[speedArrayIndex] = currentSpeed;
+			speedArrayIndex++;
+		}else if (!writeToFile){
+			String tmp = "";
+			for(int i = 0; i<speedArray.length; i++){
+				tmp+=speedArray[i]+",";
+			}
+//			settings.putString("ShooterSpeedArray", tmp);
+			writeToFile = true;
+//			System.out.println("\n\nWritten to file!\n\n");
+		}
+	}
+	
+	public static void rampShooter(double remainingSpeed, double targetSpeed){
+//		currentSpeed=shooterMotor.getVelocity();
+		currentSpeed=shooterEncoder.getRate();
+		if(!negateSpeed){
+			currentSpeed=-currentSpeed;	
+		}
+		
+		//using the joystick for testing
+//		currentSpeed = -Robot.pilot.leftStickYaxis();
+//		if(currentSpeed>0){
+//			currentSpeed=(currentSpeed*400)+400;
+//		}else{
+//			currentSpeed=(1-Math.abs(currentSpeed))*400;
+//		}
+		
+		//calculate speed direction
+//		if(currentSpeed>lastSpeed){
+//			currentDirection = 1;
+//		}else if (currentSpeed<lastSpeed){
+//			currentDirection = -1;
+//		}else{
+//			currentDirection = 0;
+//		}
+		
+		//run the mixer and gate
+		if(Math.abs(remainingSpeed)<SPEED_MARGIN_SHOOT){
+			//if within margin run the mixer and the gate motors
+			System.out.println("INSIDE THE MARGIN");
+			gateMotor.set(DEF_GATE_VOLTAGE_VALUE);
+			mixer.set(DEF_MIXER_VOLTAGE_VALUE);
+		}else{
+			gateMotor.set(0);
+			mixer.set(0);
+		}
+		
+		if(remainingSpeed>0 && voltageAdjustment<0){
+			if(Math.abs(remainingSpeed)>SPEED_MARGIN_SLOW_SHOOTER){
+				voltageAdjustment=DEF_VOLTAGE_ADJUST_INCREMENT;
+			}else{
+				voltageAdjustment=(DEF_VOLTAGE_ADJUST_INCREMENT/2);
+			}
+//			voltageAdjustment/=2;
+		}else if(remainingSpeed<0 && voltageAdjustment>0){
+//			voltageAdjustment/=2;
+			if(Math.abs(remainingSpeed)>SPEED_MARGIN_SLOW_SHOOTER){
+				voltageAdjustment=-DEF_VOLTAGE_ADJUST_INCREMENT;
+			}else{
+				voltageAdjustment=-(DEF_VOLTAGE_ADJUST_INCREMENT/2);
+			}
+		}
+		
+//		tmpSpeed = tmpSpeed + voltageAdjustment;
+		
+//		if(currentDirection == -1 && lowThreshold > 0 && tmpSpeed<1){
+//			tmpSpeed = tmpSpeed + voltageAdjustment;
+//		}else if(currentDirection == 1 && lowThreshold < 0 && tmpSpeed>-1){
+//			tmpSpeed = tmpSpeed - voltageAdjustment;
+//		}else{
+			if(remainingSpeed > 0){
+				if(currentSpeed > Math.abs(lowThreshold) ){//&& shooterVoltage>-1){
+					System.out.print("Case 3 - ");
+					shooterVoltage = shooterVoltage - voltageAdjustment;
+				}else {//if(shooterVoltage<1){
+					System.out.print("Case 4 - ");
+					shooterVoltage = shooterVoltage + voltageAdjustment;
+				}
+			}else{
+				if(currentSpeed > Math.abs(lowThreshold) ){//&& shooterVoltage<1){
+					System.out.print("Case 5 - ");
+					shooterVoltage = shooterVoltage + voltageAdjustment;
+				}else {//if(shooterVoltage>-1){
+					System.out.print("Case 6 - ");
+					shooterVoltage = shooterVoltage - voltageAdjustment;
+				}
+			}
+//		}
+		System.out.println("shooter voltage: " + shooterVoltage + " remaining speed: " + remainingSpeed);
+		System.out.println("target speed: " + lowThreshold + " currentspeed: " + currentSpeed + " voltage adjustment: " + voltageAdjustment);
+		shooterMotor.set(shooterVoltage);
+	}
+	
+	public static void testingVoltage(double remainingSpeed, double targetSpeed){
+//		currentSpeed=shooterEncoder.getRate();
+//		if(!negateSpeed){
+//			currentSpeed=-currentSpeed;
+//		}
+		
+		remainingSpeadSum+=Math.abs(remainingSpeed);
+		remainingSpeedCount++;
+		System.out.println("remaining speed avg: " + (remainingSpeadSum/remainingSpeedCount));
+		
+		shooterMotor.set(shooterVoltage/1.75);
+		
+//		gateMotor.set(0.5);
+//		shooterMotor.set(shooterVoltage/4);
+//		shooterMotor.set(0.44);
+//		System.out.println("average error: " + pid.getAvgError());
+		
+		System.out.println("shooter voltage: " + shooterVoltage + " remaining speed: " + remainingSpeed);
+		System.out.println("target speed: " + lowThreshold + " currentspeed: " + currentSpeed + " voltage adjustment: " + voltageAdjustment);
 	}
 }

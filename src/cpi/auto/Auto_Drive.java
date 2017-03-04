@@ -20,10 +20,10 @@ public class Auto_Drive extends SuperClass{
 	@Override
 	public void start(){
 		if (gyroAssistEnabled){
-			System.out.println("Starting Auto Drive - Gyro Assist Enabled");
+//			System.out.println("Starting Auto Drive - Gyro Assist Enabled");
 			startMotors(driveSpeed);
 		}else{
-			System.out.println("Starting Auto Drive");
+//			System.out.println("Starting Auto Drive");
 			startMotors(driveSpeed, turnSpeed);
 		}
 	}
@@ -39,14 +39,14 @@ public class Auto_Drive extends SuperClass{
 		//Set motor speeds
 		AutoOutputs.setDriveFwd(driveSpeed);
 		
-		System.out.println("Start Auto_Drive at - " + driveSpeed);
+//		System.out.println("Start Auto_Drive at - " + driveSpeed);
 	}
 	
 	private void startMotors(double driveSpeed, double turnSpeed){
 		//Set motor speeds
 		AutoOutputs.setDrive(driveSpeed, turnSpeed);
 		
-		System.out.println("Start Auto_Drive at: " + driveSpeed + " - " + turnSpeed);
+//		System.out.println("Start Auto_Drive at: " + driveSpeed + " - " + turnSpeed);
 	}
 	
 	private void stopMotors(){

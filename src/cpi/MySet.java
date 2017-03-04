@@ -54,7 +54,7 @@ public class MySet {
 	
   public static void assignControlMode(int index){
 	  controlArrayList.get(index).assignControlMode();
-	   System.out.println("Current Control Mode: " + controlArrayList.get(index).getDesc());
+//	   System.out.println("Current Control Mode: " + controlArrayList.get(index).getDesc());
 	   currentControlIndex = index;
   }
   

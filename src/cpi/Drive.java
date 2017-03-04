@@ -54,19 +54,19 @@ public class Drive {
 	
 	public void robotInit(){
 		
-//		    right1.EnableCurrentLimit(true);
-//		    right2.EnableCurrentLimit(true);
-//		    right3.EnableCurrentLimit(true);
-//		    left1.EnableCurrentLimit(true);
-//		    left2.EnableCurrentLimit(true);
-//		    left3.EnableCurrentLimit(true);
-//		    
-//		    right1.setCurrentLimit(35);
-//			right2.setCurrentLimit(35);
-//			right3.setCurrentLimit(35);
-//			left1.setCurrentLimit(35);
-//			left2.setCurrentLimit(35);
-//			left3.setCurrentLimit(35);
+		    right1.EnableCurrentLimit(true);
+		    right2.EnableCurrentLimit(true);
+		    right3.EnableCurrentLimit(true);
+		    left1.EnableCurrentLimit(true);
+		    left2.EnableCurrentLimit(true);
+		    left3.EnableCurrentLimit(true);
+		    
+		    right1.setCurrentLimit(35);
+			right2.setCurrentLimit(35);
+			right3.setCurrentLimit(35);
+			left1.setCurrentLimit(35);
+			left2.setCurrentLimit(35);
+			left3.setCurrentLimit(35);
 		
 		createControlModes();
 	}
@@ -136,6 +136,8 @@ public class Drive {
 //	}
 	
 	public void TeleopPeriodic(){//TODO split up drive class into a separate class for h,tank,and mechanum. no need for them all to be in a single class.
+//		System.out.println("right: " + right1.getPosition() + " - " + right2.getPosition() + " - " + right3.getPosition());
+//		System.out.println("left: " + left1.getPosition() + " - " + left2.getPosition() + " - " + left3.getPosition());
 		controlStates.run();
 		
 		switch(mode){

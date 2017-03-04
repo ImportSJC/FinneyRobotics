@@ -11,7 +11,7 @@ public class EncoderControl {
 //	private static final double COUNTS_PER_ROTATION = 360; //encoder counts per rotation of the wheel
 	
 	//new base
-		private static final double WHEEL_DIAMETER = 4.14; // wheel diameter in inches
+		private static final double WHEEL_DIAMETER = 4; // wheel diameter in inches, measured to be 3.875
 		private static final double COUNTS_PER_ROTATION = 4096; //encoder counts per rotation of the wheel
 	
 
@@ -30,23 +30,15 @@ public class EncoderControl {
 	private double myRate;
 	private double currentCount;
 	
-	public EncoderControl(int talonID)
+	public EncoderControl(int talonID, MotorController myTalon)
 	{
-		if(talonID == 1){
-			myTalon = Drive.left1;
-		}else if(talonID == 4){
-			myTalon = Drive.right1;
-		}
+		this.myTalon = myTalon;
 	}
 	
-	public EncoderControl(int talonID, boolean reversed)//TODO make this work
+	public EncoderControl(int talonID, boolean reversed, MotorController myTalon)//TODO make this work
 	{
 		this.reversed = reversed;
-		if(talonID == 4){
-			myTalon = Drive.right3;
-		}else if(talonID == 7){
-			myTalon = Drive.left3;
-		}
+		this.myTalon = myTalon;
 	}
 	
 	public EncoderControl(int aChannel, int bChannel)
@@ -64,7 +56,7 @@ public class EncoderControl {
 	}
 	
     public void Init(){
-    	System.out.println("Encoder Init");
+//    	System.out.println("Encoder Init");
         resetAll();
     }
     
@@ -100,7 +92,7 @@ public class EncoderControl {
     
     private static double convertCountToDistance(double counts){
 //    	System.out.println("Circ: " + getCircumference(WHEEL_DIAMETER) + "counts/cpr: " + (counts/COUNTS_PER_ROTATION));
-    	return (getCircumference(WHEEL_DIAMETER)*(counts/COUNTS_PER_ROTATION))/(12.0/15.0);
+    	return (getCircumference(WHEEL_DIAMETER)*(counts/COUNTS_PER_ROTATION))/(15.0/24.0);
     }
     
     public double getDistance(){
@@ -114,11 +106,11 @@ public class EncoderControl {
     }
     
     public double getRate(){
-    	System.out.println("Get Rate Called");
+//    	System.out.println("Get Rate Called");
     	if(myEncoder != null){
     		return myEncoder.getRate();
     	}else if (myTalon != null){
-    		System.out.println("Get Rate using Velocity!");
+//    		System.out.println("Get Rate using Velocity!");
     		if(reversed){
     			return -myTalon.getVelocity();
     		}

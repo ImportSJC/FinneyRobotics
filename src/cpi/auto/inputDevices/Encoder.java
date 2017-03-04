@@ -36,7 +36,7 @@ public class Encoder extends SuperClass{
 		AutoInputs.resetEncoders();
 		if(useCount){
 			if(useAverage){
-				System.out.println("Correct 1");
+//				System.out.println("Correct 1");
 				startPosition = AutoInputs.getEncoderCountAvg();
 			}else{
 				startPosition = AutoInputs.getSummedEncoderCount();
@@ -48,7 +48,7 @@ public class Encoder extends SuperClass{
 				startPosition = AutoInputs.getLeftEncoderDistance();
 			}
 		}
-		System.out.println("Encoder start position: " + startPosition);
+//		System.out.println("Encoder start position: " + startPosition);
 	}
 	
 	private boolean check(double input){
@@ -77,10 +77,10 @@ public class Encoder extends SuperClass{
 	
 	@Override 
 	public boolean check(){
-		System.out.print("Encoder target position: " + targetPosition);
+//		System.out.print("Encoder target position: " + targetPosition);
 		if(useCount){
 			if(useAverage){
-				System.out.println(" - C:Y, A:Y - Current Position: " + AutoInputs.getEncoderCountAvg());
+//				System.out.println(" - C:Y, A:Y - Current Position: " + AutoInputs.getEncoderCountAvg());
 				return check(AutoInputs.getEncoderCountAvg());
 			}else{
 				System.out.println(" - C:Y, A:N - Current Position: " + AutoInputs.getSummedEncoderCount());
@@ -88,10 +88,10 @@ public class Encoder extends SuperClass{
 			}
 		}else{
 			if(useAverage){
-				System.out.println(" - C:N, A:Y - Current Position: " + AutoInputs.getEncoderDistanceAvg());
+//				System.out.println(" - C:N, A:Y - Current Position: " + AutoInputs.getEncoderDistanceAvg());
 				return check(AutoInputs.getEncoderDistanceAvg());
 			}else{
-				System.out.println(" - C:N, A:N - Current Position: " + AutoInputs.getLeftEncoderDistance() + " - Right: " + AutoInputs.getRightEncoderDistance());
+//				System.out.println(" - C:N, A:N - Current Position: " + AutoInputs.getLeftEncoderDistance() + " - Right: " + AutoInputs.getRightEncoderDistance());
 				return check(AutoInputs.getLeftEncoderDistance());
 			}
 		}

@@ -59,16 +59,16 @@ public class GearPipeline {
 
 	double DEF_FILTER_CONTOURS_MIN_AREA=0;	
 	double DEF_FILTER_CONTOURS_MIN_PERIMETER=0;
-	double DEF_FILTER_CONTOURS_MIN_WIDTH=16;
+	double DEF_FILTER_CONTOURS_MIN_WIDTH=0;
 	double DEF_FILTER_CONTOURS_MAX_WIDTH=1000;
 	double DEF_FILTER_CONTOURS_MIN_HEIGHT=0;
 	double DEF_FILTER_CONTOURS_MAX_HEIGHT=1000;
-	double DEF_FILTER_CONTOURS_SOLIDITY_LOW=0;
+	double DEF_FILTER_CONTOURS_SOLIDITY_LOW=50;
 	double DEF_FILTER_CONTOURS_SOLIDITY_HIGH=100000;
-	double DEF_FILTER_CONTOURS_MIN_VERTICES=4;
-	double DEF_FILTER_CONTOURS_MAX_VERTICES=14;
-	double DEF_FILTER_CONTOURS_MIN_RATIO=2;
-	double DEF_FILTER_CONTOURS_MAX_RATIO=1000;
+	double DEF_FILTER_CONTOURS_MIN_VERTICES=0;
+	double DEF_FILTER_CONTOURS_MAX_VERTICES=10000;
+	double DEF_FILTER_CONTOURS_MIN_RATIO=1;
+	double DEF_FILTER_CONTOURS_MAX_RATIO=5;
 	
 	// END Default values
 	
@@ -128,6 +128,8 @@ public class GearPipeline {
 	static final String FILTER_CONTOURS_COUNT="Filter Contours/Filters Contours Count";
 	static final String FILTER_CONTOURS_CENTER_X="Filter Contours/Filters Contours X Center";
 	static final String FILTER_CONTOURS_CENTER_Y="Filter Contours/Filters Contours Y Center";
+	static final String FILTER_CONTOURS_WIDTH="Filter Contours/Filters Contours Width";
+	static final String FILTER_CONTOURS_HEIGHT="Filter Contours/Filters Contours Height";
 
 	double filterContoursMinArea;
 	double filterContoursMinPerimeter;
@@ -584,22 +586,48 @@ public class GearPipeline {
 			k++;
 			output.add(contour);
 
-		}			
-		int i;
+		}
+		
+		int filteredIndex = 0;
+		
 		centerX=new double[output.size()];
 		centerY=new double[output.size()];
 		width=new double[output.size()];
 		height=new double[output.size()];
-			for(i=0;i<output.size();i++){
-				centerX[i]=tmpX[i];
-				centerY[i]=tmpY[i];
-				width[i]=tmpWidth[i];
-				height[i]=tmpHeight[i];
+		for(int i=0;i<output.size();i++){
+			boolean anotherInRange = false;
+			int xRange = 5;
+			int yRange = 20;
+			
+			//check if any other box is in the x range of this box
+			for(int j=0;j<output.size();j++){
+				if(j != i){
+					//if within x range
+					if(tmpX[i]+(tmpWidth[i]/2)-xRange < tmpX[j]+(tmpWidth[j]/2) && tmpX[i]+(tmpWidth[i]/2)+xRange > tmpX[j]+(tmpWidth[j]/2)){
+						if(tmpY[i]+(tmpHeight[i]/2)-yRange < tmpY[j]+(tmpHeight[j]/2) && tmpY[i]+(tmpHeight[i]/2)+yRange > tmpY[j]+(tmpHeight[j]/2)){
+							anotherInRange = true;
+							break;
+						}
+					}
+				}
 			}
-			if(DriverStation.getInstance().isDisabled()){
+			
+//			System.out.println("filtered index: " + filteredIndex + " i: " + i + " tmp x length: " + tmpX.length + " tmp width length: " + tmpWidth.length);
+			if(anotherInRange){
+				centerX[filteredIndex]=tmpX[i]+(tmpWidth[i]/2);
+				centerY[filteredIndex]=tmpY[i]+(tmpHeight[i]/2);
+				width[filteredIndex]=tmpWidth[i];
+				height[filteredIndex]=tmpHeight[i];
+				filteredIndex++;
+			}
+		}
+		
+		if(DriverStation.getInstance().isDisabled()){
 			table.putNumberArray(FILTER_CONTOURS_CENTER_X, centerX);
 			table.putNumberArray(FILTER_CONTOURS_CENTER_Y, centerY);
-			}
+			table.putNumberArray(FILTER_CONTOURS_WIDTH, width);
+			table.putNumberArray(FILTER_CONTOURS_HEIGHT, height);
+		}
 	}
 	
 	public Mat selectedOutput(){

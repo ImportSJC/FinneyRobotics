@@ -52,8 +52,34 @@ public class XBox360 {
  * @return - returns the Right Trigger value
  */
     public double rightTrigger(){
+    	
     	return joystick.getRawAxis(3);
+     }
+    
+   public boolean leftTriggerPressed(){
+    	if (leftTrigger() == 1.0){
+    		return true;
+    	}
+    	else {
+    		return false;
+    	}
+    	
+    
     }
+   
+   public boolean rightTriggerPressed(){
+   	if (rightTrigger() == 1.0){
+   		return true;
+   	}
+   	else {
+   		return false;
+   	}
+   	
+   
+   }
+    
+    
+   
 
 /**
  * 
@@ -77,6 +103,34 @@ public class XBox360 {
  */
     public double directionalPad(){
     	return joystick.getPOV();
+    }
+    
+    public boolean directionalPadUp(){
+    	if (directionalPad() == 0){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public boolean directionalPadRight(){
+    	if (directionalPad() == 90){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public boolean directionalPadDown(){
+    	if (directionalPad() == 180){
+    		return true;
+    	}
+    	return false;
+    }
+    
+    public boolean directionalPadLeft(){
+    	if (directionalPad() == 270){
+    		return true;
+    	}
+    	return false;
     }
     
     /**
