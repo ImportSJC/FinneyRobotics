@@ -105,12 +105,6 @@ public class Drive {
 //	}
 	
 	public void tankMotors(double right,double left){
-		//slow down the drive system
-		if(Robot.pilot.leftBumper()){
-			right = right/2;
-			left = left/2;
-		}
-		
 		if(sixSimDriveBase){
 			right1.set(right);
 			right2.set(right);

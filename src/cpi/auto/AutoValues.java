@@ -8,8 +8,8 @@ public class AutoValues {
 //	public static final double distance_allianceWall_to_turn = 58.3;
 //	public static final double distance_turn_to_sideAirShip = 89.6;
 	
-	public static final double distance_allianceWall_centerOfBot_to_centerAirShip = 77.56;
-	public static final double distance_turn_centerOfBot_to_sideAirShip = 70.36;
+	public static final double distance_allianceWall_centerOfBot_to_centerAirShip = 77.56;//-6 is to correct for a distance an issue im having
+	public static final double distance_turn_centerOfBot_to_sideAirShip = 70.36+6;//distance to spring + distance into spring
 	
 	public static final int distance_canToTote = 1142;//tested
 	public static final int distance_toteToTote = 4385;

@@ -4,7 +4,7 @@ import cpi.Drive;
 
 public class AutoInputs {
 	
-	private static final boolean useMagEncoders = true;
+	private static final boolean useMagEncoders = false;
 	
 	//Encoders
 	private static EncoderControl leftEnc;
@@ -51,9 +51,9 @@ public class AutoInputs {
 				rightEnc = new EncoderControl(7, true, Drive.left3);
 		}else{
 			if(leftEnc == null)
-				leftEnc = new EncoderControl(0, 1);
+				leftEnc = new EncoderControl(2, 3);
 			if(rightEnc == null)
-				rightEnc = new EncoderControl(2, 3, true);
+				rightEnc = new EncoderControl(4, 5, true);
 		}
 	}
 	

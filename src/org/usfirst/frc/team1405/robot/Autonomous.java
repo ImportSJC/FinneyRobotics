@@ -6,10 +6,12 @@ import cpi.auto.AutoInputs;
 import cpi.auto.AutoOutputs;
 import cpi.auto.AutoValues;
 import cpi.auto.Auto_Drive;
+import cpi.auto.Auto_Gear;
 import cpi.auto.SuperClass;
 import cpi.auto.conditions.And;
 import cpi.auto.inputDevices.Encoder;
 import cpi.auto.inputDevices.Gyroscope;
+import cpi.auto.inputDevices.Time;
 import cpi.autoSupportClasses.AutonomousBase;
 
 public class Autonomous extends AutonomousBase{
@@ -24,17 +26,17 @@ public class Autonomous extends AutonomousBase{
 	}
 	
 	public static void createAutoModes(){
-		
 		SuperClass[][] sideAirshipGear = new SuperClass[][]{
 			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_centerOfBot_to_centerAirShip, false))},
 			{ new And(new Auto_Drive(0, 0), new Gyroscope(-AutoValues.angle_turnToSideGear))},
-			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_turn_centerOfBot_to_sideAirShip, false))} };
+			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_turn_centerOfBot_to_sideAirShip, false))},
+			{ new Time(15), new Auto_Gear(true)} };
 		
 		SuperClass[][] centerAirshipGear = new SuperClass[][]{
 			{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_to_centerAirShip, false))}};
 		
 		SuperClass[][] turn90 = new SuperClass[][]{
-				{ new And(new Auto_Drive(0, 0), new Encoder(90, 0, false, true))}};
+				{ new And(new Auto_Drive(0, 0), new Gyroscope(-90))}};
 		
 		SuperClass[][] driveFwd77 = new SuperClass[][]{
 				{ new And(new Auto_Drive(0), new Encoder(AutoValues.distance_allianceWall_centerOfBot_to_centerAirShip, false))}};
@@ -42,8 +44,8 @@ public class Autonomous extends AutonomousBase{
 		SuperClass[][] driveFwd10 = new SuperClass[][]{
 				{ new And(new Auto_Drive(0), new Encoder(10, false))}};
 		
-		MySet.addAutoMode(new AutoMode(driveFwd10, "Drive fwd 77in."));
 		MySet.addAutoMode(new AutoMode(turn90, "Turn 90 degrees."));
+		MySet.addAutoMode(new AutoMode(driveFwd77, "Drive fwd 77in."));
 		MySet.addAutoMode(new AutoMode(centerAirshipGear, "Drop off the center airship gear."));
 		MySet.addAutoMode(new AutoMode(sideAirshipGear, "Drop off the side airship gear."));
 		

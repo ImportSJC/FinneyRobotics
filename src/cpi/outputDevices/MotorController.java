@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 public class MotorController {
 	private boolean useTalon = true;
 	
+	private boolean reverse = false;
 	private CANTalon talon;
 	private Jaguar jaguar;
 	
@@ -35,11 +36,34 @@ public class MotorController {
 		driveMotorCurrentArrayIndex = 0;
 	}
 	
+	public MotorController(int ID, boolean reverseMotor){
+		myID = ID;
+		reverse = reverseMotor;
+		
+		if(this.useTalon){
+			talon = new CANTalon(ID);
+		}else{
+			jaguar = new Jaguar(ID);
+		}
+		
+		settings = NetworkTable.getTable("Motor_Current_Output");
+		settings.putString("MotorCurrent"+myID, "");
+		driveMotorCurrentArrayIndex = 0;
+	}
+	
 	public void set(double speed){
 		if(useTalon){
-			talon.set(speed);
+			if(reverse){
+				talon.set(-speed);
+			}else{
+				talon.set(speed);
+			}
 		}else{
-			jaguar.set(speed);
+			if(reverse){
+				jaguar.set(-speed);
+			}else{
+				jaguar.set(speed);
+			}
 		}
 	}
 	

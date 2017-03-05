@@ -3,6 +3,7 @@ package org.usfirst.frc.team1405.robot;
 import com.ctre.CANTalon.TalonControlMode;
 
 import cpi.Arduino_LightControl;
+import cpi.auto.AutoInputs;
 import cpi.outputDevices.MotorController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -108,13 +109,18 @@ public class ShooterControl  {
 	static private double SPEED_MARGIN_SHOOT = 5;
 	static private double SPEED_MARGIN_SLOW_SHOOTER = 20;
 	static private double remainingSpeedCount = 0;
-	static private double remainingSpeadSum = 0;
+	static private double remainingSpeedSum = 0;
+	static private boolean trackAverage = false;
 	
 	static private PIDController pid;
+	static private Tolerance tol;
 	static private PIDSource src;
 	static private PIDOutput out;
-	static private double Ishooter = 0.0002;
-	static private double Dshooter = 0.02;
+	static private double Ishooter = 0.00002;
+	static private double Dshooter = 0.002;
+	static private double constantSpeed = 0.45;
+	static private double feedForward = 0.0;
+	static private double period = 50;
 	
 	static private double[] speedArray = new double[250];
 	static private int speedArrayIndex = 0;
@@ -195,7 +201,7 @@ public class ShooterControl  {
 			
 			@Override
 			public void pidWrite(double output) {
-				System.out.println("PID output: " + output);
+//				System.out.println("PID output: " + output);
 				if(output>0){
 					shooterVoltage = output;
 				}else{
@@ -205,13 +211,26 @@ public class ShooterControl  {
 			}
 		};
 		
-		pid = new PIDController(0, Ishooter, Dshooter, src, out);//P=0.0023
+		pid = new PIDController(0, Ishooter, Dshooter, feedForward, src, out);//P=0.0023
+		
+		tol = new Tolerance() {
+			
+			@Override
+			public boolean onTarget() {
+				double tmp = -shooterEncoder.getRate();
+				if(tmp>DEF_SHOOTER_LOW_THRESHOLD_VALUE-SPEED_MARGIN_SHOOT && tmp<DEF_SHOOTER_LOW_THRESHOLD_VALUE+SPEED_MARGIN_SHOOT){
+					return true;
+				}
+				return false;
+			}
+		};
+		
 		settings.putNumber("Ishooter", Ishooter);
 		settings.putNumber("Dshooter", Dshooter);
-//		pid.setPercentTolerance(5);
-//		pid.onTarget();
-//		pid.setOutputRange(0, 1);
-//		pid.setContinuous(true);
+		settings.putBoolean("trackAverage", trackAverage);
+		settings.putNumber("feedForward", feedForward);
+		settings.putNumber("period", period);
+		settings.putNumber("targetSpeed", DEF_SHOOTER_LOW_THRESHOLD_VALUE);
 	}
     	
 	
@@ -299,9 +318,16 @@ public class ShooterControl  {
 		
 		Ishooter = settings.getNumber("Ishooter",0);
 		Dshooter = settings.getNumber("Dshooter",0);
+		feedForward = settings.getNumber("feedForward", 0);
+		period = settings.getNumber("period", 50);
+		DEF_SHOOTER_LOW_THRESHOLD_VALUE = settings.getNumber("targetSpeed", DEF_SHOOTER_LOW_THRESHOLD_VALUE);
 		
-		pid = new PIDController(0, Ishooter, Dshooter, src, out);
-		pid.setSetpoint(720);
+		remainingSpeedSum = 0;
+		remainingSpeedCount = 0;
+		
+		pid = new PIDController(0, Ishooter, Dshooter, feedForward, src, out);
+		pid.setSetpoint(DEF_SHOOTER_LOW_THRESHOLD_VALUE);
+		pid.setTolerance(tol);
 		pid.enable();
 	}
 
@@ -331,6 +357,8 @@ public class ShooterControl  {
 			}
 		}
 		pastState = angleShooter;
+		trackAverage = settings.getBoolean("trackAverage", false);
+//		System.out.println("Shooter position: " + shooterEncoder.getRaw());
 //		System.out.println("Changing Solenoid State To: " + solenoidState);
 	}
 	
@@ -495,8 +523,8 @@ public class ShooterControl  {
 				}
 			}
 //		}
-		System.out.println("shooter voltage: " + shooterVoltage + " remaining speed: " + remainingSpeed);
-		System.out.println("target speed: " + lowThreshold + " currentspeed: " + currentSpeed + " voltage adjustment: " + voltageAdjustment);
+//		System.out.println("shooter voltage: " + shooterVoltage + " remaining speed: " + remainingSpeed);
+//		System.out.println("target speed: " + lowThreshold + " currentspeed: " + currentSpeed + " voltage adjustment: " + voltageAdjustment);
 		shooterMotor.set(shooterVoltage);
 	}
 	
@@ -506,18 +534,26 @@ public class ShooterControl  {
 //			currentSpeed=-currentSpeed;
 //		}
 		
-		remainingSpeadSum+=Math.abs(remainingSpeed);
-		remainingSpeedCount++;
-		System.out.println("remaining speed avg: " + (remainingSpeadSum/remainingSpeedCount));
+		if(trackAverage){
+			remainingSpeedSum+=Math.abs(remainingSpeed);
+			remainingSpeedCount++;
+		}
+		
+		if(pid.onTarget()){
+			gateMotor.set(-1);
+		}
+		
+		System.out.println("remaining speed avg: " + (remainingSpeedSum/remainingSpeedCount) + " remaining speed: " + remainingSpeed);
 		
 		shooterMotor.set(shooterVoltage/1.75);
+//		shooterMotor.set(constantSpeed);
 		
 //		gateMotor.set(0.5);
 //		shooterMotor.set(shooterVoltage/4);
 //		shooterMotor.set(0.44);
 //		System.out.println("average error: " + pid.getAvgError());
 		
-		System.out.println("shooter voltage: " + shooterVoltage + " remaining speed: " + remainingSpeed);
-		System.out.println("target speed: " + lowThreshold + " currentspeed: " + currentSpeed + " voltage adjustment: " + voltageAdjustment);
+//		System.out.println("shooter voltage: " + shooterVoltage + " remaining speed: " + remainingSpeed);
+//		System.out.println("target speed: " + lowThreshold + " currentspeed: " + currentSpeed + " voltage adjustment: " + voltageAdjustment);
 	}
 }

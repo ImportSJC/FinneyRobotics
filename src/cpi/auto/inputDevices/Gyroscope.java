@@ -17,26 +17,17 @@ public class Gyroscope extends SuperClass{
 	@Override
 	public void start(){
 		AutoInputs.resetGyros();
-	}
-	
-	private boolean atTargetAngle(double currentAngle){
-		if(currentAngle>targetAngle-MARGIN_OF_ERROR && currentAngle<targetAngle+MARGIN_OF_ERROR){
-			return true;
-		}
-		return false;
+		AutoOutputs.startPID_Turn(targetAngle);
 	}
 	
 	@Override 
 	public boolean check(){
 //		System.out.println("Gyro Angle: " + AutoInputs.getGyroAngle());
-
-		//stop once it hits the target angle and its not moving fast
-		if(atTargetAngle(AutoInputs.getGyroAngle()) && Math.abs(AutoInputs.getGyroRate()) < END_RATE){return true;}
-		
-//		if (targetAngle/2<=AutoInputs.getAngle()){
-		AutoOutputs.rampTurn_Gyro(targetAngle-AutoInputs.getGyroAngle(), targetAngle);
-//		}
-		
-		return false;
+		return AutoOutputs.checkPID_Turn();
+	}
+	
+	@Override
+	public void stop(){
+		AutoOutputs.stopPID_Turn();
 	}
 }

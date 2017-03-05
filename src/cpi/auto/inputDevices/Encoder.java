@@ -34,31 +34,33 @@ public class Encoder extends SuperClass{
 	@Override
 	public void start(){
 		AutoInputs.resetEncoders();
-		if(useCount){
-			if(useAverage){
-//				System.out.println("Correct 1");
-				startPosition = AutoInputs.getEncoderCountAvg();
-			}else{
-				startPosition = AutoInputs.getSummedEncoderCount();
-			}
-		}else{
-			if(useAverage){
-				startPosition = AutoInputs.getEncoderDistanceAvg();
-			}else{
-				startPosition = AutoInputs.getLeftEncoderDistance();
-			}
-		}
-//		System.out.println("Encoder start position: " + startPosition);
+		AutoOutputs.startPID_Drive(targetPosition);
+//		if(useCount){
+//			if(useAverage){
+//				startPosition = AutoInputs.getEncoderCountAvg();
+//			}else{
+//				startPosition = AutoInputs.getSummedEncoderCount();
+//			}
+//		}else{
+//			if(useAverage){
+//				startPosition = AutoInputs.getEncoderDistanceAvg();
+//			}else{
+//				startPosition = AutoInputs.getLeftEncoderDistance();
+//			}
+//		}
+		
+		
 	}
 	
 	private boolean check(double input){
-		if(atTargetAngle(input) && checkRate()){return true;}
+//		if(atTargetAngle(input) && checkRate()){return true;}
+		if( AutoOutputs.checkPID_Drive() ){return true;}
 		
-		if(useAverage){
-			AutoOutputs.rampDrive_Encoder(targetPosition-input, targetPosition);
-		}else{
-			AutoOutputs.rampTurn_Encoder(targetPosition-input, targetPosition);
-		}
+//		if(useAverage){
+//			AutoOutputs.rampDrive_Encoder(targetPosition-input, targetPosition);
+//		}else{
+//			AutoOutputs.rampTurn_Encoder(targetPosition-input, targetPosition);
+//		}
 		
 		return false;
 	}
@@ -76,7 +78,7 @@ public class Encoder extends SuperClass{
 	}
 	
 	@Override 
-	public boolean check(){
+	public boolean check(){//TODO delete this and clean up class
 //		System.out.print("Encoder target position: " + targetPosition);
 		if(useCount){
 			if(useAverage){
@@ -95,5 +97,10 @@ public class Encoder extends SuperClass{
 				return check(AutoInputs.getLeftEncoderDistance());
 			}
 		}
+	}
+	
+	@Override
+	public void stop(){
+		AutoOutputs.stopPID_Drive();
 	}
 }

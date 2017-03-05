@@ -3,16 +3,16 @@ package cpi.auto;
 import org.usfirst.frc.team1405.robot.GearControl;
 
 public class Auto_Gear extends SuperClass{
-	private boolean dropGear = false;
+	private boolean ejectGear = false;
 	
-	public Auto_Gear(boolean dropGear){
-		this.dropGear = dropGear;
+	public Auto_Gear(boolean ejectGear){
+		this.ejectGear = ejectGear;
 	}
 	
 	@Override
 	public void start(){
-		if(dropGear){
-			GearControl.TeleopPeriodic(false, false, true, false);
+		if(ejectGear){
+			GearControl.TeleopPeriodic(false, true, false, false);
 		}
 	}
 	
