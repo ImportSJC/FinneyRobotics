@@ -111,8 +111,8 @@ public class AutoInputs {
 	}
 	
 	public static double getEncoderCountAvg(){
-		System.out.println("Left Encoder position: " + getSummedEncoderCount());
-		System.out.println("Right Encoder position: " + getRightEncoderCount());
+//		System.out.println("Left Encoder position: " + getSummedEncoderCount());
+//		System.out.println("Right Encoder position: " + getRightEncoderCount());
 		return (leftEnc.getCount() + rightEnc.getCount())/2;
 	}
 	

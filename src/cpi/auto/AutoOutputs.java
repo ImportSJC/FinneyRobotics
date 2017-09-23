@@ -1,5 +1,8 @@
 package cpi.auto;
 
+import org.usfirst.frc.team1405.robot.GearControl;
+import org.usfirst.frc.team1405.robot.ShooterControl;
+
 import cpi.Drive;
 import cpi.outputDevices.MotorController;
 import edu.wpi.first.wpilibj.PIDController;
@@ -10,6 +13,15 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 
 public class AutoOutputs {
+	private static final boolean USE_GYRO = true;
+	private static double pidTarget = 0;
+	private static final double PID_FAST_RANGE = 12;
+	private static double PID_SLOW_PERCENTAGE = 0.25;
+	private static double PID_FAST_PERCENTAGE = 0.5;
+	
+	private static double PID_SLOW_FWD_PERCENTAGE = 1.0/12.0;
+	private static double PID_FAST_FWD_PERCENTAGE = 1.0/12.0;
+	
 //	public static double leftMotor1 = 0.0;
 //	public static double rightMotor1 = 0.0;
 //	public static double leftMotor2 = 0.0;
@@ -34,10 +46,17 @@ public class AutoOutputs {
 	
 	private static double leftEnc_driveFwd_zero = 0;
 	private static double rightEnc_driveFwd_zero = 0;
-	private static double DRIVE_FWD_MARGIN = 0.2; //number of counts the right encoder can be off the left encoder while driving fwd
-	private static double TURN_MARGIN = 0.2; //number of degrees the gyro can be off while turning
+	private static double DRIVE_FWD_MARGIN = 0.2; //the margin of error in inches of driving forward in autonomous
+	private static double TURN_MARGIN = 0.5; //number of degrees the gyro can be off while turning
 	private static double driveFwd_adjustment = 0.01;
 	
+	private static PIDSource src_drive_fwd;
+	private static PIDOutput out_drive_fwd;
+	private static PIDController pid_drive_fwd;
+	private static double driveFwd_P = 0.1; 	// using encoder: 0.1
+	private static double driveFwd_I = 0.02;	// using encoder: 0.02
+	private static double driveFwd_D = 0.04;	// using encoder: 0.04
+
 	private static PIDSource src_drive;
 	private static PIDOutput out_drive;
 	private static PIDController pid_drive;
@@ -48,9 +67,9 @@ public class AutoOutputs {
 	private static PIDSource src_turn;
 	private static PIDOutput out_turn;
 	private static PIDController pid_turn;
-	private static double Pturn = 0.3;
-	private static double Iturn = 0.03;
-	private static double Dturn = 0.2;
+	private static double Pturn = 0.18;// 0.3
+	private static double Iturn = 0.03;// 0.03
+	private static double Dturn = 0.3;// 0.3
 	
 	private static NetworkTable settings;
 	
@@ -64,12 +83,49 @@ public class AutoOutputs {
 		
 		settings=NetworkTable.getTable(THIS_TABLE_NAME);
 		
+		src_drive_fwd = new PIDSource() {
+			
+			@Override
+			public void setPIDSourceType(PIDSourceType pidSource) {
+			}
+			
+			@Override
+			public double pidGet() {
+			
+				if(USE_GYRO){
+					double tmp = AutoInputs.getGyroAngle();
+//					System.out.println("PID drive fwd in: " + tmp);
+					return tmp;
+				}else{
+					double tmp = AutoInputs.getRightEncoderCount()-AutoInputs.getLeftEncoderCount(); // use the difference of the encoders to straighten out the bot
+					return -tmp;
+				}
+			}
+			
+			@Override
+			public PIDSourceType getPIDSourceType() {
+				return PIDSourceType.kDisplacement;
+			}
+		};
+		
+		out_drive_fwd = new PIDOutput() {
+			
+			@Override
+			public void pidWrite(double output) {
+				//NOTHING HERE, USED IN THE PID_DRIVE
+			}
+		};
+		
+		pid_drive_fwd = new PIDController(driveFwd_P, driveFwd_I, driveFwd_D, src_drive_fwd, out_drive_fwd);
+		
+		settings.putNumber("driveFwd_P", driveFwd_P);
+		settings.putNumber("driveFwd_I", driveFwd_I);
+		settings.putNumber("driveFwd_D", driveFwd_D);
+		
 		src_drive = new PIDSource() {
 			
 			@Override
 			public void setPIDSourceType(PIDSourceType pidSource) {
-				// TODO Auto-generated method stub
-				
 			}
 			
 			@Override
@@ -89,8 +145,21 @@ public class AutoOutputs {
 			
 			@Override
 			public void pidWrite(double output) {
-				System.out.println("Drive PID out: " + output/4);
-				setDriveFwd(output/4);
+				if(USE_GYRO){
+//					System.out.println("Drive PID out: " + output/4 + " Drive fwd PID out: " + pid_drive_fwd.get()/6);
+					if(pidTarget > PID_FAST_RANGE){
+						setDrive(output*PID_FAST_PERCENTAGE, pid_drive_fwd.get()*PID_FAST_FWD_PERCENTAGE);
+					}else{
+						setDrive(output*PID_SLOW_PERCENTAGE, pid_drive_fwd.get()*PID_SLOW_FWD_PERCENTAGE);
+					}
+				}else{
+//					System.out.println("Drive PID out: " + output/4 + " Drive fwd PID out: " + pid_drive_fwd.get()/6);
+					if(pidTarget > PID_FAST_RANGE){
+						setDrive(output*PID_FAST_PERCENTAGE, pid_drive_fwd.get()*PID_FAST_FWD_PERCENTAGE);
+					}else{
+						setDrive(output*PID_SLOW_PERCENTAGE, pid_drive_fwd.get()*PID_SLOW_FWD_PERCENTAGE);
+					}
+				}
 			}
 		};
 		
@@ -104,8 +173,6 @@ public class AutoOutputs {
 			
 			@Override
 			public void setPIDSourceType(PIDSourceType pidSource) {
-				// TODO Auto-generated method stub
-				
 			}
 			
 			@Override
@@ -125,9 +192,8 @@ public class AutoOutputs {
 			
 			@Override
 			public void pidWrite(double output) {
-				System.out.println("Turn PID out: " + output/2);
-				setDriveTurn(output/4);
-//				setDriveFwd(output/4);
+//				System.out.println("Turn PID out: " + output/2);
+				setDriveTurn(output/3);// /4
 			}
 		};
 		
@@ -147,6 +213,12 @@ public class AutoOutputs {
 	}
 	
 public static void autoInit(){
+		driveFwd_P = settings.getNumber("driveFwd_P", driveFwd_P);
+		driveFwd_I = settings.getNumber("driveFwd_I", driveFwd_I);
+		driveFwd_D = settings.getNumber("driveFwd_D", driveFwd_D);
+	
+		pid_drive_fwd = new PIDController(driveFwd_P, driveFwd_I, driveFwd_D, src_drive_fwd, out_drive_fwd);
+	
 		Pdrive = settings.getNumber("Pdrive", Pdrive);
 		Idrive = settings.getNumber("Idrive", Idrive);
 		Ddrive = settings.getNumber("Ddrive", Ddrive);
@@ -205,16 +277,18 @@ public static void autoInit(){
 		gyroAssist = false;
 		driveSpeed = 0.0;
 		turnSpeed = 0.0;
+		GearControl.stopMotors();
+		ShooterControl.stopMotors();
 	}
 	
 	public static void setDrive(double drivingSpeed, double turningSpeed){
 //		System.out.println("Drive Motors are assigned the drivespeed: " + drivingSpeed + " turnSpeed: " + turningSpeed);
-		leftMotor1.set(-drivingSpeed-turningSpeed);
-		leftMotor2.set(-drivingSpeed-turningSpeed);
-		leftMotor3.set(-drivingSpeed-turningSpeed);
-		rightMotor1.set(drivingSpeed-turningSpeed);
-		rightMotor2.set(drivingSpeed-turningSpeed);
-		rightMotor3.set(drivingSpeed-turningSpeed);
+		leftMotor1.set(drivingSpeed+turningSpeed);
+		leftMotor2.set(drivingSpeed+turningSpeed);
+		leftMotor3.set(drivingSpeed+turningSpeed);
+		rightMotor1.set(-drivingSpeed+turningSpeed);
+		rightMotor2.set(-drivingSpeed+turningSpeed);
+		rightMotor3.set(-drivingSpeed+turningSpeed);
 		turnSpeed = turningSpeed;
 		driveSpeed = drivingSpeed;
 	}
@@ -316,20 +390,48 @@ public static void autoInit(){
 		setDrive(tmpDrive, tmpTurn);
 	}
 	
-	public static void startPID_Drive(double targetDistance){
+	public static void startPID_Drive(double targetDistance, boolean accurateDriving){
 		System.out.println("Start Drive PID: " + targetDistance);
-		System.out.println("Left Count: " + AutoInputs.getLeftEncoderCount() + " Right count: " + AutoInputs.getRightEncoderCount());
+//		System.out.println("Left Count: " + AutoInputs.getLeftEncoderCount() + " Right count: " + AutoInputs.getRightEncoderCount());
+		
+		pid_drive_fwd.setSetpoint(0);
+		
 		pid_drive.setSetpoint(targetDistance);
-		Tolerance tol = new Tolerance() {
-			
-			@Override
-			public boolean onTarget() {
-				if(AutoInputs.getEncoderDistanceAvg()>targetDistance-DRIVE_FWD_MARGIN && AutoInputs.getEncoderDistanceAvg()<targetDistance+DRIVE_FWD_MARGIN){
-					if(Math.abs(AutoInputs.getSummedEncoderRate())<perfectRateDrive_Encoder){System.out.println("ON TARGET!!!");return true;}
+		
+		Tolerance tol;
+		
+		if(accurateDriving){
+			tol = new Tolerance() {
+				
+				@Override
+				public boolean onTarget() {
+					if(AutoInputs.getEncoderDistanceAvg()>targetDistance-DRIVE_FWD_MARGIN && AutoInputs.getEncoderDistanceAvg()<targetDistance+DRIVE_FWD_MARGIN){
+						if(Math.abs(AutoInputs.getSummedEncoderRate())<perfectRateDrive_Encoder){System.out.println("ON TARGET!!!");return true;}
+					}
+					return false;
 				}
-				return false;
-			}
-		};
+			};
+		}else{
+			tol = new Tolerance() {
+				
+				@Override
+				public boolean onTarget() {
+					if(targetDistance > 0){
+						if(AutoInputs.getEncoderDistanceAvg()>targetDistance-(DRIVE_FWD_MARGIN) && AutoInputs.getEncoderDistanceAvg()<targetDistance+(DRIVE_FWD_MARGIN*10)){
+							if(Math.abs(AutoInputs.getSummedEncoderRate())<perfectRateDrive_Encoder){System.out.println("ON TARGET!!!");return true;}
+						}
+						return false;
+					}else{
+						if(AutoInputs.getEncoderDistanceAvg()>targetDistance-(DRIVE_FWD_MARGIN*10) && AutoInputs.getEncoderDistanceAvg()<targetDistance+(DRIVE_FWD_MARGIN)){
+							if(Math.abs(AutoInputs.getSummedEncoderRate())<perfectRateDrive_Encoder){System.out.println("ON TARGET!!!");return true;}
+						}
+						return false;
+					}
+				}
+			};
+		}
+		
+		pid_drive_fwd.enable();
 		
 		pid_drive.setTolerance(tol);
 		pid_drive.enable();
@@ -337,10 +439,13 @@ public static void autoInit(){
 	
 	public static boolean checkPID_Drive(){
 //		System.out.println("on target?: " + pid.onTarget());
+//		System.out.println("PIDtARGET: " + pidTarget);
+		pidTarget = pid_drive.getSetpoint() - AutoInputs.getEncoderDistanceAvg();
 		return pid_drive.onTarget();
 	}
 	
 	public static void stopPID_Drive(){
+		pid_drive_fwd.disable();
 		pid_drive.disable();
 		System.out.println("\nPID Drive Stop\n");
 	}
@@ -454,6 +559,7 @@ public static void autoInit(){
 	}
 
 	public static void disabledInit() {
+		pid_drive_fwd.disable();
 		pid_drive.disable();
 		pid_turn.disable();
 	}

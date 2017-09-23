@@ -1,6 +1,7 @@
 package org.usfirst.frc.team1405.robot;
 
 import cpi.Arduino_LightControl;
+import cpi.auto.AutoOutputs;
 import cpi.outputDevices.MotorController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -10,8 +11,13 @@ public class GearControl {
 	static double  INTAKE_SPEED= 1.0;
 	static double  EJECT_SPEED= -1.0;
 	static final boolean REVERSE_PNEUMATIC=false;
-	static DoubleSolenoid solenoid;
+	static DoubleSolenoid gearSolenoid;
 	
+	static DoubleSolenoid climberRatchetSolenoid;
+	public static boolean ratchetEngaged = false;
+	
+	public static int bumpUpGearNum = 0;
+	public static boolean bumpUpGearPressed = false;
 
 	
 	//light control
@@ -27,26 +33,37 @@ public class GearControl {
 	public static void robotInit(){
 		gearFeedMotor=new MotorController(ID_Assignments.GEAR_TALON_MOTOR, true);
 		climberMotor = new MotorController(ID_Assignments.CLIMB_TALON_MOTOR);
-		solenoid = new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_1, ID_Assignments.GEAR_CYLINDER_2);
+		gearSolenoid = new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_1A, ID_Assignments.GEAR_CYLINDER_1B);
+		climberRatchetSolenoid = new DoubleSolenoid(ID_Assignments.GEAR_CYLINDER_2A, ID_Assignments.GEAR_CYLINDER_2B);
 	}
 	
 	public static void teleopInit(){
-		
+		gearFeedMotor.enableBrakeMode(false);
+		climberMotor.enableBrakeMode(false);
+		ratchetEngaged = false;
 	}
 	
-	public static void TeleopPeriodic(boolean feedControl, boolean ejectControl, boolean dropGear, boolean climb){
+	public static void TeleopPeriodic(boolean feedControl, boolean ejectControl, boolean dropGear, boolean climb, boolean climberRatchet, boolean bumpUpGear){
 //		System.out.println("state: " + intakeState + "Gear Motor Current: " + gearFeedMotor.getOutputCurrent());
+//		
+//		System.out.println("Climber voltage: " + climberMotor.getOutputCurrent());
+//		System.out.println("Gear voltage: " + gearFeedMotor.getOutputCurrent());
 		
-		if(ejectControl){
+		if(ejectControl && !ratchetEngaged){
 			gearFeedMotor.set(EJECT_SPEED);
 			climberMotor.set(EJECT_SPEED);
 		}else if(dropGear){
+			AutoOutputs.setDriveFwd(-0.3);
 			gearFeedMotor.set(EJECT_SPEED);
 			climberMotor.set(EJECT_SPEED);
-			solenoid.set(DoubleSolenoid.Value.kForward);
+			gearSolenoid.set(DoubleSolenoid.Value.kForward);
 		}else if(climb){
 			gearFeedMotor.set(1.0);
 			climberMotor.set(1.0);
+		}else if(climberRatchet && feedControl){
+			ratchetEngaged = true;
+		}else if(bumpUpGear && !bumpUpGearPressed){
+			bumpUpGearNum = 2;
 		}else{
 //			climberMotor.set(0);
 //			if(!feedControl){
@@ -61,16 +78,16 @@ public class GearControl {
 //				intakeState++;
 //			}
 			
-			if(feedControl){
+			if(feedControl && !ratchetEngaged){
 				gearFeedMotor.set(INTAKE_SPEED);
 				climberMotor.set(INTAKE_SPEED);
 				Arduino_LightControl.Periodic(THIS_LIGHT_CONTROL_INDICATION);
-				solenoid.set(DoubleSolenoid.Value.kForward);
+				gearSolenoid.set(DoubleSolenoid.Value.kForward);
 			}else{
 				gearFeedMotor.set(0.0);
 				climberMotor.set(0.0);
 				Arduino_LightControl.Periodic(LIGHT_CONTROL_OFF_STATE);
-				solenoid.set(DoubleSolenoid.Value.kReverse);
+				gearSolenoid.set(DoubleSolenoid.Value.kReverse);
 			}
 			
 	//		if(feedControl && intakeState != 3){
@@ -81,6 +98,36 @@ public class GearControl {
 	//		}
 		}
 		
+		if(ratchetEngaged){
+//			System.out.println("Ratchet engaged");
+//			if (climberRatchetSolenoid.get() == DoubleSolenoid.Value.kForward){
+//				System.out.println("Solenoid Reverse");
+//				gearSolenoid.set(DoubleSolenoid.Value.kForward);
+				if(gearSolenoid.get().equals(DoubleSolenoid.Value.kForward)){
+					System.out.println("gear solenoid forward");
+					climberRatchetSolenoid.set(DoubleSolenoid.Value.kReverse);
+				}
+//			}
+		}else{
+//			System.out.println("Ratchet disengaged");
+//			if (climberRatchetSolenoid.get() == DoubleSolenoid.Value.kReverse){
+//				System.out.println("Solenoid Forward");
+				climberRatchetSolenoid.set(DoubleSolenoid.Value.kForward);
+//			}
+		}
+		
+		if(bumpUpGearNum > 0){
+			gearFeedMotor.set(EJECT_SPEED);
+			climberMotor.set(EJECT_SPEED);
+			bumpUpGearNum--;
+		}
+		
+		bumpUpGearPressed = bumpUpGear;
+	}
+	
+	public static void stopMotors(){
+		gearFeedMotor.set(0);
+		climberMotor.set(0);
 	}
 
 }

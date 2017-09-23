@@ -86,10 +86,10 @@ public class Drive {
 	}
 	
 	public static void DisabledPeriodic(){
-		if(Robot.pilot.bButton() && !bButtonDown){
-			MySet.assignNextControlMode();
-		}
-		bButtonDown = Robot.pilot.bButton();
+//		if(Robot.pilot.bButton() && !bButtonDown){
+//			MySet.assignNextControlMode();
+//		}
+//		bButtonDown = Robot.pilot.bButton();
 	}
 	
 //	public void mecanumMotors(double rightFront,double rightRear,double leftFront,double leftRear){

@@ -12,7 +12,7 @@ public class EncoderControl {
 	
 	//new base
 		private static final double WHEEL_DIAMETER = 3.93; // wheel diameter in inches, measured to be 3.875, 3.93 seems ideal when tested
-		private static final double COUNTS_PER_ROTATION = 20; //encoder counts per rotation of the wheel
+		private static final double COUNTS_PER_ROTATION = 20; //encoder counts per rotation of the wheel, should be 20 with cim encoders
 	
 
 	private static final double fullTurnCount = 5784; // (should be 3243) the number of encoder counts it takes to turn the robot a full rotation
@@ -91,6 +91,7 @@ public class EncoderControl {
     }
     
     private static double convertCountToDistance(double counts){
+//    	return getCircumference(WHEEL_DIAMETER)*(counts/fullTurnCount);
 //    	System.out.println("Circ: " + getCircumference(WHEEL_DIAMETER) + "counts/cpr: " + (counts/COUNTS_PER_ROTATION) + " ratio: " + ((12/50)*(24/50)*(24/15)));
     	return (getCircumference(WHEEL_DIAMETER)*(counts/COUNTS_PER_ROTATION))*((12.0/50.0)*(24.0/50.0)*(24.0/15.0));
     }

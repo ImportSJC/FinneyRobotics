@@ -9,6 +9,7 @@ public class Encoder extends SuperClass{
 	private boolean useCount = true;
 	private boolean useAverage = true;
 	private boolean useRate = true;
+	private boolean accurateDriving = true;
 	
 	private static final double MARGIN_OF_ERROR = 0.3;
 	private static final double END_RATE = 200; // the rate the robot must be under to end the turn
@@ -17,10 +18,11 @@ public class Encoder extends SuperClass{
 	private double targetPosition;
 	private double targetAngle;
 	
-	public Encoder(double value, boolean useCount){
+	public Encoder(double value, boolean useCount, boolean accurateDriving){
 		//use average of the two encoders
 		this.useCount = useCount;
 		targetPosition = value;
+		this.accurateDriving = accurateDriving;
 	}
 	
 	public Encoder(double turnAngle, double ignoredValue, boolean useCount, boolean useRate){//TODO make encoders sense turning better than this....this is aweful
@@ -34,7 +36,7 @@ public class Encoder extends SuperClass{
 	@Override
 	public void start(){
 		AutoInputs.resetEncoders();
-		AutoOutputs.startPID_Drive(targetPosition);
+		AutoOutputs.startPID_Drive(targetPosition, accurateDriving);
 //		if(useCount){
 //			if(useAverage){
 //				startPosition = AutoInputs.getEncoderCountAvg();
@@ -85,7 +87,7 @@ public class Encoder extends SuperClass{
 //				System.out.println(" - C:Y, A:Y - Current Position: " + AutoInputs.getEncoderCountAvg());
 				return check(AutoInputs.getEncoderCountAvg());
 			}else{
-				System.out.println(" - C:Y, A:N - Current Position: " + AutoInputs.getSummedEncoderCount());
+//				System.out.println(" - C:Y, A:N - Current Position: " + AutoInputs.getSummedEncoderCount());
 				return check(AutoInputs.getSummedEncoderCount());
 			}
 		}else{

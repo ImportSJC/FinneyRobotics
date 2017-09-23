@@ -1,6 +1,9 @@
 package cpi;
 
+import java.io.Console;
 import java.util.ArrayList;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class MySet {
 	private static ArrayList<AutoMode> autoArrayList = new ArrayList<AutoMode>();
@@ -18,6 +21,7 @@ public class MySet {
 	
    public static void assignAutoMode(int index){
 	   autoArrayList.get(index).assignAutoMode();
+	   DriverStation.reportError("Current Auto Mode: " + autoArrayList.get(index).getDesc(), false);
 	   System.out.println("Current Auto Mode: " + autoArrayList.get(index).getDesc());
 	   currentAutoIndex = index;
    }
@@ -78,5 +82,10 @@ public class MySet {
 	   }
 	   
 	   assignControlMode(currentControlIndex);
+  }
+  
+  public static void printAutoMode(){
+	  DriverStation.reportError("Current Auto Mode: " + autoArrayList.get(currentAutoIndex).getDesc(), false);
+	  System.out.println("Current Auto Mode: " + autoArrayList.get(currentAutoIndex).getDesc());
   }
 }
