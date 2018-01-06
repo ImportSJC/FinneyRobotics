@@ -1,6 +1,6 @@
 package tele;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 
 public class Elevator {
 	public static final CANTalon elevatorMotor1 = new CANTalon(1);//bottom limit switch

@@ -16,8 +16,7 @@ public class Gyroscope extends SuperClass{
 	
 	@Override
 	public void start(){
-		myGyro.Init();
-		myGyro.resetAll();
+		myGyro.calibrate();
 	}
 	
 	@Override 

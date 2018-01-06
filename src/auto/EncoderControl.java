@@ -1,7 +1,6 @@
 package auto;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.CANTalon;
 
 public class EncoderControl {
 	private Encoder myEncoder;

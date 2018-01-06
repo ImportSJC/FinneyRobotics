@@ -1,8 +1,9 @@
 package auto;
 
+import com.ctre.CANTalon;
+
 import tele.Drive;
 import tele.Elevator;
-import edu.wpi.first.wpilibj.CANTalon;
 
 public class AutoOutputs {
 //	public static double leftMotor1 = 0.0;

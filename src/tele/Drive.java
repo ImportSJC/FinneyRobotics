@@ -1,7 +1,8 @@
 package tele;
 
+import com.ctre.CANTalon;
+
 import auto.AutoInputs;
-import edu.wpi.first.wpilibj.CANTalon;
 
 public class Drive {
 	public static final CANTalon leftMotor1 = new CANTalon(3);//left encoder

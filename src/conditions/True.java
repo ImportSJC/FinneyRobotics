@@ -1,6 +1,6 @@
-package cpi.auto.conditions;
+package conditions;
 
-import cpi.auto.SuperClass;
+import auto.SuperClass;
 
 /**
  * A condition that always returns true, used in cases such as connecting 3

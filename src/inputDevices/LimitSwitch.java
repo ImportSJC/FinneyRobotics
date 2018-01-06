@@ -1,6 +1,7 @@
 package inputDevices;
 
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
+
 import auto.AutoOutputs;
 import auto.SuperClass;
 

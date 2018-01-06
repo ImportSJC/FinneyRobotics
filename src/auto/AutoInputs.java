@@ -1,10 +1,11 @@
 package auto;
 
-import tele.Drive;
+import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.CANTalon;
-import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
-import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
+import tele.Drive;
 
 public class AutoInputs {
 	//Encoders
@@ -21,7 +22,7 @@ public class AutoInputs {
 		leftMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		rightMotor1.setFeedbackDevice(FeedbackDevice.QuadEncoder);
 		
-		myGyro = new Gyro(new AnalogInput(0));
+//		myGyro = new GyroControl(new AnalogInput(0));
 	}
 	
 	public void AutoInit(){
