@@ -1,16 +1,17 @@
 package inputDevices;
 
-import auto.AutoOutputs;
 import auto.GyroControl;
 import auto.SuperClass;
 
 public class Gyroscope extends SuperClass{
 	private double targetAngle;
+	private double targetRate;
 	
 	GyroControl myGyro;
 	
-	public Gyroscope(double value, int channel){
-		targetAngle = value;
+	public Gyroscope(double targetAngle, double targetRate, int channel){
+		this.targetAngle = targetAngle;
+		this.targetRate = targetRate;
 		myGyro = new GyroControl(channel);
 	}
 	
@@ -23,13 +24,16 @@ public class Gyroscope extends SuperClass{
 	public boolean check(){
 		System.out.println("Gyro Angle: " + myGyro.getAngle());
 		
+		//TODO was this code necessary? what did it do?
 //		if (targetAngle/2<=myGyro.getAngle()){
-		AutoOutputs.rampTurn(targetAngle-myGyro.getAngle(), targetAngle);
+//		AutoOutputs.rampTurn(targetAngle-myGyro.getAngle(), targetAngle);
 //		}
 		
 		//stop once it hits the target angle and its not moving fast
-		if(targetAngle>0 && myGyro.getAngle() >= targetAngle && myGyro.getRate() < 10){return true;}
-		else if(targetAngle<0 && myGyro.getAngle() <= targetAngle){return true;}
+		if(myGyro.getRate() < targetRate){
+			if(targetAngle>0 && myGyro.getAngle() >= targetAngle){return true;}
+			else if(targetAngle<0 && myGyro.getAngle() <= targetAngle){return true;}
+		}
 		return false;
 	}
 }

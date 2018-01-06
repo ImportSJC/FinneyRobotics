@@ -1,10 +1,14 @@
 
 package org.usfirst.frc.team1405.robot;
 
-import edu.wpi.first.wpilibj.IterativeRobot;
-import auto.AutoOutputs;
-import auto.AutoInputs;
+import com.ctre.CANTalon;
+
 import auto.Autonomous;
+import auto.SuperClass;
+import autoModes.Auto_Drive;
+import conditions.And;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import inputDevices.Time;
 import tele.Drive;
 
 /**
@@ -15,47 +19,47 @@ import tele.Drive;
  * directory.
  */
 public class Robot extends IterativeRobot {
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
+	
+	//Constants
+	 
+	//Helper Classes
+  	private Drive drive;
+  	private Autonomous auto;
+	
+	//AutoModes
+	private final SuperClass[][] TEST_MODE = new SuperClass[][] {
+		{new And( new Time(5), new Auto_Drive(5, drive) )} };
+	
+	//CANTalons
+	private CANTalon talon1 = new CANTalon(1);
+	private CANTalon talon2 = new CANTalon(2);
+	private CANTalon talon3 = new CANTalon(3);
+	private CANTalon talon4 = new CANTalon(4);
+	private CANTalon talon5 = new CANTalon(5);
+	private CANTalon talon6 = new CANTalon(6);
+	
     public void robotInit() {
-    	drive = new Drive();
-    	drive.robotInit();
-    	autoOutputs = new AutoOutputs();
-    	autoOutputs.robotInit();
+    	drive = new Drive(talon1, talon2, talon3, talon4);
     	
-    	autoInputs = new AutoInputs();
-    	autoInputs.RobotInit();
-    	
-    	auto = new Autonomous();
-    	auto.RobotInit();
-//    	auto.AutonomousInit();
+    	//TODO implement generic auto picking here
+    	auto = new Autonomous(TEST_MODE);
     }
     
     public void autonomousInit(){
-    	System.out.println("Their Auto Init was called!!!!");
     	auto.AutonomousInit();
-    	
-    	autoInputs.AutoInit();
-    	
-    	drive.autoInit();
     }
 
     /**
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic(){
-//    	auto = new Autonomous();
-    	auto.AutonomousPeriodic();
-    	autoOutputs.AutonomousPeriodic();
+
     }
 
     /**
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	drive.teleopPeriodic();
     }
     
     /**
@@ -73,10 +77,4 @@ public class Robot extends IterativeRobot {
 //    	System.out.println("Their DisabledPeriodic was called");
 //    	AutoOutputs.setBrake(false);
     }
-    
-    Autonomous auto;
-    AutoOutputs autoOutputs;
-    AutoInputs autoInputs;
-    Drive drive;
-    
 }

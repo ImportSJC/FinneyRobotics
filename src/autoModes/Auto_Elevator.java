@@ -1,15 +1,17 @@
 package autoModes;
 
-import auto.AutoOutputs;
-import auto.AutoInputs;
+import com.ctre.CANTalon;
 import auto.SuperClass;
 
 
 public class Auto_Elevator extends SuperClass{
 	private double elevatorSpeed = 0;
 	
-	public Auto_Elevator(double elevatorSpeed){
+	private CANTalon elevatorMotor;
+	
+	public Auto_Elevator(double elevatorSpeed, CANTalon elevatorMotor){
 		this.elevatorSpeed = elevatorSpeed;
+		this.elevatorMotor = elevatorMotor;
 	}
 	
 	@Override
@@ -27,14 +29,14 @@ public class Auto_Elevator extends SuperClass{
 	
 	private void startMotors(double elevatorSpeed){
 		//Set motor speeds
-		AutoOutputs.setElevator(elevatorSpeed);
+		elevatorMotor.set(elevatorSpeed);
 		
 		System.out.println("Start Auto_Elevator at: " + elevatorSpeed);
 	}
 	
 	private void stopMotors(){
 		//reset motor speeds
-		AutoOutputs.reset_Elevator();
+		elevatorMotor.set(0);
 		
 		System.out.println("Stop Auto_Elevator");
 	}

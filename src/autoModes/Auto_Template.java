@@ -1,7 +1,5 @@
 package autoModes;
 
-import auto.AutoOutputs;
-import auto.AutoInputs;
 import auto.SuperClass;
 
 /*

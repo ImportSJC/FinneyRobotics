@@ -2,33 +2,32 @@ package auto;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class GyroControl implements Gyro{
+public class GyroControl implements Gyro {
 	private Gyro myGyro;
-	public GyroControl(int myChannel)
-	{	
-		if (myChannel == 0){ myGyro = AutoInputs.myGyro; }
-	}
-	
-    public double getAngle()
-    {
-    	return myGyro.getAngle();
-    }
-    
-    public double getRate(){
-    	return myGyro.getRate();
-    }
-    
-    public void free(){
-    	myGyro.free();
-    }
 
-    /**
-     * Init the gyro
-     */
+	public GyroControl(int myChannel) {
+		//TODO setup this properly
+	}
+
+	public double getAngle() {
+		return myGyro.getAngle();
+	}
+
+	public double getRate() {
+		return myGyro.getRate();
+	}
+
+	public void free() {
+		myGyro.free();
+	}
+
+	/**
+	 * Init the gyro
+	 */
 	@Override
 	public void calibrate() {
 		System.out.println("Gyro Init");
-        myGyro.reset();
+		myGyro.reset();
 	}
 
 	@Override

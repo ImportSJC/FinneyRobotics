@@ -1,22 +1,26 @@
 package autoModes;
 
-import auto.AutoOutputs;
 import auto.SuperClass;
+import tele.Drive;
 
 public class Auto_Drive extends SuperClass{
 	private double driveSpeed = 0;
 	private double turnSpeed = 0;
 	private boolean gyroAssistEnabled = false;
 	
-	public Auto_Drive(double driveSpeed){
+	private Drive drive;
+	
+	public Auto_Drive(double driveSpeed, Drive drive){
 		this.driveSpeed = driveSpeed;
 		this.gyroAssistEnabled = true;
+		this.drive = drive;
 	}
 	
-	public Auto_Drive(double driveSpeed, double turnSpeed){
+	public Auto_Drive(double driveSpeed, double turnSpeed, Drive drive){
 		this.driveSpeed = driveSpeed;
 		this.turnSpeed = turnSpeed;
 		gyroAssistEnabled = false;
+		this.drive = drive;
 	}
 	
 	@Override
@@ -39,20 +43,20 @@ public class Auto_Drive extends SuperClass{
 	
 	private void startMotors(double driveSpeed){
 		//Set motor speeds
-		AutoOutputs.setDriveFwd(driveSpeed);
+//		drive.drivefwd(driveSpeed) TODO get this working
 		
 		System.out.println("Start Auto_Drive at - " + driveSpeed);
 	}
 	
 	private void startMotors(double driveSpeed, double turnSpeed){
 		//Set motor speeds
-		AutoOutputs.setDrive(driveSpeed, turnSpeed);
+//		drive.driveandturn(drivespeed, turnspeed) TODO get this working
 		
 		System.out.println("Start Auto_Drive at: " + driveSpeed + " - " + turnSpeed);
 	}
 	
 	private void stopMotors(){
 		//reset motor speeds
-		AutoOutputs.reset_Drive();
+//		drive.stop TODO get this working
 	}
 }

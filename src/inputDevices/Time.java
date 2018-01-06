@@ -2,6 +2,12 @@ package inputDevices;
 
 import auto.SuperClass;
 
+/**
+ * A timer that you can start and check to see if the time has expired.
+ * Fixes issues involving periodic loop timing not working nicely with standard timing classes.
+ * @author importsjc
+ *
+ */
 public class Time extends SuperClass{
 	private long startTime;
 	private double secondsElapsed = 0.0;

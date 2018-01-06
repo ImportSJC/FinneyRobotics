@@ -1,28 +1,31 @@
 package inputDevices;
 
-import auto.AutoInputs;
+import auto.EncoderControl;
 import auto.SuperClass;
 
 public class Encoder extends SuperClass{
 	private double startPosition;
 	private double targetPosition;
 	
-	public Encoder(double value){
-		targetPosition = value;
+	private EncoderControl encoder;
+	
+	public Encoder(double targetPosition, EncoderControl encoder){
+		this.targetPosition = targetPosition;
+		this.encoder = encoder;
 	}
 	
 	@Override
 	public void start(){
-		AutoInputs.resetEncoders();
-		startPosition = AutoInputs.getEncoder();
+		encoder.reset();
+		startPosition = encoder.getPos();
 		System.out.println("Encoder start position: " + startPosition);
 	}
 	
 	@Override 
 	public boolean check(){
 //		System.out.println("Encoder Position: " + AutoInputs.getEncoder());
-		if(targetPosition>0 && AutoInputs.getEncoder() >= targetPosition){return true;}
-		else if(targetPosition<0 && AutoInputs.getEncoder() <= targetPosition){return true;}
+		if(targetPosition>0 && encoder.getPos() >= targetPosition){return true;}
+		else if(targetPosition<0 && encoder.getPos() <= targetPosition){return true;}
 		return false;
 	}
 }

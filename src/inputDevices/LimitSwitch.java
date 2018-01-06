@@ -2,23 +2,22 @@ package inputDevices;
 
 import com.ctre.CANTalon;
 
-import auto.AutoOutputs;
 import auto.SuperClass;
 
 public class LimitSwitch extends SuperClass{
 	private boolean targetPosition = true;
 	
-	CANTalon myTalon;
+	CANTalon switchController;
 	
-	public LimitSwitch(String limitSwitchLocation){
+	public LimitSwitch(String limitSwitchLocation, CANTalon switchController){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
-			myTalon = AutoOutputs.elevatorMotor1;
+			this.switchController = switchController;
 		}
 	}
 	
-	public LimitSwitch(String limitSwitchLocation, boolean targetPosition){
+	public LimitSwitch(String limitSwitchLocation, boolean targetPosition, CANTalon switchController){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
-			myTalon = AutoOutputs.elevatorMotor1;
+			this.switchController = switchController;
 		}
 		
 		this.targetPosition = targetPosition;
@@ -27,7 +26,7 @@ public class LimitSwitch extends SuperClass{
 	@Override 
 	public boolean check(){
 		//TODO: change this so it looks at only fwd or only rev depending on the limit switch location
-		if(myTalon.isFwdLimitSwitchClosed() == targetPosition /*|| myTalon.isRevLimitSwitchClosed() == targetPosition*/){return true;}
+		if(switchController.isFwdLimitSwitchClosed() == targetPosition /*|| myTalon.isRevLimitSwitchClosed() == targetPosition*/){return true;}
 		return false;
 	}
 }
