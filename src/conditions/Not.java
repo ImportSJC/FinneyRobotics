@@ -1,11 +1,11 @@
 package conditions;
 
-import auto.SuperClass;
+import AutonomousControls.AutonomousControl;
 
-public class Not extends SuperClass{
-	private SuperClass myObject;
+public class Not extends AutonomousControl{
+	private AutonomousControl myObject;
 	
-	public Not (SuperClass myObject) {
+	public Not (AutonomousControl myObject) {
 		this.myObject = myObject;
 	}
 	

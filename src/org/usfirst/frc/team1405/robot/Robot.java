@@ -1,15 +1,19 @@
 
 package org.usfirst.frc.team1405.robot;
 
-import com.ctre.CANTalon;
-
-import auto.Autonomous;
-import auto.SuperClass;
-import autoModes.Auto_Drive;
+import AutonomousControls.Auto_Time;
+import AutonomousControls.AutonomousControl;
+import auto_modes.AutonomousMode;
+import auto_modes.AutonomousModes;
 import conditions.And;
+import control_modes.ArcadeDrive;
+import control_modes.ControlMode;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import inputDevices.Time;
-import tele.Drive;
+import general.Autonomous;
+import general.CustomXBox;
+import general.MotorController;
+import subsystems_auto.Auto_Drive;
+import subsystems_tele.Drive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -19,30 +23,36 @@ import tele.Drive;
  * directory.
  */
 public class Robot extends IterativeRobot {
+	//TODO implement generic control mode picking
+	//TODO implement generic auto picking
 	
 	//Constants
-	 
+	
 	//Helper Classes
   	private Drive drive;
   	private Autonomous auto;
-	
-	//AutoModes
-	private final SuperClass[][] TEST_MODE = new SuperClass[][] {
-		{new And( new Time(5), new Auto_Drive(5, drive) )} };
-	
+  	private ControlMode controlMode;
+  	private CustomXBox pilot;
+
+  	//Auto modes
+  	private AutonomousMode TEST_MODE = new AutonomousMode("A test autonomous mode", 
+  			new AutonomousControl[][] { {new And( new Auto_Time(5), new Auto_Drive(5, drive) )} } );
+  	
 	//CANTalons
-	private CANTalon talon1 = new CANTalon(1);
-	private CANTalon talon2 = new CANTalon(2);
-	private CANTalon talon3 = new CANTalon(3);
-	private CANTalon talon4 = new CANTalon(4);
-	private CANTalon talon5 = new CANTalon(5);
-	private CANTalon talon6 = new CANTalon(6);
+	private MotorController talon1 = new MotorController(1);
+	private MotorController talon2 = new MotorController(2);
+	private MotorController talon3 = new MotorController(3, true);
+	private MotorController talon4 = new MotorController(4, true);
+//	private MotorController talon5 = new MotorController(5);
+//	private MotorController talon6 = new MotorController(6);
 	
     public void robotInit() {
-    	drive = new Drive(talon1, talon2, talon3, talon4);
+    	controlMode = new ArcadeDrive();
+    	pilot = new CustomXBox(0);
+    	drive = new Drive(pilot, controlMode, talon1, talon2, talon3, talon4);
     	
-    	//TODO implement generic auto picking here
-    	auto = new Autonomous(TEST_MODE);
+    	AutonomousModes.addAutoMode(TEST_MODE);
+    	auto = new Autonomous(AutonomousModes.getCurrentAutoMode());
     }
     
     public void autonomousInit(){
@@ -60,6 +70,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
+    	drive.mecanum();
     }
     
     /**

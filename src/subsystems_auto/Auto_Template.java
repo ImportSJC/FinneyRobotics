@@ -1,12 +1,12 @@
-package autoModes;
+package subsystems_auto;
 
-import auto.SuperClass;
+import AutonomousControls.AutonomousControl;
 
 /*
  * Test Template Description
  */
 
-public class Auto_Template extends SuperClass{
+public class Auto_Template extends AutonomousControl{
 	private double templateSpeed = 0;
 	
 	public Auto_Template(double mySpeed){

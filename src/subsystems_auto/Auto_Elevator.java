@@ -1,10 +1,11 @@
-package autoModes;
+package subsystems_auto;
 
 import com.ctre.CANTalon;
-import auto.SuperClass;
+
+import AutonomousControls.AutonomousControl;
 
 
-public class Auto_Elevator extends SuperClass{
+public class Auto_Elevator extends AutonomousControl{
 	private double elevatorSpeed = 0;
 	
 	private CANTalon elevatorMotor;

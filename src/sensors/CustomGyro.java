@@ -1,11 +1,11 @@
-package auto;
+package sensors;
 
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 
-public class GyroControl implements Gyro {
+public class CustomGyro implements Gyro {
 	private Gyro myGyro;
 
-	public GyroControl(int myChannel) {
+	public CustomGyro(int myChannel) {
 		//TODO setup this properly
 	}
 

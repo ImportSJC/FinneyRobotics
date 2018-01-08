@@ -1,6 +1,6 @@
-package auto;
+package AutonomousControls;
 
-public class SuperClass {
+public abstract class AutonomousControl {
 	public void run(){
 		
 	}

@@ -1,9 +1,9 @@
-package autoModes;
+package subsystems_auto;
 
-import auto.SuperClass;
-import tele.Drive;
+import AutonomousControls.AutonomousControl;
+import subsystems_tele.Drive;
 
-public class Auto_Drive extends SuperClass{
+public class Auto_Drive extends AutonomousControl{
 	private double driveSpeed = 0;
 	private double turnSpeed = 0;
 	private boolean gyroAssistEnabled = false;

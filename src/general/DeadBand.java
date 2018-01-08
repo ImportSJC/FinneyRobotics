@@ -1,4 +1,4 @@
-package inputDevices;
+package general;
 
 public class DeadBand {
 	private static double DEADBAND_VALUE = 0.3;

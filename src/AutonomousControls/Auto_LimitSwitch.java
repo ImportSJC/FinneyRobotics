@@ -1,21 +1,19 @@
-package inputDevices;
+package AutonomousControls;
 
 import com.ctre.CANTalon;
 
-import auto.SuperClass;
-
-public class LimitSwitch extends SuperClass{
+public class Auto_LimitSwitch extends AutonomousControl{
 	private boolean targetPosition = true;
 	
 	CANTalon switchController;
 	
-	public LimitSwitch(String limitSwitchLocation, CANTalon switchController){
+	public Auto_LimitSwitch(String limitSwitchLocation, CANTalon switchController){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
 			this.switchController = switchController;
 		}
 	}
 	
-	public LimitSwitch(String limitSwitchLocation, boolean targetPosition, CANTalon switchController){
+	public Auto_LimitSwitch(String limitSwitchLocation, boolean targetPosition, CANTalon switchController){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
 			this.switchController = switchController;
 		}

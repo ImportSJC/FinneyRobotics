@@ -1,6 +1,4 @@
-package inputDevices;
-
-import auto.SuperClass;
+package AutonomousControls;
 
 /**
  * A timer that you can start and check to see if the time has expired.
@@ -8,13 +6,13 @@ import auto.SuperClass;
  * @author importsjc
  *
  */
-public class Time extends SuperClass{
+public class Auto_Time extends AutonomousControl{
 	private long startTime;
 	private double secondsElapsed = 0.0;
 	
 	private double endTimeValue;
 	
-	public Time(double value){
+	public Auto_Time(double value){
 		endTimeValue = value;
 	}
 	

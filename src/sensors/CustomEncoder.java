@@ -1,11 +1,11 @@
-package auto;
+package sensors;
 
 import edu.wpi.first.wpilibj.Encoder;
 
-public class EncoderControl {
+public class CustomEncoder {
 	private Encoder myEncoder;
 
-	public EncoderControl(int aChannel, int bChannel) {
+	public CustomEncoder(int aChannel, int bChannel) {
 		// myEncoder = new Encoder();//TODO: set this up properly
 	}
 

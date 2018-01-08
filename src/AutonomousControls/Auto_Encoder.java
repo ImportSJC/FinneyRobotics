@@ -1,15 +1,14 @@
-package inputDevices;
+package AutonomousControls;
 
-import auto.EncoderControl;
-import auto.SuperClass;
+import sensors.CustomEncoder;
 
-public class Encoder extends SuperClass{
+public class Auto_Encoder extends AutonomousControl{
 	private double startPosition;
 	private double targetPosition;
 	
-	private EncoderControl encoder;
+	private CustomEncoder encoder;
 	
-	public Encoder(double targetPosition, EncoderControl encoder){
+	public Auto_Encoder(double targetPosition, CustomEncoder encoder){
 		this.targetPosition = targetPosition;
 		this.encoder = encoder;
 	}

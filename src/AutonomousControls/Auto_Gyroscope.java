@@ -1,18 +1,17 @@
-package inputDevices;
+package AutonomousControls;
 
-import auto.GyroControl;
-import auto.SuperClass;
+import sensors.CustomGyro;
 
-public class Gyroscope extends SuperClass{
+public class Auto_Gyroscope extends AutonomousControl{
 	private double targetAngle;
 	private double targetRate;
 	
-	GyroControl myGyro;
+	CustomGyro myGyro;
 	
-	public Gyroscope(double targetAngle, double targetRate, int channel){
+	public Auto_Gyroscope(double targetAngle, double targetRate, int channel){
 		this.targetAngle = targetAngle;
 		this.targetRate = targetRate;
-		myGyro = new GyroControl(channel);
+		myGyro = new CustomGyro(channel);
 	}
 	
 	@Override

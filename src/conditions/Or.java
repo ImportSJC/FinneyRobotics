@@ -1,11 +1,11 @@
 package conditions;
 
-import auto.SuperClass;
+import AutonomousControls.AutonomousControl;
 
-public class Or extends SuperClass{
-	private SuperClass[] myObjects;
+public class Or extends AutonomousControl{
+	private AutonomousControl[] myObjects;
 	
-	public Or(SuperClass ... myObjects) {
+	public Or(AutonomousControl ... myObjects) {
 		this.myObjects = myObjects;
 	}
 	

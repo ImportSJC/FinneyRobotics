@@ -1,4 +1,4 @@
-package tele;
+package subsystems_tele;
 
 import com.ctre.CANTalon;
 

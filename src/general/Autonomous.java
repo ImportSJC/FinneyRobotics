@@ -1,11 +1,14 @@
-package auto;
+package general;
+
+import AutonomousControls.AutonomousControl;
+import auto_modes.AutonomousMode;
 
 public class Autonomous {
 	public int columnIndex = 0;
 	public int rowIndex = 0;
 	public boolean columnInit = false; //has all the modes in the column been started yet?
 	
-	public SuperClass[][] autoStates = null;
+	public AutonomousControl[][] autoStates = null;
 	
 	/**
 	 * Instantiate a new autonomous class by providing a list of all encoders and gyros.
@@ -14,8 +17,16 @@ public class Autonomous {
 	 * @param encoders a list of encoders on the robot
 	 * @param gyros a list of gyros on the robot
 	 */
-	public Autonomous(SuperClass[][] states){
-		this.autoStates = states;
+	public Autonomous(AutonomousMode mode){
+		this.autoStates = mode.getSteps();
+	}
+	
+	/**
+	 * Set the autonomous mode
+	 * @param states the autonomous mode to set as the current mode
+	 */
+	public void setAutoMode(AutonomousMode mode){
+		this.autoStates = mode.getSteps();
 	}
 	
 	public void AutonomousInit(){
