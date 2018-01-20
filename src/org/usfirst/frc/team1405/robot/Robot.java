@@ -13,6 +13,8 @@ import general.Autonomous;
 import general.CustomXBox;
 import general.MotorController;
 import subsystems_auto.Auto_Drive;
+import subsystems_tele.Climbing;
+import subsystems_tele.CubeMovement;
 import subsystems_tele.Drive;
 
 /**
@@ -33,6 +35,8 @@ public class Robot extends IterativeRobot {
   	private Autonomous auto;
   	private ControlMode controlMode;
   	private CustomXBox pilot;
+  	private CubeMovement cubeMovement;
+  	private Climbing climb;
 
   	//Auto modes
   	private AutonomousMode TEST_MODE = new AutonomousMode("A test autonomous mode", 
@@ -46,10 +50,26 @@ public class Robot extends IterativeRobot {
 	private MotorController talon5 = new MotorController(5, true);
 	private MotorController talon6 = new MotorController(6, true);
 
+	private MotorController forklift1 = new MotorController(7);
+	private MotorController forklift2 = new MotorController(8);
+	private MotorController cubeIntake1 = new MotorController(9);
+	private MotorController cubeIntake2 = new MotorController(10);
+	private MotorController retractIntake = new MotorController(11);
+	
+	private MotorController winch = new MotorController(12);
+	private MotorController robotCarrier = new MotorController(13);
+	private MotorController hooks = new MotorController(14);
+	
+	//Camera
+//	UsbCamera [] camera=new UsbCamera[2];
+
 	public void robotInit() {
     	controlMode = new ArcadeDrive();
     	pilot = new CustomXBox(0);
     	drive = new Drive(pilot, controlMode, talon1, talon2, talon3, talon4, talon5, talon6);
+    	cubeMovement = new CubeMovement(pilot, forklift1, forklift2, cubeIntake1, cubeIntake2, retractIntake);
+    	climb = new Climbing(pilot, winch, robotCarrier, hooks);
+    	
     	
     	AutonomousModes.addAutoMode(TEST_MODE);
     	auto = new Autonomous(AutonomousModes.getCurrentAutoMode());
@@ -71,6 +91,14 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
     	drive.tank();
+    	
+    	cubeMovement.forkLift();
+    	cubeMovement.cubeIntakeMechanism();
+    	cubeMovement.retract();
+    	
+    	climb.winch();
+    	climb.robotCarrier();
+    	climb.hooks();
     }
     
     /**
