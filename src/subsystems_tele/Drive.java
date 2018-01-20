@@ -75,7 +75,7 @@ public class Drive {
 		this.right3 = right3;
 		
 	}
-	
+
 	public void setControlMode(ControlMode controlMode){
 		this.currentControlMode = controlMode;
 	}

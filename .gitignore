@@ -11,6 +11,10 @@ tmp/
 local.properties
 .settings/
 .loadpath
+build/*
+
+# Eclipse Core
+.project
 
 # External tool builders
 .externalToolBuilders/
@@ -35,5 +39,3 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
-
-.project
