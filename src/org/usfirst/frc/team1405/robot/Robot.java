@@ -41,15 +41,15 @@ public class Robot extends IterativeRobot {
 	//CANTalons
 	private MotorController talon1 = new MotorController(1);
 	private MotorController talon2 = new MotorController(2);
-	private MotorController talon3 = new MotorController(3, true);
+	private MotorController talon3 = new MotorController(3);
 	private MotorController talon4 = new MotorController(4, true);
-//	private MotorController talon5 = new MotorController(5);
-//	private MotorController talon6 = new MotorController(6);
-	
-    public void robotInit() {
+	private MotorController talon5 = new MotorController(5, true);
+	private MotorController talon6 = new MotorController(6, true);
+
+	public void robotInit() {
     	controlMode = new ArcadeDrive();
     	pilot = new CustomXBox(0);
-    	drive = new Drive(pilot, controlMode, talon1, talon2, talon3, talon4);
+    	drive = new Drive(pilot, controlMode, talon1, talon2, talon3, talon4, talon5, talon6);
     	
     	AutonomousModes.addAutoMode(TEST_MODE);
     	auto = new Autonomous(AutonomousModes.getCurrentAutoMode());
@@ -70,7 +70,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     public void teleopPeriodic() {
-    	drive.mecanum();
+    	drive.tank();
     }
     
     /**

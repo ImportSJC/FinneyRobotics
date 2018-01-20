@@ -6,7 +6,7 @@ import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.Jaguar;
 
 public class MotorController {
-	private static boolean useTalon = true; // if false all motor controllers will be instantiated as jaguars instead of talons
+	private final static boolean USE_TALON = true; // if false all motor controllers will be instantiated as jaguars instead of talons
 	private boolean reverse = false; // reverse the motor direction, used to ensure that a positive number results in a rotation that makes sense
 
 	private CANTalon talon;
@@ -28,7 +28,7 @@ public class MotorController {
 	}
 
 	private void initMotorController() {
-		if (useTalon) {
+		if (USE_TALON) {
 			talon = new CANTalon(myID);
 			enableCurrentLimit(true);
 			setCurrentLimit(35);
@@ -38,7 +38,7 @@ public class MotorController {
 	}
 
 	public void set(double speed) {
-		if (useTalon) {
+		if (USE_TALON) {
 			if (reverse) {
 				talon.set(-speed); // TODO ensure that a -0 value won't mess this up
 			} else {
@@ -54,7 +54,7 @@ public class MotorController {
 	}
 
 	public double getPosition() {
-		if (useTalon) {
+		if (USE_TALON) {
 			// return talon.getPosition();
 			return talon.getEncPosition();
 		} else {
@@ -63,7 +63,7 @@ public class MotorController {
 	}
 
 	public void setPosition(int position) {
-		if (useTalon) {
+		if (USE_TALON) {
 			talon.setEncPosition(position);
 		} else {
 			jaguar.setPosition(position);
@@ -71,7 +71,7 @@ public class MotorController {
 	}
 
 	public double getVelocity() {
-		if (useTalon) {
+		if (USE_TALON) {
 			return talon.getEncVelocity();
 		}
 
@@ -82,7 +82,7 @@ public class MotorController {
 	 * Talon ONLY
 	 */
 	public double getOutputCurrent() {
-		if (useTalon) {
+		if (USE_TALON) {
 			return talon.getOutputCurrent();
 		}
 
@@ -93,7 +93,7 @@ public class MotorController {
 	 * Talon ONLY
 	 */
 	public double getOutputVoltage() {
-		if(useTalon){
+		if(USE_TALON){
 			return talon.getBusVoltage();
 		}
 		
@@ -104,7 +104,7 @@ public class MotorController {
 	 * Talon ONLY
 	 */
 	public void enableBrakeMode(boolean value) {
-		if (useTalon) {
+		if (USE_TALON) {
 			talon.enableBrakeMode(value);
 		}
 	}
@@ -113,7 +113,7 @@ public class MotorController {
 	 * Talon ONLY
 	 */
 	public void enableCurrentLimit(boolean enable) {
-		if (useTalon) {
+		if (USE_TALON) {
 			talon.EnableCurrentLimit(enable);
 		}
 	}
@@ -122,7 +122,7 @@ public class MotorController {
 	 * Talon ONLY
 	 */
 	public void setCurrentLimit(int amps) {
-		if (useTalon) {
+		if (USE_TALON) {
 			talon.setCurrentLimit(amps);
 		}
 	}
@@ -131,7 +131,7 @@ public class MotorController {
 	 * Talon ONLY
 	 */
 	public void setControlMode(TalonControlMode myMode) {
-		if (useTalon) {
+		if (USE_TALON) {
 			talon.changeControlMode(myMode);
 		}
 	}
