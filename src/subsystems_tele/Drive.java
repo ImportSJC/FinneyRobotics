@@ -61,7 +61,8 @@ public class Drive {
 	 * @param right3
 	 */
 	public Drive(CustomXBox controller, ControlMode defaultControlMode,
-			MotorController left1, MotorController left2,  MotorController left3, MotorController right1, MotorController right2, MotorController right3){
+			MotorController left1, MotorController left2,  MotorController left3,
+			MotorController right1, MotorController right2, MotorController right3){
 		
 		this.controller = controller;
 		this.currentControlMode = defaultControlMode;
