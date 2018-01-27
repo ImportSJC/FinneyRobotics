@@ -4,9 +4,9 @@ import AutonomousControls.AutonomousControl;
 
 public class AutonomousMode {
 	private String description;
-	private AutonomousControl[][] states;
+	private AutonomousControl[] states;
 	
-	public AutonomousMode(String description, AutonomousControl[][] states) {
+	public AutonomousMode(String description, AutonomousControl[] states) {
 		this.description = description;
 		this.states = states;
 	}
@@ -21,7 +21,7 @@ public class AutonomousMode {
 	/**
 	 * @return the autonomous steps 
 	 */
-	public AutonomousControl[][] getSteps(){
+	public AutonomousControl[] getSteps(){
 		return states;
 	}
 }

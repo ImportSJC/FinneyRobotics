@@ -75,6 +75,4 @@ public class CubeMovement {
 		
 		//TODO retract/extend the intake based on the retract intake position variable until the mechanism hits a limit switch
 	}
-}	
-	
-	
+}

@@ -22,7 +22,7 @@ public class TankDrive extends ControlMode {
 	 */
 	@Override
 	public double[] getAxisValues(CustomXBox controller){
-		double right = controller.rightStickYaxis();
+		double right = -controller.rightStickYaxis();
 		double left = -controller.leftStickYaxis();
 		
 		axisValues[0] = left;

@@ -37,18 +37,19 @@ public class Robot extends IterativeRobot {
   	private CustomXBox pilot;
   	private CubeMovement cubeMovement;
   	private Climbing climb;
+  	private AutonomousModes modes;
 
   	//Auto modes
   	private AutonomousMode TEST_MODE = new AutonomousMode("A test autonomous mode", 
-  			new AutonomousControl[][] { {new And( new Auto_Time(5), new Auto_Drive(5, drive) )} } );
+  			new AutonomousControl[] { new And( new Auto_Time(5), new Auto_Drive(5, drive) ) } );
   	
 	//CANTalons
 	private MotorController talon1 = new MotorController(1);
 	private MotorController talon2 = new MotorController(2);
-	private MotorController talon3 = new MotorController(3);
+	private MotorController talon3 = new MotorController(3, true);
 	private MotorController talon4 = new MotorController(4, true);
-	private MotorController talon5 = new MotorController(5, true);
-	private MotorController talon6 = new MotorController(6, true);
+	//private MotorController talon5 = new MotorController(5, true);
+	//private MotorController talon6 = new MotorController(6, true);
 
 	private MotorController forklift1 = new MotorController(7);
 	private MotorController forklift2 = new MotorController(8);
@@ -66,13 +67,14 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
     	controlMode = new ArcadeDrive();
     	pilot = new CustomXBox(0);
-    	drive = new Drive(pilot, controlMode, talon1, talon2, talon3, talon4, talon5, talon6);
+    	drive = new Drive(pilot, controlMode, talon1, talon2, talon3, talon4);
     	cubeMovement = new CubeMovement(pilot, forklift1, forklift2, cubeIntake1, cubeIntake2, retractIntake);
     	climb = new Climbing(pilot, winch, robotCarrier, hooks);
     	
     	
-    	AutonomousModes.addAutoMode(TEST_MODE);
-    	auto = new Autonomous(AutonomousModes.getCurrentAutoMode());
+    	//AutonomousModes.addAutoMode(TEST_MODE);
+    	modes = new AutonomousModes(null, null, null, null, drive);
+    	auto = new Autonomous(modes.getCurrentAutoMode());
     }
     
     public void autonomousInit(){
@@ -83,7 +85,7 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic(){
-
+    	auto.AutonomousPeriodic();
     }
 
     /**
@@ -117,3 +119,12 @@ public class Robot extends IterativeRobot {
 //    	AutoOutputs.setBrake(false);
     }
 }
+
+// TODO Softy Josh wanted to make a haiku in the program so here's how you make one
+/**
+ * Haiku example:
+ * 
+ * First five syllables
+ * Than seven syllables next
+ * Five syllables last
+ */

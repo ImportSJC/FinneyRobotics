@@ -2,6 +2,12 @@ package conditions;
 
 import AutonomousControls.AutonomousControl;
 
+/**
+ * The AND conditional block in the autonomous system.
+ * This block can start/check/stop any number of sub-AutonomousControl Objects
+ * @author Stephen Cerbone
+ *
+ */
 public class And extends AutonomousControl {
 	
 	private AutonomousControl[] myObjects;

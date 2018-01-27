@@ -8,7 +8,7 @@ public class Autonomous {
 	public int rowIndex = 0;
 	public boolean columnInit = false; //has all the modes in the column been started yet?
 	
-	public AutonomousControl[][] autoStates = null;
+	public AutonomousControl[] autoStates = null;
 	
 	/**
 	 * Instantiate a new autonomous class by providing a list of all encoders and gyros.
@@ -37,37 +37,17 @@ public class Autonomous {
 	
 	public void AutonomousPeriodic() {
 		if (columnIndex<autoStates.length){
-//			currentAuto = autoModes[autoModeIndex];
 			if (!columnInit){
-				for (int i=0; i<autoStates[columnIndex].length; i++){
-					autoStates[columnIndex][i].start();
-				}
-				columnInit = true;
-			}
-			else if(allChecksPassed()){
+				// start the autonomous control object at the current index of the autoStates array.
+				autoStates[columnIndex].start();
+				columnInit = true; //TODO remove the column init bool by instead asking the autonomous control object if it has been started yet
+			} else if(autoStates[columnIndex].check()){
 				System.out.println("All checks passed - NEXT STATE");
 				columnIndex++;
 				columnInit = false;
 			}
-		}
-		else{
+		} else {
 			System.out.println("End of Autonomous Loop");
-			
-			//TODO: remove this debug code for competitions. <== is this correct???? DO THIS AND CHECK!!!!!!
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
-	}
-	
-	public boolean allChecksPassed(){
-		//has all the checks passed?
-		for (int i=0; i<autoStates[columnIndex].length; i++){
-			if (!autoStates[columnIndex][i].check()){return false;}
-		}
-		for (int i=0; i<autoStates[columnIndex].length; i++){autoStates[columnIndex][i].stop();}
-		return true;
 	}
 }
