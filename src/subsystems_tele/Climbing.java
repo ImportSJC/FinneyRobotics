@@ -1,22 +1,24 @@
 package subsystems_tele;
 
+import MotorController.MotorController;
+import MotorController.MotorControllerRamped;
 import general.CustomXBox;
-import general.MotorController;
 
 public class Climbing {
 	
-	private MotorController winch;
+	private MotorControllerRamped winch;
 	private MotorController robotCarrier;
 	private MotorController hooks;
 	
 	private CustomXBox controller;
 	
-	final private double WINCH_SPEED = 0.5;
+	final private double WINCH_SPEED_UP = 1.0;
+	final private double WINCH_SPEED_DOWN = -0.5;
 	final private double ROBOT_CARRIER_SPEED = 0.5;
-	final private double HOOKS_UP = 0.5;
-	final private double HOOKS_DOWN = -0.5;
+	final private double HOOKS_UP = 0.45;
+	final private double HOOKS_DOWN = -0.20;
 
-	public Climbing(CustomXBox controller, MotorController winch, MotorController robotCarrier, MotorController hooks) {
+	public Climbing(CustomXBox controller, MotorControllerRamped winch, MotorController robotCarrier, MotorController hooks) {
 		this.winch = winch;
 		this.robotCarrier = robotCarrier;
 		this.hooks = hooks;
@@ -27,10 +29,13 @@ public class Climbing {
 	 * Retract the winch for climbing when button is held
 	 */
 	public void winch() {
-		if (controller.leftBumper()) {
-			winch.set(WINCH_SPEED);
+//		SimpleLogger.log("Winch is working");
+		if (controller.yButton()) {
+			winch.rampMotor(WINCH_SPEED_UP);
+		}else if (controller.aButton()) {
+			winch.set(WINCH_SPEED_DOWN);
 		}else {
-			winch.set(0);
+			winch.resetRamp();
 		}	
 	}
 	

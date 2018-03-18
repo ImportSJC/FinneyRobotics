@@ -2,12 +2,14 @@ package general;
 
 import AutonomousControls.AutonomousControl;
 import auto_modes.AutonomousMode;
+import logging.SimpleLogger;
 
 public class Autonomous {
 	public int columnIndex = 0;
 	public int rowIndex = 0;
 	public boolean columnInit = false; //has all the modes in the column been started yet?
 	
+	private String autoDescription = "";
 	public AutonomousControl[] autoStates = null;
 	
 	/**
@@ -18,7 +20,7 @@ public class Autonomous {
 	 * @param gyros a list of gyros on the robot
 	 */
 	public Autonomous(AutonomousMode mode){
-		this.autoStates = mode.getSteps();
+		setAutoMode(mode);
 	}
 	
 	/**
@@ -26,7 +28,9 @@ public class Autonomous {
 	 * @param states the autonomous mode to set as the current mode
 	 */
 	public void setAutoMode(AutonomousMode mode){
+		this.autoDescription = mode.getDescription();
 		this.autoStates = mode.getSteps();
+//		SimpleLogger.log("Auto mode set to: " + this.autoDescription);
 	}
 	
 	public void AutonomousInit(){
@@ -42,12 +46,13 @@ public class Autonomous {
 				autoStates[columnIndex].start();
 				columnInit = true; //TODO remove the column init bool by instead asking the autonomous control object if it has been started yet
 			} else if(autoStates[columnIndex].check()){
-				System.out.println("All checks passed - NEXT STATE");
+				autoStates[columnIndex].stop();
+				SimpleLogger.log("All checks passed - NEXT STATE");
 				columnIndex++;
 				columnInit = false;
 			}
 		} else {
-			System.out.println("End of Autonomous Loop");
+			SimpleLogger.log("End of Autonomous Loop");
 		}
 	}
 }

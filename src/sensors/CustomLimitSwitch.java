@@ -12,6 +12,8 @@ public class CustomLimitSwitch {
 	}
 	
 	public boolean getState(){
+		
+//		SimpleLogger.log("Position of the sensor:"+ myLimitSwitch.get());
 		return myLimitSwitch.get();
 	}
 }

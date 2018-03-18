@@ -25,6 +25,8 @@ public class TankDrive extends ControlMode {
 		double right = -controller.rightStickYaxis();
 		double left = -controller.leftStickYaxis();
 		
+//		SimpleLogger.log("Joystick right: " + right + " left: " + left);
+		
 		axisValues[0] = left;
 		axisValues[1] = right;
 		return axisValues;

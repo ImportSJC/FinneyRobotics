@@ -1,19 +1,19 @@
 package AutonomousControls;
 
-import com.ctre.CANTalon;
+import MotorController.MotorController;
 
 public class Auto_LimitSwitch extends AutonomousControl{
 	private boolean targetPosition = true;
 	
-	CANTalon switchController;
+	MotorController switchController;
 	
-	public Auto_LimitSwitch(String limitSwitchLocation, CANTalon switchController){
+	public Auto_LimitSwitch(String limitSwitchLocation, MotorController switchController){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
 			this.switchController = switchController;
 		}
 	}
 	
-	public Auto_LimitSwitch(String limitSwitchLocation, boolean targetPosition, CANTalon switchController){
+	public Auto_LimitSwitch(String limitSwitchLocation, boolean targetPosition, MotorController switchController){
 		if(limitSwitchLocation.equalsIgnoreCase("bottom")){
 			this.switchController = switchController;
 		}
@@ -24,7 +24,7 @@ public class Auto_LimitSwitch extends AutonomousControl{
 	@Override 
 	public boolean check(){
 		//TODO: change this so it looks at only fwd or only rev depending on the limit switch location
-		if(switchController.isFwdLimitSwitchClosed() == targetPosition /*|| myTalon.isRevLimitSwitchClosed() == targetPosition*/){return true;}
+//		if(switchController.isFwdLimitSwitchClosed() == targetPosition /*|| myTalon.isRevLimitSwitchClosed() == targetPosition*/){return true;}
 		return false;
 	}
 }

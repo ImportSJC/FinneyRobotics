@@ -1,6 +1,6 @@
 package auto_modes;
 
-public enum FieldPositions {
+public enum RobotFieldPosition {
 	LEFT,
 	MIDDLE,
 	RIGHT

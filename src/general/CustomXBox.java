@@ -65,10 +65,10 @@ public class CustomXBox {
 	}
 
 	/**
-	 * @return the Left Stick Y Axis value
+	 * @return the Left Stick Y Axis value, -1 is down and 1 is up
 	 */
 	public double leftStickYaxis() {
-		return DeadBand.value(joystick.getRawAxis(1));
+		return -DeadBand.value(joystick.getRawAxis(1));
 	}
 
 	/**
@@ -116,10 +116,10 @@ public class CustomXBox {
 	}
 
 	/**
-	 * @return the Right Stick Y Axis value
+	 * @return the Right Stick Y Axis value, -1 is down and 1 is up
 	 */
 	public double rightStickYaxis() {
-		return DeadBand.value(joystick.getRawAxis(5));
+		return -DeadBand.value(joystick.getRawAxis(5));
 	}
 
 	/**

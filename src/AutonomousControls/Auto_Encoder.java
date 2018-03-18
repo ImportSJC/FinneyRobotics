@@ -1,30 +1,33 @@
 package AutonomousControls;
 
+import MotorController.MotorController;
 import sensors.CustomEncoder;
 
 public class Auto_Encoder extends AutonomousControl{
-	private double startPosition;
-	private double targetPosition;
+	private final double TOLERANCE = 0.1;
 	
-	private CustomEncoder encoder;
+	private double startDistance = 0;
+	private double targetDistance;
 	
-	public Auto_Encoder(double targetPosition, CustomEncoder encoder){
-		this.targetPosition = targetPosition;
-		this.encoder = encoder;
+	private MotorController controller;
+	
+	public Auto_Encoder(double targetDistance, MotorController controller){
+		this.targetDistance = targetDistance;
+		this.controller = controller;
 	}
 	
 	@Override
 	public void start(){
-		encoder.reset();
-		startPosition = encoder.getPos();
-		System.out.println("Encoder start position: " + startPosition);
+		controller.setPosition(0);
+//		SimpleLogger.log("Encoder start position: " + startPosition);
 	}
 	
 	@Override 
 	public boolean check(){
-//		System.out.println("Encoder Position: " + AutoInputs.getEncoder());
-		if(targetPosition>0 && encoder.getPos() >= targetPosition){return true;}
-		else if(targetPosition<0 && encoder.getPos() <= targetPosition){return true;}
+//		SimpleLogger.log("Encoder Position: " + AutoInputs.getEncoder());
+		if(controller.getDriveDistance() < targetDistance+TOLERANCE && controller.getDriveDistance() > targetDistance-TOLERANCE){
+			return true;
+		}
 		return false;
 	}
 }

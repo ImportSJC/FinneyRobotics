@@ -10,7 +10,7 @@ public class CustomEncoder {
 	}
 
 	public void Init() {
-		System.out.println("Encoder Init");
+//		SimpleLogger.log("Encoder Init");
 		myEncoder.reset();
 	}
 

@@ -1,8 +1,11 @@
 package subsystems_tele;
 
+import MotorController.MotorController;
+import MotorController.MotorControllerRamped;
 import control_modes.ControlMode;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import general.CustomXBox;
-import general.MotorController;
+import logging.SimpleLogger;
 
 
 public class Drive {
@@ -27,6 +30,8 @@ public class Drive {
 	private MotorController backRight1;
 	private MotorController backRight2;
 	
+	private ADXRS450_Gyro gyro;
+	
 	private CustomXBox controller;
 	private ControlMode currentControlMode;
 	
@@ -38,7 +43,7 @@ public class Drive {
 	 * @param backLeft
 	 * @param backRight
 	 */
-	public Drive(CustomXBox controller, ControlMode defaultControlMode,
+	public Drive(CustomXBox controller, ControlMode defaultControlMode, ADXRS450_Gyro gyro,
 			MotorController left1, MotorController left2, MotorController right1, MotorController right2){
 		this.controller = controller;
 		this.currentControlMode = defaultControlMode;
@@ -47,6 +52,8 @@ public class Drive {
 		this.left2 = left2;
 		this.right1 = right1;
 		this.right2 = right2;
+		
+		this.gyro = gyro;
 	}
 	
 	/**
@@ -60,7 +67,7 @@ public class Drive {
 	 * @param right2
 	 * @param right3
 	 */
-	public Drive(CustomXBox controller, ControlMode defaultControlMode,
+	public Drive(CustomXBox controller, ControlMode defaultControlMode, ADXRS450_Gyro gyro,
 			MotorController left1, MotorController left2,  MotorController left3,
 			MotorController right1, MotorController right2, MotorController right3){
 		
@@ -74,8 +81,9 @@ public class Drive {
 		this.right2 = right2;
 		this.right3 = right3;
 		
+		this.gyro = gyro;
 	}
-
+	
 	public void setControlMode(ControlMode controlMode){
 		this.currentControlMode = controlMode;
 	}
@@ -86,7 +94,11 @@ public class Drive {
 			double left = axisValues[0];
 			double right = axisValues[1];
 			
+			left = left * (2.0/3.0);
+			right = right * (2.0/3.0);
+			
 			if(left3 != null && right3 != null){
+				SimpleLogger.log("Running 6 motor tele");
 				right1.set(right);
 				right2.set(right);
 				right3.set(right);
@@ -94,11 +106,35 @@ public class Drive {
 				left2.set(left);
 				left3.set(left);
 			}else{
+				SimpleLogger.log("Right 1: " + right1.get() + " 2: " + right2.get());
+				SimpleLogger.log("Left 1: " + left1.get() + " 2: " + left2.get());
 				right1.set(right);
 				right2.set(right);
 				left1.set(left);
 				left2.set(left);
+//				right1.rampMotor(right);
+//				right2.rampMotor(right);
+//				left1.rampMotor(left);
+//				left2.rampMotor(left);
 			}
+		}
+		
+	}
+	
+	public void setTankDrive(double left, double right){
+		SimpleLogger.log("Setting drive: " + left + ", " + right);
+		if(left3 != null && right3 != null){
+			right1.set(right);
+			right2.set(right);
+			right3.set(right);
+			left1.set(left);
+			left2.set(left);
+			left3.set(left);
+		}else{
+			right1.set(right);
+			right2.set(right);
+			left1.set(left);
+			left2.set(left);
 		}
 	}
 	
@@ -122,6 +158,40 @@ public class Drive {
 			backRight1.set(backRight);
 			backRight2.set(backRight);
 		}
+	}
+	
+	/**
+	 * @return the motor controller with the specified encoder connected
+	 */
+	public MotorController getLeftEncoderController(){
+		return left1;
+	}
+	
+	/**
+	 * @return the motor controller with the specified encoder connected
+	 */
+	public MotorController getRightEncoderController(){
+		return right1;
+	}
+
+	public double getLeftDistance(){
+		return left1.getDriveDistance();
+	}
+	
+	public double getRightDistance(){
+		return right1.getDriveDistance();
+	}
+	
+	public void resetGyro(){
+		gyro.reset();
+	}
+	
+	public double getGyroAngle(){
+		return gyro.getAngle();
+	}
+	
+	public double getGyroRate(){
+		return gyro.getRate();
 	}
 	
 	/**

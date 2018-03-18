@@ -1,27 +1,38 @@
 package AutonomousControls;
 
-import sensors.CustomGyro;
+import subsystems_tele.Drive;
 
 public class Auto_Gyroscope extends AutonomousControl{
+	private final double TOLERANCE = 1.0;
+	
 	private double targetAngle;
 	private double targetRate;
 	
-	CustomGyro myGyro;
+	private boolean isRateLimited = false;
 	
-	public Auto_Gyroscope(double targetAngle, double targetRate, int channel){
+	private Drive drive;
+	
+	public Auto_Gyroscope(Drive drive, double targetAngle, double targetRate){
 		this.targetAngle = targetAngle;
 		this.targetRate = targetRate;
-		myGyro = new CustomGyro(channel);
+		this.drive = drive;
+		
+		isRateLimited = true;
+	}
+	
+	public Auto_Gyroscope(Drive drive, double targetAngle){
+		this.targetAngle = targetAngle;
+		this.drive = drive;
 	}
 	
 	@Override
 	public void start(){
-		myGyro.calibrate();
+		drive.resetGyro();
 	}
 	
 	@Override 
 	public boolean check(){
-		System.out.println("Gyro Angle: " + myGyro.getAngle());
+//		SimpleLogger.log("Gyro Angle: " + myGyro.getAngle());
 		
 		//TODO was this code necessary? what did it do?
 //		if (targetAngle/2<=myGyro.getAngle()){
@@ -29,10 +40,14 @@ public class Auto_Gyroscope extends AutonomousControl{
 //		}
 		
 		//stop once it hits the target angle and its not moving fast
-		if(myGyro.getRate() < targetRate){
-			if(targetAngle>0 && myGyro.getAngle() >= targetAngle){return true;}
-			else if(targetAngle<0 && myGyro.getAngle() <= targetAngle){return true;}
+		if(isRateLimited){
+			if(drive.getGyroRate() <= targetRate){
+				if(drive.getGyroAngle() < targetAngle+TOLERANCE && drive.getGyroAngle() > targetAngle-TOLERANCE){return true;}
+			}
+			return false;
+		}else{
+			if(drive.getGyroAngle() < targetAngle+TOLERANCE && drive.getGyroAngle() > targetAngle-TOLERANCE){return true;}
+			return false;
 		}
-		return false;
 	}
 }

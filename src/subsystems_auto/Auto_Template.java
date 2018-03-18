@@ -1,6 +1,7 @@
 package subsystems_auto;
 
 import AutonomousControls.AutonomousControl;
+import logging.SimpleLogger;
 
 /*
  * Test Template Description
@@ -18,19 +19,17 @@ public class Auto_Template extends AutonomousControl{
 		startMotors(templateSpeed);
 	}
 	
-	/************** END OF AUTO LOOPS *****************/
-	
 	private void startMotors(double mySpeed){
 		//Set motor speeds
 //		AutoOutputs.setTemplate(mySpeed);
 		
-		System.out.println("Start Auto_Template at: " + mySpeed);
+		SimpleLogger.log("Start Auto_Template at: " + mySpeed);
 	}
 	
 	private void stopMotors(){
 		//reset motor speeds
 //		AutoOutputs.reset_Template();
 		
-		System.out.println("Stop Auto_Template");
+		SimpleLogger.log("Stop Auto_Template");
 	}
 }

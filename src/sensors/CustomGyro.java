@@ -26,7 +26,7 @@ public class CustomGyro implements Gyro {
 	 */
 	@Override
 	public void calibrate() {
-		System.out.println("Gyro Init");
+//		SimpleLogger.log("Gyro Init");
 		myGyro.reset();
 	}
 

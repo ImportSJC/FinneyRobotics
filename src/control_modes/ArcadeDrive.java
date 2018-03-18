@@ -23,7 +23,9 @@ public class ArcadeDrive extends ControlMode{
 	@Override
 	public double[] getAxisValues(CustomXBox controller){
 		double right = controller.leftStickYaxis() + controller.rightStickXaxis();
-		double left = -( controller.leftStickYaxis() - controller.rightStickXaxis() );	//TODO verify that this negation is correct, I am also negating motor controllers in Robot.
+		double left = controller.leftStickYaxis() - controller.rightStickXaxis();
+		
+//		SimpleLogger.log("Joystick right: " + right + " left: " + left);
 		
 		// (MECANUM BASE)
 //		Drive.xAxis = controller.leftStickXaxis();
@@ -38,6 +40,11 @@ public class ArcadeDrive extends ControlMode{
 //		if(Drive.zAxis == -0){
 //			Drive.zAxis = 0;
 //		}
+		
+		if(controller.leftBumper()){
+			left = 0.2 * left;
+			right = 0.2 * right;
+		}
 		
 		axisValues[0] = left;
 		axisValues[1] = right;
