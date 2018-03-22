@@ -2,9 +2,13 @@ package subsystems_auto;
 
 import AutonomousControls.AutonomousControl;
 import logging.SimpleLogger;
+import logging.SimpleLogger.LogLevel;
+import logging.SimpleLogger.LogSubsystem;
 import subsystems_tele.Drive;
 
 public class Auto_Drive extends AutonomousControl{
+	private final boolean DRIVE_STRAIGHT = true; //drive straight using encoders
+	
 	private double driveSpeed = 0;
 	private double turnSpeed = 0;
 	private boolean isTurning = false;
@@ -32,6 +36,23 @@ public class Auto_Drive extends AutonomousControl{
 			SimpleLogger.log("Starting Auto Drive - No Turn");
 			startMotors(driveSpeed);
 		}
+	}
+	
+	@Override
+	public boolean check(){
+		double threshold = 0.2; //distance of difference between encoder sides to enable drive correction
+		double correction = 0.1; //amount to correct
+		if(DRIVE_STRAIGHT && turnSpeed == 0){
+			SimpleLogger.log("Drive error: " + (drive.getLeftDistance()-drive.getRightDistance()), LogLevel.DEBUG, LogSubsystem.AUTO);
+			if(drive.getLeftDistance() > drive.getRightDistance()+threshold){
+				drive.setTankDrive(driveSpeed, driveSpeed+correction);
+			}else if(drive.getRightDistance() > drive.getLeftDistance()+threshold){
+				drive.setTankDrive(driveSpeed+correction, driveSpeed);
+			}else{
+				drive.setTankDrive(driveSpeed, driveSpeed);
+			}
+		}
+		return true;
 	}
 	
 	@Override

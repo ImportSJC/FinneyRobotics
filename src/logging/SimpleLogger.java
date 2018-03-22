@@ -15,7 +15,7 @@ public class SimpleLogger {
 	
 	private static LogLevel enabledLogLevel = LogLevel.ALL;
 	private static LogSubsystem enabledLogSubsystem = LogSubsystem.ALL;
-	private static final boolean NO_REPEAT_MESSAGES = true;
+	private static final boolean NO_REPEAT_MESSAGES = false;
 	
 	private static String previousMessage = null;
 	

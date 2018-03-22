@@ -2,6 +2,7 @@ package auto_modes;
 
 import AutonomousControls.Auto_Encoder;
 import AutonomousControls.Auto_Gyroscope;
+import AutonomousControls.Auto_MotionProfile;
 import AutonomousControls.AutonomousControl;
 import conditions.And;
 import conditions.Thread;
@@ -9,6 +10,7 @@ import general.GameDataFirstPowerUp;
 import logging.SimpleLogger;
 import logging.SimpleLogger.LogLevel;
 import logging.SimpleLogger.LogSubsystem;
+import motion_profiles.MotionProfiles;
 import subsystems_auto.Auto_CubeMovement;
 import subsystems_auto.Auto_Drive;
 import subsystems_auto.Auto_Elevator;
@@ -69,30 +71,31 @@ public class AutonomousModes {
 	
   	private void initAutoModes(){
   		doNothing[0] = new Auto_Drive(0, drive);
-  		driveSlow[0] = new And(new Auto_Drive(0.2, drive), new Auto_Encoder(8.8, drive.getLeftEncoderController()));
+//  		driveSlow[0] = new And(new Auto_Drive(0.2, drive), new Auto_Encoder(8.8, drive.getLeftMotorController()));
+  		SimpleLogger.log("1 - left: " + MotionProfiles.leftSwitchMiddleRobot_L[5][0] + " right: " + MotionProfiles.leftSwitchMiddleRobot_R[5][0]);
+  		driveSlow[0] = new Auto_MotionProfile(drive, MotionProfiles.leftSwitchMiddleRobot_L, MotionProfiles.leftSwitchMiddleRobot_R);
   		
-//  		new Auto_MotionProfile(drive, MotionProfiles.moveAcrossLine_L,
-//  				MotionProfiles.moveAcrossLine_R, P, I, D, V, A)
-  		
-  		moveAcrossLine[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(8.8, drive.getLeftEncoderController())), new Auto_Elevator(forklift, 0.5, 2400, false));
+  		moveAcrossLine[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(8.8, drive.getLeftMotorController())), new Auto_Elevator(forklift, 0.5, 2400, false));
 //  		moveAcrossLine[0] = new Auto_Elevator(forklift, 0.5, 2000, false);
   		
-  		robotMiddleSwitchLeft[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(8.8, drive.getLeftEncoderController())), new Auto_Elevator(forklift, 0.5, 2400, false));
+  		robotMiddleSwitchLeft[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(8.8, drive.getLeftMotorController())), new Auto_Elevator(forklift, 0.5, 2400, false));
   		robotMiddleSwitchLeft[1] = new Auto_CubeMovement(forklift, false, 2000);
   		
-  		robotMiddleSwitchRight[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(8.8, drive.getLeftEncoderController())), new Auto_Elevator(forklift, 0.5, 2400, false));
+  		robotMiddleSwitchRight[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(8.8, drive.getLeftMotorController())), new Auto_Elevator(forklift, 0.5, 2400, false));
   		robotMiddleSwitchRight[1] = new Auto_CubeMovement(forklift, false, 2000);
   		
   		//drive to the middle of the switch on the left side
-  		robotLeftSwitchLeft[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(12.4, drive.getLeftEncoderController())), new Auto_Elevator(forklift, 0.5, 2400, false));
-  		robotLeftSwitchLeft[1] = new And(new Auto_Drive(0, 0.3, drive), new Auto_Gyroscope(drive, 90));
-  		robotLeftSwitchLeft[2] = new And(new Auto_Drive(0.2, drive), new Auto_Encoder(1.5, drive.getLeftEncoderController()));
+//  		robotLeftSwitchLeft[0] = new And(new Auto_Drive(0.3, drive), new Auto_Encoder(12.4, drive.getLeftMotorController()));
+  		robotLeftSwitchLeft[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(12.4, drive.getLeftMotorController())), new Auto_Elevator(forklift, 0.5, 2400, false));
+  		robotLeftSwitchLeft[1] = new And(new Auto_Drive(0, 0.4, drive), new Auto_Gyroscope(drive, 90));
+  		robotLeftSwitchLeft[2] = new And(new Auto_Drive(0.3, drive), new Auto_Encoder(1.5, drive.getLeftMotorController()));
   		robotLeftSwitchLeft[3] = new Auto_CubeMovement(forklift, false, 2000);
-  		
+//  		
   		//drive to the middle of the switch on the right side
-  		robotRightSwitchRight[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(12.4, drive.getLeftEncoderController())), new Auto_Elevator(forklift, 0.5, 2400, false));
-  		robotRightSwitchRight[1] = new And(new Auto_Drive(0, -0.3, drive), new Auto_Gyroscope(drive, -90));
-  		robotRightSwitchRight[2] = new And(new Auto_Drive(0.2, drive), new Auto_Encoder(1.5, drive.getLeftEncoderController()));
+//  		robotRightSwitchRight[0] = new And(new Auto_Drive(0.3, drive), new Auto_Encoder(12.4, drive.getLeftMotorController()));
+  		robotRightSwitchRight[0] = new Thread(new And(new Auto_Drive(0.3, drive), new Auto_Encoder(12.4, drive.getLeftMotorController())), new Auto_Elevator(forklift, 0.5, 2400, false));
+  		robotRightSwitchRight[1] = new And(new Auto_Drive(0, -0.4, drive), new Auto_Gyroscope(drive, -90));
+  		robotRightSwitchRight[2] = new And(new Auto_Drive(0.3, drive), new Auto_Encoder(1.5, drive.getLeftMotorController()));
   		robotRightSwitchRight[3] = new Auto_CubeMovement(forklift, false, 2000);
   	}
 	

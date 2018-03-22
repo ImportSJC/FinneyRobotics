@@ -1,5 +1,7 @@
 package org.usfirst.frc.team1405.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
 import MotorController.MotorController;
 import MotorController.MotorControllerRamped;
 import MotorController.MotorController_Encoder;
@@ -9,8 +11,8 @@ import auto_modes.RobotFieldPosition;
 import control_modes.ArcadeDrive;
 import control_modes.ControlMode;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Servo;
 //import edu.wpi.first.wpilibj.XboxController;
@@ -18,8 +20,8 @@ import general.Autonomous;
 import general.CameraSwitch;
 import general.CustomXBox;
 import general.GameDataFirstPowerUp;
-import general.ServoController;
 import general.GameDataFirstPowerUp.FieldSide;
+import general.ServoController;
 import logging.SimpleLogger;
 import logging.SimpleLogger.LogLevel;
 import logging.SimpleLogger.LogSubsystem;
@@ -58,18 +60,18 @@ public class Robot extends IterativeRobot {
 	private BuddyBarRelease buddyBarRelease;
   	
   	//Encoder Configurations
-  	private MotorController_Encoder driveEncoderLeft = new MotorController_Encoder(1024.0, false);
+  	private MotorController_Encoder driveEncoderLeft = new MotorController_Encoder(1024.0, true);
   	private MotorController_Encoder driveEncoderRight = new MotorController_Encoder(1024.0, true);
   	
   	//PID Configurations
   	
 	//CANTalons
 	private MotorController talon4 = new MotorController(4, true, 15.0/12.0, driveEncoderRight);
-	private MotorController talon5 = new MotorController(5, true, 15.0/12.0, driveEncoderRight);
-//	private MotorController talon6 = new MotorController(6, true, 15.0/12.0, driveEncoderRight);
-	private MotorController talon1 = new MotorController(1, 15.0/12.0, driveEncoderLeft);
-	private MotorController talon2 = new MotorController(2, 15.0/12.0, driveEncoderLeft);
-//	private MotorController talon3 = new MotorController(3, 15.0/12.0, driveEncoderLeft);
+	private MotorController talon5 = new MotorController(5, true);
+//	private MotorController talon6 = new MotorController(6, false);
+	private MotorController talon1 = new MotorController(1, false, 15.0/12.0, driveEncoderLeft);
+	private MotorController talon2 = new MotorController(2, false);
+//	private MotorController talon3 = new MotorController(3, true);
 
 	private MotorControllerRamped forklift = new MotorControllerRamped(7, 0.1, true);
 	private MotorController cubeIntake1 = new MotorController(8);
@@ -84,7 +86,9 @@ public class Robot extends IterativeRobot {
   	private ServoController harvesterArmLeft = new ServoController(0, true, 0.5);
   	private ServoController harvesterArmRight = new ServoController(1, true , 0.5);
   	
-  	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
+//  	private ADXRS450_Gyro gyro = null;//new ADXRS450_Gyro();
+//  	private AHRS gyro = new AHRS(Port.kMXP);
+  	private AHRS gyro = new AHRS(I2C.Port.kMXP);
   	
   	private boolean bButton = false;
   	private boolean xButton = false;
@@ -95,7 +99,19 @@ public class Robot extends IterativeRobot {
 	//Camera
 	UsbCamera [] camera=new UsbCamera[2] ;
 	CameraSwitch cameraSwitch;
+	
+	private final double P = 6;
+	private final double I = 0.0005;
+	private final double D = 0;
+	private final double F = 0;
+	
 	public void robotInit() {
+		talon2.setMasterTalon(1);
+		talon5.setMasterTalon(4);
+		
+		talon1.setupMotionProfile(P, I, D, F);
+		talon4.setupMotionProfile(P, I, D, F);
+		
 //		talon1.configCurrentLimitPeak(65, 50);
 //		talon2.configCurrentLimitPeak(65, 50);
 //		talon4.configCurrentLimitPeak(65, 50);
@@ -113,7 +129,7 @@ public class Robot extends IterativeRobot {
 //    	drive = new Drive(pilot, controlMode, talon4, talon5, talon6, talon1, talon2, talon3);
     	
     	//4-sim drive
-    	drive = new Drive(pilot, controlMode, gyro, talon4, talon5, talon1, talon2);
+    	drive = new Drive(pilot, controlMode, gyro, talon1, talon4);
     	
     	cubeMovement = new CubeMovement(pilot, operator, forklift, cubeIntake1, cubeIntake2, cubeArmLeft,
     			retractIntake, harvesterArmLeft, harvesterArmRight, upSensor, downSensor);
@@ -135,6 +151,8 @@ public class Robot extends IterativeRobot {
     	camera[1].setExposureAuto();
     	
     	cameraSwitch=new CameraSwitch(camera);
+    	
+    	gyro.zeroYaw();
 
     }
     
@@ -142,7 +160,7 @@ public class Robot extends IterativeRobot {
     	SimpleLogger.log("STARTING AUTO INIT", LogLevel.COMP, LogSubsystem.AUTO);
     	auto.AutonomousInit();
     	
-    	drive.setTankDrive(0, 0);
+    	drive.setTankDrive(0.0, 0.0);
     	resetSensors();
     	FieldSide myScale = field.getScale();
     	FieldSide mySwitch = field.getAllianceSwitch();
@@ -266,7 +284,10 @@ public class Robot extends IterativeRobot {
     private void resetSensors(){
     	talon1.setPosition(0);
     	talon4.setPosition(0);
-    	gyro.reset();
+    	gyro.reset(); //reset the yaw gyro
+//    	if(gyro != null){
+//    		gyro.reset();
+//    	}
     }
     
     @Override
@@ -276,11 +297,9 @@ public class Robot extends IterativeRobot {
     
     @Override
     public void testPeriodic(){
-//    	SimpleLogger.log("L: " + talon1.getDriveDistance() + " R: " + talon4.getDriveDistance());
-    	SimpleLogger.log("gyro: " + gyro.getAngle());
-//    	if(pilot.aButton()){
-//    		talon1.setCurrent
-//    	}
+    	SimpleLogger.log("L: " + talon1.getDriveDistance() + " R: " + talon4.getDriveDistance());
+//    	SimpleLogger.log("gyro: " + gyro.getAngle());
+    	talon4.set(0.4);
     }
 }
 

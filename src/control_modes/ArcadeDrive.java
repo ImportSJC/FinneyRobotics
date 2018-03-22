@@ -1,6 +1,7 @@
 package control_modes;
 
 import general.CustomXBox;
+import logging.SimpleLogger;
 
 /**
  * Arcade Drive
@@ -25,7 +26,7 @@ public class ArcadeDrive extends ControlMode{
 		double right = controller.leftStickYaxis() + controller.rightStickXaxis();
 		double left = controller.leftStickYaxis() - controller.rightStickXaxis();
 		
-//		SimpleLogger.log("Joystick right: " + right + " left: " + left);
+		SimpleLogger.log("Joystick right: " + right + " left: " + left);
 		
 		// (MECANUM BASE)
 //		Drive.xAxis = controller.leftStickXaxis();
