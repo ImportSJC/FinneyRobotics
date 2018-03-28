@@ -14,6 +14,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Servo;
 //import edu.wpi.first.wpilibj.XboxController;
 import general.Autonomous;
@@ -100,17 +101,17 @@ public class Robot extends IterativeRobot {
 	UsbCamera [] camera=new UsbCamera[2] ;
 	CameraSwitch cameraSwitch;
 	
-	private final double P = 6;
-	private final double I = 0.0005;
-	private final double D = 0;
-	private final double F = 0;
+	private final double drive_P = 4;
+	private final double drive_I = 0.0005;
+	private final double drive_D = 0;
+	private final double drive_F = 0;
 	
 	public void robotInit() {
 		talon2.setMasterTalon(1);
 		talon5.setMasterTalon(4);
 		
-		talon1.setupMotionProfile(P, I, D, F);
-		talon4.setupMotionProfile(P, I, D, F);
+		talon1.setupMotionProfile(drive_P, drive_I, drive_D, drive_F);
+		talon4.setupMotionProfile(drive_P, drive_I, drive_D, drive_F);
 		
 //		talon1.configCurrentLimitPeak(65, 50);
 //		talon2.configCurrentLimitPeak(65, 50);
@@ -138,7 +139,7 @@ public class Robot extends IterativeRobot {
     	field = new GameDataFirstPowerUp();
     	
     	SimpleLogger.log("About to start auto modes");
-    	modes = new AutonomousModes(drive, cubeMovement);
+    	modes = new AutonomousModes(drive, cubeMovement, gyro);
     	auto = new Autonomous(modes.getCurrentAutoMode());
     	
     	camera[0] = CameraServer.getInstance().startAutomaticCapture(0);
@@ -151,9 +152,6 @@ public class Robot extends IterativeRobot {
     	camera[1].setExposureAuto();
     	
     	cameraSwitch=new CameraSwitch(camera);
-    	
-    	gyro.zeroYaw();
-
     }
     
     public void autonomousInit(){
@@ -175,6 +173,7 @@ public class Robot extends IterativeRobot {
     @Override
     public void autonomousPeriodic(){
     	auto.AutonomousPeriodic();
+    	SimpleLogger.log("Drive distance: " + drive.getLeftDistance());
     }
     
     @Override
@@ -219,6 +218,17 @@ public class Robot extends IterativeRobot {
     }
     
     public void disabledInit(){
+    	resetSensors();
+    	drive.setTankDrive(0, 0);
+    	if(pid != null){
+    		pid.disable();
+    		pid.reset();
+    	}
+    	
+//    	if(pid2 != null){
+//    		pid2.disable();
+//    		pid2.reset();
+//    	}
     }
     
     public void disabledPeriodic(){
@@ -284,22 +294,70 @@ public class Robot extends IterativeRobot {
     private void resetSensors(){
     	talon1.setPosition(0);
     	talon4.setPosition(0);
-    	gyro.reset(); //reset the yaw gyro
+    	gyro.zeroYaw();//reset the yaw gyro
 //    	if(gyro != null){
 //    		gyro.reset();
 //    	}
     }
     
+    PIDController pid;
+//    PIDController pid2;
+    double currentTarget = 0;
+    final double target = 90;
+    
     @Override
     public void testInit(){
     	resetSensors();
+//    	currentTarget = 0;
+//    	
+//    	PIDSource gyroSource = new PIDSource() {
+//			
+//    		PIDSourceType mySource = PIDSourceType.kDisplacement;
+//    		
+//			@Override
+//			public void setPIDSourceType(PIDSourceType pidSource) {
+//				this.mySource = pidSource;
+//			}
+//			
+//			@Override
+//			public double pidGet() {
+//				return gyro.getAngle();
+//			}
+//			
+//			@Override
+//			public PIDSourceType getPIDSourceType() {
+//				return mySource;
+//			}
+//		};
+//		PIDOutput gyroOutput = new PIDOutput() {
+//			
+//			@Override
+//			public void pidWrite(double output) {
+//				drive.setTankDrive(output, -output);
+//			}
+//		};
+//		
+//    	pid = new PIDController(turn_P, turn_I, turn_D, gyroSource, gyroOutput);
+//    	pid.setAbsoluteTolerance(0.1);
+//    	pid.setOutputRange(-0.45, 0.45);
+//    	pid.setSetpoint(0);
+//    	pid.reset();
+//    	pid.enable();
     }
     
     @Override
     public void testPeriodic(){
-    	SimpleLogger.log("L: " + talon1.getDriveDistance() + " R: " + talon4.getDriveDistance());
-//    	SimpleLogger.log("gyro: " + gyro.getAngle());
-    	talon4.set(0.4);
+//    	SimpleLogger.log("L: " + talon1.getDriveDistance() + " R: " + talon4.getDriveDistance());
+//    	SimpleLogger.log("gyro: " + gyro.getAngle() + " error: " + pid.getError() + " PID: " + pid.get());
+//    	if(pid.onTarget() && gyro.getRate() < 0.1){
+//    		pid.disable();
+//    	}
+    	
+//    	if(currentTarget < target){
+//    		currentTarget += 2;
+////    		SimpleLogger.log("currentTarget: " + currentTarget + " target: " + target);
+//    		pid.setSetpoint(currentTarget);
+//    	}
     }
 }
 

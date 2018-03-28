@@ -31,7 +31,6 @@ import MotorController.MotorController;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import logging.SimpleLogger;
-import motion_profiles.MotionProfiles;
 
 import com.ctre.phoenix.motion.*;
 import com.ctre.phoenix.motion.TrajectoryPoint.TrajectoryDuration;
@@ -59,7 +58,7 @@ public class MotionProfileExample {
 
 	double[][] leftMotionProfile;
 	double[][] rightMotionProfile;
-
+	
 	/**
 	 * State machine to make sure we let enough of the motion profile stream to
 	 * talon before we fire it.
@@ -91,6 +90,7 @@ public class MotionProfileExample {
 	 * profile.
 	 */
 	private static final int kMinPointsInTalon = 5;
+	
 	/**
 	 * Just a state timeout to make sure we don't get stuck anywhere. Each loop
 	 * is about 20ms.
@@ -125,17 +125,14 @@ public class MotionProfileExample {
 		this.leftMotionProfile = leftMotionProfile;
 		this.rightMotionProfile = rightMotionProfile;
 		
-		SimpleLogger.log("2 - left: " + leftMotionProfile[5][0] + " right: " + rightMotionProfile[5][0]);
-		
 		leftMotionProfile = left.convertMP(leftMotionProfile);
 		rightMotionProfile = right.convertMP(rightMotionProfile);
-		SimpleLogger.log("3 - left: " + leftMotionProfile[5][0] + " right: " + rightMotionProfile[5][0]);
 		_talon = new TalonSRX[2];
 		_talon[RIGHT] = right.getTalon();
 		_talon[LEFT] = left.getTalon();
 		
-		SimpleLogger.log("left talon ID: " + _talon[LEFT].getDeviceID());
-		SimpleLogger.log("right talon ID: " + _talon[RIGHT].getDeviceID());
+//		SimpleLogger.log("left talon ID: " + _talon[LEFT].getDeviceID());
+//		SimpleLogger.log("right talon ID: " + _talon[RIGHT].getDeviceID());
 		/*
 		 * since our MP is 10ms per point, set the control frame rate and the
 		 * notifer to half that
@@ -157,6 +154,7 @@ public class MotionProfileExample {
 		 */
 		_talon[RIGHT].clearMotionProfileTrajectories();
 		_talon[LEFT].clearMotionProfileTrajectories();
+		
 		/* When we do re-enter motionProfile control mode, stay disabled. */
 		_setValue = SetValueMotionProfile.Disable;
 		/* When we do start running our state machine start at the beginning. */
@@ -214,6 +212,7 @@ public class MotionProfileExample {
 			 * progress, and possibly interrupting MPs if thats what you want to
 			 * do.
 			 */
+			SimpleLogger.log("Side: " + side + " state: " + _state + " bstart: " + _bStart);
 			switch (_state) {
 				case 0: /* wait for application to tell us to start an MP */
 					if (_bStart) {
@@ -233,6 +232,7 @@ public class MotionProfileExample {
 						 * points
 						 */
 					/* do we have a minimum numberof points in Talon */
+					SimpleLogger.log("buffer count bottom: " + _status[side].btmBufferCnt + " buffer count top: " + _status[side].topBufferCnt + " buffer count rem: " + _status[side].topBufferRem);
 					if (_status[side].btmBufferCnt > kMinPointsInTalon) {
 						/* start (once) the motion profile */
 						_setValue = SetValueMotionProfile.Enable;
@@ -250,16 +250,19 @@ public class MotionProfileExample {
 					if (_status[side].isUnderrun == false) {
 						_loopTimeout = kNumLoopsTimeout;
 					}
+
 					/*
 					 * If we are executing an MP and the MP finished, start loading
 					 * another. We will go into hold state so robot servo's
 					 * position.
 					 */
+//					SimpleLogger.log("activePointValid: " + _status[side].activePointValid + " isLast: " + _status[side].isLast);
 					if (_status[side].activePointValid && _status[side].isLast) {
 						/*
 						 * because we set the last point's isLast to true, we will
 						 * get here when the MP is done
 						 */
+						SimpleLogger.log("REACHED LAST POINT");
 						_setValue = SetValueMotionProfile.Hold;
 						_state = 0;
 						_loopTimeout = -1;
@@ -274,7 +277,7 @@ public class MotionProfileExample {
 			_vel = _talon[side].getActiveTrajectoryVelocity();
 
 			/* printfs and/or logging */
-			Instrumentation.process(side, _status[side], _pos, _vel, _heading);
+			Instrumentation.process(side, _status[side], _pos, _vel, _heading, _talon[side].getSelectedSensorPosition(0));
 		}
 	}
 	/**
@@ -297,8 +300,6 @@ public class MotionProfileExample {
 	}
 	/** Start filling the MPs to all of the involved Talons. */
 	private void startFilling() {
-		/* since this example only has one talon, just update that one */
-		SimpleLogger.log("4 - left: " + leftMotionProfile[5][0] + " right: " + rightMotionProfile[5][0]);
 		startFilling(RIGHT, rightMotionProfile, rightMotionProfile.length);
 		startFilling(LEFT, leftMotionProfile, leftMotionProfile.length);
 	}
@@ -327,6 +328,7 @@ public class MotionProfileExample {
 		/* set the base trajectory period to zero, use the individual trajectory period below */
 		_talon[side].configMotionProfileTrajectoryPeriod(Constants.kBaseTrajPeriodMs, Constants.kTimeoutMs);
 		
+//		SimpleLogger.log("FILLING side: " + side + " total count: " + totalCnt);
 		/* This is fast since it's just into our TOP buffer */
 		for (int i = 0; i < totalCnt; ++i) {
 			double positionRot = profile[i][0];
@@ -343,8 +345,10 @@ public class MotionProfileExample {
 				point.zeroPos = true; /* set this to true on the first point */
 
 			point.isLastPoint = false;
-			if ((i + 1) == totalCnt)
+			if ((i + 1) == totalCnt){
+//				SimpleLogger.log("last point index: " + i);
 				point.isLastPoint = true; /* set this to true on the last point  */
+			}
 
 			_talon[side].pushMotionProfileTrajectory(point);
 		}

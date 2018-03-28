@@ -1,11 +1,10 @@
 package AutonomousControls;
 
+import java.util.Arrays;
+
 import com.ctre.phoenix.motion.SetValueMotionProfile;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import logging.SimpleLogger;
-import logging.SimpleLogger.LogLevel;
-import logging.SimpleLogger.LogSubsystem;
 import motion_profile.MotionProfileExample;
 import subsystems_tele.Drive;
 
@@ -23,9 +22,25 @@ public class Auto_MotionProfile extends AutonomousControl{
 		this.rightMotionProfile = rightMotionProfile;
 	}
 	
+	private double[][] copyMatrix(double[][] test){
+		double [][] myStuff = new double[test.length][];
+		for(int i = 0; i < test.length; i++)
+		{
+		  double[] aMatrix = test[i];
+		  int   aLength = aMatrix.length;
+		  myStuff[i] = new double[aLength];
+		  System.arraycopy(aMatrix, 0, myStuff[i], 0, aLength);
+		}
+		
+		return myStuff;
+	}
+	
 	@Override
 	public void start(){
-		mp = new MotionProfileExample(drive.getLeftMotorController(), drive.getRightMotorController(), leftMotionProfile, rightMotionProfile);
+		double[][] temp1 = copyMatrix(leftMotionProfile);
+		double[][] temp2 = copyMatrix(rightMotionProfile);
+		mp = new MotionProfileExample(drive.getLeftMotorController(), drive.getRightMotorController(), temp1, temp2);
+		mp.reset();
 		
 		mp.startMotionProfile();
 	}

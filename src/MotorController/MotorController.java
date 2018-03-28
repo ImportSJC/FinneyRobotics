@@ -14,6 +14,7 @@ public class MotorController {
 	private final static boolean USE_TALON = true; // if false all motor controllers will be instantiated as jaguars instead of talons
 	private final static int TIMEOUT = 100;
 	private final static double WHEEL_DIAMETER = 6.0 / 12.0; // wheel diameter in inches / 12.0 (convert to feet)
+	private final static double ROBOT_ERROR = 1;//1.037735849056604; //number to multiply the calculated distance now to get more accurate results, makes up for mechanical robot issues
 	private boolean reverse = false; // reverse the motor direction, used to ensure that a positive number results in a rotation that makes sense
 	
 	private MotorController_Encoder encoder;
@@ -97,7 +98,7 @@ public class MotorController {
 		mySpeed = speed;
 		if(isActive()){
 			if (USE_TALON) {
-				SimpleLogger.log("set: " + speed);
+//				SimpleLogger.log("set: " + speed);
 				talon.set(ControlMode.PercentOutput, speed);
 			} else {
 				if (reverse) {
@@ -115,7 +116,7 @@ public class MotorController {
 
 	public double getDriveDistance(){
 		if(isActive()){
-			return ((getPosition() / encoder.getCPR()) * myGearRatio * WHEEL_DIAMETER * Math.PI);
+			return ((getPosition() / encoder.getCPR()) * myGearRatio * WHEEL_DIAMETER * Math.PI) * ROBOT_ERROR;
 		}
 		return 0;
 	}
@@ -128,8 +129,8 @@ public class MotorController {
 	 */
 	public double[][] convertMP(double[][] mp){
 		for(int i=0; i<mp.length; i++){
-			mp[i][0] = mp[i][0] / (myGearRatio * WHEEL_DIAMETER * Math.PI);
-			mp[i][1] = (mp[i][1] * 60.0) / (myGearRatio * WHEEL_DIAMETER * Math.PI);
+			mp[i][0] = mp[i][0] / (myGearRatio * WHEEL_DIAMETER * Math.PI * ROBOT_ERROR);
+			mp[i][1] = (mp[i][1] * 60.0) / (myGearRatio * WHEEL_DIAMETER * Math.PI * ROBOT_ERROR);
 		}
 		
 		return mp;

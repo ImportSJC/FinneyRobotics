@@ -38,7 +38,7 @@ public class Instrumentation {
 	}
 
 	public static void OnNoProgress() {
-		System.out.format("%s\n", "NOPROGRESS");
+		System.out.format("%s\n", "ERROR NOPROGRESS");
 	}
 
 	static private String StrOutputEnable(SetValueMotionProfile sv) {
@@ -50,8 +50,8 @@ public class Instrumentation {
 		return _table[sv.value];
 	}
 
-	public static void process(int side, MotionProfileStatus status, double pos,
-			double vel, double heading) {
+	public static void process(int side, MotionProfileStatus status, double targetPos,
+			double targetVel, double heading, double pos) {
 		double now = edu.wpi.first.wpilibj.Timer.getFPGATimestamp();
 
 		if ((now - timeout) > 0.2) {
@@ -59,7 +59,7 @@ public class Instrumentation {
 			/* fire a loop every 200ms */
 
 			if (--count <= 0) {
-				count = 8;
+				count = 16;
 				/* every 8 loops, print our columns */
 
 				System.out.format("%-9s\t", "side(R=0)");
@@ -72,10 +72,12 @@ public class Instrumentation {
 				System.out.format("%-9s\t", "IsUnder");
 				System.out.format("%-9s\t", "IsLast");
 				System.out.format("%-9s\t", "targPos");
-				System.out.format("%-9s\t", "targVel");
+				System.out.format("%-9s\t", "Pos");
+//				System.out.format("%-9s\t", "targVel");
 				System.out.format("%-9s\t", "SlotSel0");
 				System.out.format("%-9s\t", "timeDurMs");
-
+				System.out.format("%-9s\t", "posError");
+				
 				System.out.format("\n");
 			}
 			/* every loop, print our values */
@@ -88,11 +90,13 @@ public class Instrumentation {
 			System.out.format("%-9s\t", (status.hasUnderrun ? "1" : ""));
 			System.out.format("%-9s\t", (status.isUnderrun ? "1" : ""));
 			System.out.format("%-9s\t", (status.isLast ? "1" : ""));
+			System.out.format("%-9s\t", targetPos);
 			System.out.format("%-9s\t", pos);
-			System.out.format("%-9s\t", vel);
+//			System.out.format("%-9s\t", targetVel);
 			System.out.format("%-9s\t", status.profileSlotSelect);
 			System.out.format("%-9s\t", status.timeDurMs);
-
+			System.out.format("%-9s\t", targetPos-pos);
+			
 			System.out.format("\n");
 		}
 	}

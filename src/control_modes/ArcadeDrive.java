@@ -23,8 +23,8 @@ public class ArcadeDrive extends ControlMode{
 	 */
 	@Override
 	public double[] getAxisValues(CustomXBox controller){
-		double right = controller.leftStickYaxis() + controller.rightStickXaxis();
-		double left = controller.leftStickYaxis() - controller.rightStickXaxis();
+		double right = controller.leftStickYaxis() - controller.rightStickXaxis();
+		double left = controller.leftStickYaxis() + controller.rightStickXaxis();
 		
 		SimpleLogger.log("Joystick right: " + right + " left: " + left);
 		
@@ -43,8 +43,8 @@ public class ArcadeDrive extends ControlMode{
 //		}
 		
 		if(controller.leftBumper()){
-			left = 0.2 * left;
-			right = 0.2 * right;
+			left = 0.5 * left;
+			right = 0.5 * right;
 		}
 		
 		axisValues[0] = left;

@@ -71,9 +71,17 @@ public class Drive {
 	}
 	
 	public void setTankDrive(double leftSpeed, double rightSpeed){
-		SimpleLogger.log("Setting drive: " + left + ", " + right);
+//		SimpleLogger.log("Setting drive: " + leftSpeed + ", " + rightSpeed);
 			right.set(rightSpeed);
 			left.set(leftSpeed);
+	}
+	
+	public void setTankDrive_left(double leftSpeed){
+		left.set(leftSpeed);
+	}
+	
+	public void setTankDrive_right(double rightSpeed){
+		right.set(rightSpeed);
 	}
 	
 	public void mecanum(){
